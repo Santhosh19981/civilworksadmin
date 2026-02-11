@@ -1,0 +1,104 @@
+<div class="space-y-12 pb-12">
+    <!-- Header -->
+    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
+        <div>
+            <h2 class="text-4xl font-black text-navy tracking-tight">Intelligence <span
+                    class="text-gold">Diagnostic</span></h2>
+            <p class="text-xs text-gray-400 font-bold uppercase tracking-[0.3em] mt-2">Executive Analytics & Data Stream
+            </p>
+        </div>
+
+        <button (click)="exportCSV()"
+            class="px-12 py-5 bg-navy text-white rounded-[2rem] font-black text-xs uppercase tracking-widest hover:bg-gold transition-all duration-500 shadow-2xl shadow-navy/20 flex items-center justify-center gap-4 group">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 group-hover:rotate-12 transition-transform"
+                fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            Export diagnostic suite
+        </button>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+        <!-- Revenue Velocity Diagnostics -->
+        <div class="p-10 bg-white rounded-[3.5rem] border border-gray-50 shadow-3xl relative overflow-hidden group">
+            <div class="absolute -right-20 -top-20 w-48 h-48 bg-gold/5 rounded-full blur-3xl"></div>
+            <h4 class="text-xl font-black text-navy mb-10 flex items-center gap-4">
+                <div
+                    class="w-12 h-12 rounded-2xl bg-navy/5 flex items-center justify-center text-navy group-hover:bg-gold group-hover:text-white transition-all">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                    </svg>
+                </div>
+                Growth Velocity
+            </h4>
+            <canvas id="growthChart" class="max-h-[350px]"></canvas>
+        </div>
+
+        <!-- Categorical Distribution -->
+        <div class="p-10 bg-white rounded-[3.5rem] border border-gray-50 shadow-3xl relative overflow-hidden group">
+            <div class="absolute -left-20 -bottom-20 w-48 h-48 bg-navy/5 rounded-full blur-3xl"></div>
+            <h4 class="text-xl font-black text-navy mb-10 flex items-center gap-4">
+                <div
+                    class="w-12 h-12 rounded-2xl bg-navy/5 flex items-center justify-center text-navy group-hover:bg-gold group-hover:text-white transition-all">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
+                    </svg>
+                </div>
+                Sector Distribution
+            </h4>
+            <canvas id="categoryReportChart" class="max-h-[350px]"></canvas>
+        </div>
+    </div>
+
+    <!-- Diagnostic Archive -->
+    <div class="bg-white rounded-[3.5rem] border border-gray-50 shadow-3xl overflow-hidden relative">
+        <div class="p-10 border-b border-gray-50 bg-gray-50/30">
+            <h4 class="text-2xl font-black text-navy tracking-tight">Elite Selling <span class="text-gold">Matrix</span>
+            </h4>
+            <p class="text-[9px] font-black text-gray-300 uppercase tracking-widest mt-1">Primary Asset Performance
+                Benchmarks</p>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="border-b border-gray-50">
+                        <th class="px-10 py-8 text-[10px] font-black text-gray-300 uppercase tracking-widest">Asset
+                            Identity</th>
+                        <th
+                            class="px-10 py-8 text-[10px] font-black text-gray-300 uppercase tracking-widest text-center">
+                            Liquidity Event Count</th>
+                        <th
+                            class="px-10 py-8 text-[10px] font-black text-gray-300 uppercase tracking-widest text-right">
+                            Yield Contribution</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-50">
+                    <tr *ngFor="let item of topProducts" class="hover:bg-gray-50/50 transition-all duration-500 group">
+                        <td class="px-10 py-8">
+                            <span
+                                class="font-black text-navy text-lg tracking-tight group-hover:text-gold transition-colors">{{item.name}}</span>
+                        </td>
+                        <td class="px-10 py-8 text-center">
+                            <div
+                                class="inline-flex items-center gap-2 px-4 py-2 bg-navy/5 rounded-xl border border-navy/5">
+                                <span class="text-lg font-black text-navy">{{item.qty}}</span>
+                                <span class="text-[9px] font-black text-navy/40 uppercase tracking-widest">Orders</span>
+                            </div>
+                        </td>
+                        <td class="px-10 py-8 text-right">
+                            <span class="text-2xl font-black text-gold tracking-tighter">${{item.revenue}}</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

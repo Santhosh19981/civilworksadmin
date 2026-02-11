@@ -1,0 +1,4 @@
+/* OrderDetailsComponent Styles */
+.timeline-step {
+    @apply relative z-10 flex flex-col items-center gap-3;
+}

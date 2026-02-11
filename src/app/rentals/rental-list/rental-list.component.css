@@ -1,0 +1,20 @@
+/* RentalListComponent Styles */
+:host {
+    display: block;
+}
+
+
+.rental-card {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(20px);
+    transform-style: preserve-3d;
+    perspective: 2000px;
+}
+
+.rental-card:hover {
+    transform: translateY(-20px) scale(1.03) rotateX(2deg);
+}
+
+.shadow-3xl {
+    box-shadow: 0 35px 60px -15px rgba(6, 25, 45, 0.1);
+}

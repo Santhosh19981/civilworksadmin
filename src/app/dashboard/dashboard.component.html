@@ -1,0 +1,148 @@
+<div class="space-y-10 pb-10">
+    <!-- Stats Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div *ngFor="let stat of stats"
+            class="premium-card group relative p-8 rounded-[2rem] bg-white border border-gray-100 shadow-xl overflow-hidden hover:shadow-2xl transition-all duration-500">
+
+            <!-- Background Accent -->
+            <div
+                class="absolute -right-10 -top-10 w-40 h-40 bg-gold/5 rounded-full blur-3xl group-hover:bg-gold/10 transition-colors duration-500">
+            </div>
+
+            <div class="relative z-10 flex flex-col h-full">
+                <div class="flex justify-between items-start mb-6">
+                    <div
+                        class="w-14 h-14 rounded-2xl bg-navy/5 flex items-center justify-center text-navy group-hover:bg-gold group-hover:text-white transition-all duration-500 shadow-inner">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" [attr.d]="stat.d" />
+                        </svg>
+                    </div>
+                    <div [class]="stat.trend >= 0 ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-600'"
+                        class="px-3 py-1.5 rounded-lg text-[10px] font-black tracking-widest uppercase flex items-center gap-1">
+                        {{stat.trend >= 0 ? '▲' : '▼'}} {{stat.trend}}%
+                    </div>
+                </div>
+
+                <div>
+                    <p class="text-[10px] font-black text-navy/40 uppercase tracking-[0.2em] mb-1">{{stat.label}}</p>
+                    <div class="flex items-baseline gap-1">
+                        <span
+                            class="text-4xl font-black text-navy tracking-tighter">{{stat.valuePrefix}}{{stat.displayValue
+                            | number}}</span>
+                        <span class="text-xs font-bold text-gray-400">Total</span>
+                    </div>
+                </div>
+
+                <div class="mt-6 pt-6 border-t border-gray-50 flex items-center justify-between">
+                    <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Active Insight</span>
+                    <div class="flex gap-1">
+                        <div class="w-1 h-1 rounded-full bg-gold/20"></div>
+                        <div class="w-3 h-1 rounded-full bg-gold"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Analytical Charts Section -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+        <!-- Main Line Chart -->
+        <div
+            class="premium-card p-10 rounded-[2.5rem] bg-white border border-gray-100 shadow-xl relative overflow-hidden">
+            <div class="flex items-center justify-between mb-10 relative z-10">
+                <div>
+                    <h4 class="text-xl font-black text-navy tracking-tight">Performance Velocity</h4>
+                    <p class="text-xs text-gray-400 font-bold uppercase tracking-widest mt-1">Monthly Order Distribution
+                    </p>
+                </div>
+                <div class="flex gap-2">
+                    <button
+                        class="px-4 py-2 bg-navy text-white text-[10px] font-black rounded-xl hover:bg-gold transition-colors">YTD</button>
+                    <button
+                        class="px-4 py-2 bg-gray-50 text-navy text-[10px] font-black rounded-xl hover:bg-gray-100 transition-colors">2024</button>
+                </div>
+            </div>
+            <div class="relative min-h-[300px]">
+                <canvas id="ordersChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Revenue Analytics -->
+        <div
+            class="premium-card p-10 rounded-[2.5rem] bg-white border border-gray-100 shadow-xl relative overflow-hidden">
+            <div class="flex items-center justify-between mb-10 relative z-10">
+                <div>
+                    <h4 class="text-xl font-black text-navy tracking-tight">Financial Stream</h4>
+                    <p class="text-xs text-gray-400 font-bold uppercase tracking-widest mt-1">Revenue Stream Analytics
+                    </p>
+                </div>
+                <div class="px-4 py-2 bg-gold/10 text-gold text-xs font-black rounded-xl tracking-tighter">
+                    $ 42,500.00
+                </div>
+            </div>
+            <div class="relative min-h-[300px]">
+                <canvas id="revenueChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Secondary Insights Section -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+        <!-- Payment Methods -->
+        <div class="premium-card p-8 rounded-[2rem] bg-white border border-gray-100 shadow-xl">
+            <h4 class="text-sm font-black text-navy uppercase tracking-[0.2em] mb-8">Transaction Mix</h4>
+            <div class="relative h-[220px]">
+                <canvas id="paymentPieChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Top Categories -->
+        <div class="premium-card p-8 rounded-[2rem] bg-white border border-gray-100 shadow-xl">
+            <h4 class="text-sm font-black text-navy uppercase tracking-[0.2em] mb-8">Category Dominance</h4>
+            <div class="relative h-[220px]">
+                <canvas id="categoryDoughnutChart"></canvas>
+            </div>
+        </div>
+
+        <!-- System Alerts -->
+        <div class="premium-card p-8 rounded-[2rem] bg-white border border-gray-100 shadow-xl">
+            <h4 class="text-sm font-black text-navy uppercase tracking-[0.2em] mb-6">Operational Pulse</h4>
+            <div class="space-y-4">
+                <div
+                    class="flex items-center gap-5 p-5 bg-red-50/50 rounded-2xl border border-red-100/50 group hover:border-red-200 transition-all cursor-pointer">
+                    <div
+                        class="w-12 h-12 bg-red-500 rounded-xl flex items-center justify-center text-white shadow-lg shadow-red-500/20 group-hover:scale-110 transition-transform">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="text-sm font-black text-navy uppercase tracking-tighter">Low Inventory</p>
+                        <p class="text-[10px] text-red-500 font-bold uppercase tracking-widest mt-0.5">3 Stocks Below
+                            Margin</p>
+                    </div>
+                </div>
+
+                <div
+                    class="flex items-center gap-5 p-5 bg-gold-50/50 rounded-2xl border border-gold-100/50 group hover:border-gold-200 transition-all cursor-pointer">
+                    <div
+                        class="w-12 h-12 bg-gold rounded-xl flex items-center justify-center text-white shadow-lg shadow-gold/20 group-hover:scale-110 transition-transform">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="text-sm font-black text-navy uppercase tracking-tighter">Rental Overdue</p>
+                        <p class="text-[10px] text-gold font-bold uppercase tracking-widest mt-0.5">2 Orders Past
+                            Collection</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

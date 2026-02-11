@@ -1,0 +1,20 @@
+[
+    {
+        "transactionId": "TXN-998877",
+        "orderId": "ORD-101",
+        "customer": "John Doe",
+        "date": "2024-02-10",
+        "method": "Online",
+        "amount": 2950,
+        "status": "Paid"
+    },
+    {
+        "transactionId": "TXN-AUTO-102",
+        "orderId": "ORD-102",
+        "customer": "Jane Smith",
+        "date": "2024-02-11",
+        "method": "COD",
+        "amount": 120,
+        "status": "Pending"
+    }
+]

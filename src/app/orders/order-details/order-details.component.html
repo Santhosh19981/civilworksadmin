@@ -1,0 +1,131 @@
+<div *ngIf="order" class="space-y-8" data-aos="fade-up">
+    <!-- Header -->
+    <div class="flex items-center justify-between">
+        <div class="flex items-center gap-4">
+            <a routerLink="/orders" class="p-2 hover:bg-white rounded-xl shadow-sm">⬅️</a>
+            <h2 class="text-2xl font-bold text-navy">Order #{{order.id}}</h2>
+            <span [ngClass]="{
+        'bg-yellow-100 text-yellow-700': order.orderStatus === 'Packing',
+        'bg-blue-100 text-blue-700': order.orderStatus === 'Shipping',
+        'bg-green-100 text-green-700': order.orderStatus === 'Delivered',
+        'bg-red-100 text-red-700': order.orderStatus === 'Cancelled'
+      }" class="px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest border">
+                {{order.orderStatus}}
+            </span>
+        </div>
+        <div class="flex items-center gap-3">
+            <button (click)="printInvoice()"
+                class="px-4 py-2 border rounded-xl font-bold text-navy hover:bg-white shadow-soft">📄 Invoice</button>
+            <div class="relative group">
+                <button class="btn-primary py-2 px-6">Update Status ▾</button>
+                <div
+                    class="absolute right-0 mt-2 w-48 bg-white rounded-2xl shadow-2xl border border-gray-100 py-2 hidden group-hover:block z-50 animate-fade-in">
+                    <button (click)="updateStatus('Packing')"
+                        class="w-full text-left px-4 py-2 hover:bg-yellow-50 text-yellow-600 font-bold text-sm">Packing</button>
+                    <button (click)="updateStatus('Shipping')"
+                        class="w-full text-left px-4 py-2 hover:bg-blue-50 text-blue-600 font-bold text-sm">Shipping</button>
+                    <button (click)="updateStatus('Delivered')"
+                        class="w-full text-left px-4 py-2 hover:bg-green-50 text-green-600 font-bold text-sm">Delivered</button>
+                    <button (click)="updateStatus('Cancelled')"
+                        class="w-full text-left px-4 py-2 hover:bg-red-50 text-red-600 font-bold text-sm">Cancelled</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Timeline UI -->
+    <div class="card !p-8">
+        <div class="flex items-center justify-between relative">
+            <div class="absolute top-1/2 left-0 w-full h-1 bg-gray-100 -translate-y-1/2 z-0"></div>
+            <div [style.width.%]="timelineProgress"
+                class="absolute top-1/2 left-0 h-1 bg-primary -translate-y-1/2 z-0 transition-all duration-1000"></div>
+
+            <div *ngFor="let step of timelineSteps" class="relative z-10 flex flex-col items-center gap-3">
+                <div [class]="orderStepIndex >= step.index ? 'bg-primary text-white scale-110 shadow-lg shadow-primary/30' : 'bg-white border-2 border-gray-100 text-gray-300'"
+                    class="w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all duration-500">
+                    {{orderStepIndex >= step.index ? '✓' : step.index + 1}}
+                </div>
+                <p [class]="orderStepIndex >= step.index ? 'text-navy font-bold' : 'text-gray-400 font-medium'"
+                    class="text-xs text-center">{{step.label}}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Customer Info -->
+        <div class="lg:col-span-1 space-y-6">
+            <div class="card">
+                <h4 class="text-lg font-bold text-navy mb-4 border-b pb-2">Customer Details</h4>
+                <div class="space-y-4">
+                    <div class="flex items-center gap-4">
+                        <div
+                            class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-primary font-bold">
+                            JD</div>
+                        <div>
+                            <p class="font-bold text-navy">{{order.customer}}</p>
+                            <p class="text-xs text-gray-400">Customer ID: #CUST-{{order.id}}</p>
+                        </div>
+                    </div>
+                    <div class="pt-4 space-y-3">
+                        <p class="text-sm flex items-center gap-3 text-gray-600"><span>📞</span> {{order.mobile}}</p>
+                        <p class="text-sm flex items-start gap-3 text-gray-600"><span>📍</span> {{order.address}}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h4 class="text-lg font-bold text-navy mb-4 border-b pb-2">Payment Meta</h4>
+                <div class="space-y-3">
+                    <div class="flex justify-between text-sm">
+                        <span class="text-gray-400">Method:</span>
+                        <span class="font-bold text-navy">{{order.paymentMethod}}</span>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span class="text-gray-400">Status:</span>
+                        <span class="font-bold text-primary">{{order.paymentStatus}}</span>
+                    </div>
+                    <div class="pt-2 border-t mt-2">
+                        <p class="text-[10px] uppercase text-gray-400 font-bold mb-1">Transaction Ref</p>
+                        <p class="text-xs font-mono font-bold text-gray-600">TXN-{{order.id}}-8899</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Items Info -->
+        <div class="lg:col-span-2 space-y-6">
+            <div class="card !p-0 overflow-hidden">
+                <div class="p-6 border-b">
+                    <h4 class="text-lg font-bold text-navy">Order Items</h4>
+                </div>
+                <table class="w-full text-left">
+                    <thead class="bg-lightgray">
+                        <tr>
+                            <th class="px-6 py-3 text-xs font-bold text-gray-400 uppercase">Item</th>
+                            <th class="px-6 py-3 text-xs font-bold text-gray-400 uppercase">Qty</th>
+                            <th class="px-6 py-3 text-xs font-bold text-gray-400 uppercase">Price</th>
+                            <th class="px-6 py-3 text-xs font-bold text-gray-400 uppercase text-right">Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-50 italic">
+                        <tr *ngFor="let item of order.items">
+                            <td class="px-6 py-4 font-bold text-navy">{{item.name}}</td>
+                            <td class="px-6 py-4">{{item.quantity}}</td>
+                            <td class="px-6 py-4 font-mono text-gray-500">${{item.price}}</td>
+                            <td class="px-6 py-4 font-mono font-bold text-navy text-right">${{item.price *
+                                item.quantity}}</td>
+                        </tr>
+                    </tbody>
+                    <tfoot class="bg-lightgray/50 border-t-2 border-gray-100">
+                        <tr>
+                            <td colspan="3" class="px-6 py-4 text-right font-medium text-gray-400 font-mono italic">
+                                Grand Total</td>
+                            <td class="px-6 py-4 text-right text-xl font-bold text-primary font-mono">
+                                ${{order.totalAmount}}</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

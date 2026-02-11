@@ -1,0 +1,149 @@
+<div class="space-y-12 pb-12">
+    <!-- Header -->
+    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
+        <div>
+            <h2 class="text-4xl font-black text-navy tracking-tight">Client <span class="text-gold">Intelligence</span>
+            </h2>
+            <p class="text-xs text-gray-400 font-bold uppercase tracking-[0.3em] mt-2">Executive CRM Directory</p>
+        </div>
+
+        <button
+            class="px-10 py-5 bg-white border-2 border-gray-100 text-navy rounded-[2rem] font-black text-xs uppercase tracking-widest hover:border-gold hover:text-gold transition-all duration-500 shadow-xl flex items-center justify-center gap-3">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            Export Directory
+        </button>
+    </div>
+
+    <!-- CRM Tracking Module -->
+    <div class="bg-white rounded-[3.5rem] border border-gray-50 shadow-3xl overflow-hidden relative">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="border-b border-gray-50">
+                        <th class="px-10 py-8 text-[10px] font-black text-gray-300 uppercase tracking-widest">Profile
+                            Identity</th>
+                        <th class="px-10 py-8 text-[10px] font-black text-gray-300 uppercase tracking-widest">
+                            Communication Path</th>
+                        <th class="px-10 py-8 text-[10px] font-black text-gray-300 uppercase tracking-widest">Engagement
+                            Volume</th>
+                        <th class="px-10 py-8 text-[10px] font-black text-gray-300 uppercase tracking-widest">Capital
+                            Contribution</th>
+                        <th class="px-10 py-8 text-right"></th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-50">
+                    <tr *ngFor="let c of (customers$ | async)"
+                        class="hover:bg-gray-50/50 transition-all duration-500 group">
+                        <td class="px-10 py-8">
+                            <div class="flex items-center gap-6">
+                                <div
+                                    class="w-16 h-16 rounded-[1.25rem] bg-navy text-white flex items-center justify-center text-xl font-black shadow-2xl shadow-navy/20 group-hover:bg-gold transition-colors duration-500">
+                                    {{c.name.charAt(0)}}
+                                </div>
+                                <div class="flex flex-col">
+                                    <span
+                                        class="font-black text-navy text-xl tracking-tight group-hover:text-gold transition-colors">{{c.name}}</span>
+                                    <span
+                                        class="text-[9px] font-black text-gray-300 uppercase tracking-widest mt-1">Verified
+                                        Partner</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-10 py-8">
+                            <div class="flex flex-col gap-1">
+                                <span class="text-xs font-bold text-navy/80 tracking-wide">{{c.email}}</span>
+                                <span
+                                    class="text-[10px] font-black text-gray-300 tracking-[0.2em] font-mono">{{c.mobile}}</span>
+                            </div>
+                        </td>
+                        <td class="px-10 py-8">
+                            <div
+                                class="inline-flex items-center gap-2 px-4 py-2 bg-navy/5 rounded-xl border border-navy/5">
+                                <span class="text-lg font-black text-navy">{{c.totalOrders}}</span>
+                                <span
+                                    class="text-[9px] font-black text-navy/40 uppercase tracking-widest">Deployments</span>
+                            </div>
+                        </td>
+                        <td class="px-10 py-8">
+                            <span
+                                class="text-2xl font-black text-navy tracking-tighter group-hover:text-gold transition-colors">${{c.totalSpent}}</span>
+                        </td>
+                        <td class="px-10 py-8 text-right">
+                            <button (click)="viewHistory(c)"
+                                class="px-8 py-3 bg-navy/5 text-navy text-[10px] font-black rounded-xl uppercase tracking-widest hover:bg-navy hover:text-white transition-all duration-500 shadow-sm group-hover:shadow-xl group-hover:shadow-navy/10">
+                                Analyze Activity
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Client Intelligence Modal -->
+    <div *ngIf="selectedCustomer"
+        class="fixed inset-0 bg-navy/80 backdrop-blur-2xl z-[100] flex items-center justify-center p-6 overflow-hidden">
+        <div class="bg-white rounded-[4rem] w-full max-w-3xl p-16 shadow-3xl relative overflow-hidden"
+            data-aos="zoom-in">
+            <!-- Modal Accent -->
+            <div class="absolute -right-40 -top-40 w-96 h-96 bg-gold/5 rounded-full blur-3xl pointer-events-none"></div>
+
+            <div class="relative z-10">
+                <div class="flex items-center justify-between mb-12">
+                    <div>
+                        <span
+                            class="inline-block px-4 py-2 bg-gold/10 text-gold text-[10px] font-black rounded-xl mb-4 tracking-[0.2em] uppercase">Intelligence
+                            Report</span>
+                        <h3 class="text-4xl font-black text-navy tracking-tight">{{selectedCustomer.name}} <span
+                                class="text-gold">Archives</span></h3>
+                    </div>
+                    <button (click)="selectedCustomer = null"
+                        class="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center text-navy/20 hover:text-red-500 hover:bg-red-50 transition-all duration-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="space-y-6 max-h-[500px] overflow-y-auto pr-6 custom-scrollbar">
+                    <div *ngFor="let order of customerOrders"
+                        class="p-8 bg-gray-50/50 rounded-[2.5rem] flex items-center justify-between group hover:bg-white border-2 border-transparent hover:border-gold/20 transition-all duration-500 shadow-sm hover:shadow-2xl hover:scale-[1.02]">
+                        <div class="flex items-center gap-6">
+                            <div
+                                class="w-14 h-14 rounded-2xl bg-navy/5 flex items-center justify-center text-navy font-black shadow-inner">
+                                #{{order.id.slice(-3)}}
+                            </div>
+                            <div>
+                                <p class="text-lg font-black text-navy tracking-tight">Deployment {{order.id}}</p>
+                                <p class="text-[10px] font-black text-gray-300 uppercase tracking-widest mt-1">
+                                    {{order.date}}</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-2xl font-black text-gold tracking-tighter">${{order.totalAmount}}</p>
+                            <span
+                                class="inline-block px-3 py-1.5 bg-green-50 text-green-500 text-[9px] font-black uppercase tracking-widest rounded-lg border border-green-100 mt-2">
+                                {{order.orderStatus}}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div *ngIf="customerOrders.length === 0" class="py-20 text-center opacity-30">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto mb-4" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <p class="font-bold text-navy uppercase tracking-widest text-xs">No Deployment History Found</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

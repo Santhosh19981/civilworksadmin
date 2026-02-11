@@ -1,0 +1,76 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary: #F7931E;
+  --navy: #0B2C4D;
+  --navy-deep: #06192d;
+  --navy-light: #0b2c4d;
+  --gold: #f7931e;
+  --gold-glow: rgba(247, 147, 30, 0.4);
+  --yellow: #FFC107;
+  --light-gray: #F5F6F8;
+  --glass-bg: rgba(255, 255, 255, 0.08);
+  --glass-border: rgba(255, 255, 255, 0.15);
+}
+
+body {
+  @apply bg-[#f8fafc] text-navy;
+  margin: 0;
+  overflow: hidden;
+  font-family: 'Outfit', sans-serif;
+}
+
+.card {
+  @apply bg-white rounded-xl shadow-soft p-6 transition-all duration-300;
+}
+
+.premium-card {
+  @apply bg-white border border-gray-100 shadow-xl transition-all duration-500;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary {
+  @apply bg-primary text-white px-6 py-2 rounded-lg font-medium transition-all hover:bg-opacity-90 active:scale-95;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-navy/20 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-navy/40;
+}
+
+/* Premium Utilities */
+.shadow-3xl {
+  box-shadow: 0 35px 60px -15px rgba(6, 25, 45, 0.1);
+}
+
+.shadow-2xl {
+  box-shadow: 0 25px 50px -12px rgba(6, 25, 45, 0.08);
+}
+
+.shadow-premium {
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  @apply bg-navy/10 rounded-full hover:bg-navy/30;
+}

@@ -1,0 +1,4 @@
+/* ProductFormComponent Styles */
+:host {
+    display: block;
+}

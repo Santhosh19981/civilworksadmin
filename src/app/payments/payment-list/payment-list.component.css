@@ -1,0 +1,21 @@
+/* PaymentListComponent Styles */
+:host {
+    display: block;
+}
+
+/* Premium Styles */
+.shadow-3xl {
+    box-shadow: 0 35px 60px -15px rgba(6, 25, 45, 0.1);
+}
+
+tr {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+tr:hover td {
+    background: rgba(247, 147, 30, 0.01);
+}
+
+canvas {
+    filter: drop-shadow(0 10px 15px rgba(247, 147, 30, 0.1));
+}

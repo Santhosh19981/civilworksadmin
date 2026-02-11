@@ -1,0 +1,184 @@
+<div class="max-w-4xl mx-auto space-y-8 pb-12">
+    <!-- Executive Header -->
+    <div class="flex items-center justify-between">
+        <div class="flex items-center gap-6">
+            <a routerLink="/products"
+                class="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-navy shadow-sm hover:shadow-xl hover:text-gold transition-all duration-500 border border-gray-50">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
+                        d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+            </a>
+            <div>
+                <h2 class="text-3xl font-black text-navy tracking-tight">Product <span
+                        class="text-gold">Governance</span></h2>
+                <p class="text-[10px] text-gray-400 font-bold uppercase tracking-[0.3em] mt-2">Inventory Asset
+                    Initialization</p>
+            </div>
+        </div>
+
+        <div class="hidden md:block">
+            <span
+                class="px-4 py-2 bg-navy/5 text-navy text-[10px] font-black rounded-xl uppercase tracking-widest border border-navy/5">Authority
+                Level: Admin</span>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+        <!-- Asset Visualization Board -->
+        <div class="lg:col-span-1 space-y-6">
+            <div
+                class="relative group p-8 bg-white rounded-[2.5rem] border border-gray-50 shadow-3xl overflow-hidden min-h-[350px] flex flex-col items-center justify-center text-center">
+                <!-- Background Accent -->
+                <div
+                    class="absolute -right-20 -top-20 w-64 h-64 bg-gold/5 rounded-full blur-3xl group-hover:bg-gold/10 transition-colors">
+                </div>
+
+                <div *ngIf="!imagePreview" class="relative z-10">
+                    <div
+                        class="w-16 h-16 bg-navy/5 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-gold group-hover:text-white transition-all duration-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                    </div>
+                    <p class="text-lg font-black text-navy tracking-tight">Asset Image</p>
+                    <p class="text-[8px] font-black text-gray-300 uppercase tracking-widest mt-1 px-4">Initialize
+                        visual representation (MAX 2MB)</p>
+                </div>
+
+                <div *ngIf="imagePreview" class="relative z-10 w-full">
+                    <div class="relative rounded-[2.5rem] overflow-hidden shadow-2xl group/img">
+                        <img [src]="imagePreview"
+                            class="w-full aspect-square object-cover transition-transform duration-700 group-hover/img:scale-110">
+                        <div
+                            class="absolute inset-0 bg-navy/40 opacity-0 group-hover/img:opacity-100 transition-opacity flex items-center justify-center">
+                            <button (click)="imagePreview = ''"
+                                class="p-4 bg-white/20 backdrop-blur-xl rounded-full text-white hover:bg-red-500 transition-all">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <p class="text-[9px] font-black text-red-400 uppercase tracking-widest mt-6 cursor-pointer hover:text-red-600 transition-colors"
+                        (click)="imagePreview = ''">Clear Visualization</p>
+                </div>
+
+                <input type="file" (change)="onFileChange($event)"
+                    class="absolute inset-0 opacity-0 cursor-pointer z-20">
+            </div>
+
+            <div class="p-8 bg-navy rounded-[2.5rem] text-white shadow-2xl shadow-navy/20 relative overflow-hidden">
+                <div class="absolute -left-10 -bottom-10 w-32 h-32 bg-gold/10 rounded-full blur-2xl"></div>
+                <div class="relative z-10 flex items-center gap-6">
+                    <div class="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center text-gold">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="text-[10px] font-black uppercase tracking-widest text-white/40">Audit Note</p>
+                        <p class="text-xs font-bold mt-1 text-white/80 leading-relaxed uppercase">Changes require
+                            super-user authorization prior to sync.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Parameters Governance Area -->
+        <div
+            class="lg:col-span-2 bg-white rounded-[2.5rem] p-8 lg:p-10 border border-gray-50 shadow-3xl relative overflow-hidden">
+            <div class="absolute -right-20 -bottom-20 w-64 h-64 bg-navy/5 rounded-full blur-3xl pointer-events-none">
+            </div>
+
+            <form (ngSubmit)="onSubmit()" class="space-y-10 relative z-10">
+                <!-- Identity Group -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                    <div class="space-y-3">
+                        <label class="block text-[10px] font-black text-navy/40 uppercase tracking-[0.2em]">Asset
+                            Label</label>
+                        <input type="text" [(ngModel)]="product.name" name="name" required
+                            class="w-full px-8 py-5 bg-gray-50 border-2 border-transparent rounded-[1.8rem] focus:bg-white focus:border-gold outline-none transition-all font-black text-navy text-lg shadow-inner"
+                            placeholder="e.g. Industrial Excavator v2">
+                    </div>
+                    <div class="space-y-3">
+                        <label class="block text-[10px] font-black text-navy/40 uppercase tracking-[0.2em]">Category
+                            Sector</label>
+                        <div class="relative">
+                            <select [(ngModel)]="product.category" name="category" required
+                                class="w-full px-8 py-5 bg-gray-50 border-2 border-transparent rounded-[1.8rem] focus:bg-white focus:border-gold outline-none transition-all font-black text-navy text-lg shadow-inner appearance-none cursor-pointer">
+                                <option *ngFor="let cat of (categories$ | async)" [value]="cat.name">{{cat.name}}
+                                </option>
+                            </select>
+                            <div class="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-navy/20">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
+                                        d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="space-y-3">
+                        <label class="block text-[10px] font-black text-navy/40 uppercase tracking-[0.2em]">Base
+                            Valuation ($)</label>
+                        <input type="number" [(ngModel)]="product.price" name="price" required
+                            class="w-full px-8 py-5 bg-gray-50 border-2 border-transparent rounded-[1.8rem] focus:bg-white focus:border-gold outline-none transition-all font-black text-navy text-lg shadow-inner"
+                            placeholder="0.00">
+                    </div>
+                    <div class="space-y-3">
+                        <label class="block text-[10px] font-black text-navy/40 uppercase tracking-[0.2em]">Inventory
+                            Reserve</label>
+                        <input type="number" [(ngModel)]="product.stock" name="stock" required
+                            class="w-full px-8 py-5 bg-gray-50 border-2 border-transparent rounded-[1.8rem] focus:bg-white focus:border-gold outline-none transition-all font-black text-navy text-lg shadow-inner"
+                            placeholder="0">
+                    </div>
+                </div>
+
+                <div class="space-y-3">
+                    <label class="block text-[10px] font-black text-navy/40 uppercase tracking-[0.2em]">Asset
+                        Specifications</label>
+                    <textarea [(ngModel)]="product.description" name="description" rows="4"
+                        class="w-full px-8 py-6 bg-gray-50 border-2 border-transparent rounded-[2rem] focus:bg-white focus:border-gold outline-none transition-all font-bold text-navy text-sm shadow-inner resize-none custom-scrollbar"
+                        placeholder="Detailed engineering and deployment specifications..."></textarea>
+                </div>
+
+                <div
+                    class="flex flex-wrap items-center justify-between gap-y-6 gap-x-8 p-6 md:p-8 bg-gray-50/50 rounded-[2.5rem] border border-gray-100">
+                    <div class="flex items-center gap-6">
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" [(ngModel)]="product.status" name="status" class="sr-only peer"
+                                [checked]="product.status === 'active'">
+                            <div
+                                class="w-16 h-9 bg-gray-200 rounded-full peer peer-checked:bg-gold transition-all after:content-[''] after:absolute after:top-1 after:left-1 after:bg-white after:rounded-full after:h-7 after:w-7 after:transition-all peer-checked:after:translate-x-7 shadow-inner">
+                            </div>
+                        </label>
+                        <div class="max-w-[200px] md:max-w-none">
+                            <p class="text-[13px] font-black text-navy uppercase tracking-widest">Operational Status</p>
+                            <p class="text-[8px] font-bold text-gray-300 uppercase tracking-widest mt-1">Set asset as
+                                active for deployment</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-3 ml-auto">
+                        <button type="button" routerLink="/products"
+                            class="px-5 py-3 bg-red-50 border-2 border-red-100 rounded-2xl text-[9px] font-black text-red-500 uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all duration-500 whitespace-nowrap">
+                            Discard
+                        </button>
+                        <button type="submit"
+                            class="px-6 py-3 bg-navy text-white rounded-2xl font-black text-[9px] uppercase tracking-widest shadow-xl shadow-navy/20 hover:bg-gold transition-all duration-500 whitespace-nowrap">
+                            {{isEdit ? 'Authorize Updates' : 'System Initialize'}}
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

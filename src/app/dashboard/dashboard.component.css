@@ -1,0 +1,76 @@
+/* Premium Dashboard Design System */
+.premium-card {
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.premium-card:hover {
+    transform: translateY(-12px);
+    border-color: rgba(247, 147, 30, 0.2);
+}
+
+/* Counter and Typography */
+.counter-value {
+    @apply tracking-tight;
+}
+
+/* Icon Box Animation */
+.icon-box svg {
+    transition: all 0.5s ease;
+}
+
+.premium-card:hover .icon-box svg {
+    transform: scale(1.1);
+}
+
+/* Custom Gloss Effect */
+.premium-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(to right,
+            transparent,
+            rgba(255, 255, 255, 0.4),
+            transparent);
+    transform: skewX(-25deg);
+    transition: 0.75s;
+    pointer-events: none;
+}
+
+.premium-card:hover::after {
+    left: 125%;
+}
+
+/* Chart Canvas Refinements */
+canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* Alert Items Extra Polish */
+.alert-pulse {
+    animation: alert-glow 2s infinite ease-in-out;
+}
+
+@keyframes alert-glow {
+
+    0%,
+    100% {
+        border-color: rgba(239, 68, 68, 0.2);
+        shadow: 0 0 10px rgba(239, 68, 68, 0.1);
+    }
+
+    50% {
+        border-color: rgba(239, 68, 68, 0.5);
+        shadow: 0 0 20px rgba(239, 68, 68, 0.2);
+    }
+}
+
+/* Mobile Adjustments */
+@media (max-width: 640px) {
+    .premium-card {
+        padding: 1.5rem;
+    }
+}

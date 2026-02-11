@@ -1,0 +1,22 @@
+/* SettingsComponent Styles */
+:host {
+    display: block;
+}
+
+
+.settings-card {
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.settings-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(247, 147, 30, 0.3);
+}
+
+.shadow-inner {
+    box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
+}
+
+.peer-checked\:after\:translate-x-6:checked~div::after {
+    transform: translateX(1.5rem);
+}

@@ -1,0 +1,153 @@
+<div class="space-y-12 pb-12">
+    <!-- Header & Intelligence Filters -->
+    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
+        <div>
+            <h2 class="text-4xl font-black text-navy tracking-tight">Order <span class="text-gold">Intelligence</span>
+            </h2>
+            <p class="text-xs text-gray-400 font-bold uppercase tracking-[0.3em] mt-2">Real-time deployment tracking</p>
+        </div>
+
+        <div class="flex flex-col md:flex-row items-stretch md:items-center gap-4">
+            <div class="relative group">
+                <select [(ngModel)]="statusFilter"
+                    class="pl-6 pr-12 py-5 bg-white border-2 border-gray-50 rounded-[2rem] focus:border-gold outline-none transition-all w-full md:w-64 shadow-2xl shadow-navy/5 font-bold text-navy appearance-none cursor-pointer">
+                    <option value="">Global Status</option>
+                    <option value="Packing">In Logistics</option>
+                    <option value="Shipping">In Transit</option>
+                    <option value="Delivered">Completed</option>
+                    <option value="Cancelled">Terminated</option>
+                </select>
+                <div
+                    class="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-navy/30 group-hover:text-gold transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </div>
+            </div>
+
+            <div class="relative group">
+                <div class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                        class="h-5 w-5 text-gray-300 group-hover:text-gold transition-colors" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                </div>
+                <input type="text" [(ngModel)]="searchTerm" placeholder="Order ID / Customer..."
+                    class="pl-14 pr-8 py-5 bg-white border-2 border-gray-50 rounded-[2rem] focus:border-gold outline-none transition-all w-full md:w-80 shadow-2xl shadow-navy/5 font-bold text-navy placeholder:text-gray-300">
+            </div>
+        </div>
+    </div>
+
+    <!-- Tracking Module -->
+    <div class="bg-white rounded-[3.5rem] border border-gray-50 shadow-3xl overflow-hidden relative">
+        <!-- Decoration Area -->
+        <div class="absolute -right-32 -top-32 w-64 h-64 bg-gold/5 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="overflow-x-auto relative z-10">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="border-b border-gray-50">
+                        <th class="px-10 py-8 text-[10px] font-black text-gray-300 uppercase tracking-widest">Tracking
+                            Identity</th>
+                        <th class="px-10 py-8 text-[10px] font-black text-gray-300 uppercase tracking-widest">Client
+                            Name</th>
+                        <th class="px-10 py-8 text-[10px] font-black text-gray-300 uppercase tracking-widest">Log Date
+                        </th>
+                        <th class="px-10 py-8 text-[10px] font-black text-gray-300 uppercase tracking-widest">Valuation
+                        </th>
+                        <th class="px-10 py-8 text-[10px] font-black text-gray-300 uppercase tracking-widest">
+                            Transaction</th>
+                        <th class="px-10 py-8 text-[10px] font-black text-gray-300 uppercase tracking-widest">Status
+                            Flow</th>
+                        <th class="px-10 py-8 text-right"></th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-50">
+                    <tr *ngFor="let order of (filteredOrders$ | async)"
+                        class="hover:bg-gray-50/50 transition-all duration-500 group">
+                        <td class="px-10 py-8">
+                            <span
+                                class="px-4 py-2 bg-navy text-white text-[11px] font-black rounded-xl shadow-lg shadow-navy/20">
+                                #{{order.id}}
+                            </span>
+                        </td>
+                        <td class="px-10 py-8">
+                            <div class="flex flex-col">
+                                <span
+                                    class="font-black text-navy text-lg tracking-tight group-hover:text-gold transition-colors">{{order.customer}}</span>
+                                <span
+                                    class="text-[9px] font-black text-gray-300 uppercase tracking-widest mt-1">Authorized
+                                    User</span>
+                            </div>
+                        </td>
+                        <td class="px-10 py-8">
+                            <span
+                                class="text-xs font-bold text-gray-400 group-hover:text-navy transition-colors">{{order.date}}</span>
+                        </td>
+                        <td class="px-10 py-8">
+                            <span class="text-xl font-black text-gold tracking-tighter">${{order.totalAmount}}</span>
+                        </td>
+                        <td class="px-10 py-8">
+                            <div class="flex items-center gap-2">
+                                <span
+                                    [class]="order.paymentStatus === 'Paid' ? 'text-green-500 bg-green-50' : 'text-yellow-600 bg-yellow-50'"
+                                    class="px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest border border-current opacity-80">
+                                    {{order.paymentStatus}}
+                                </span>
+                                <span
+                                    class="text-[9px] font-black text-navy/30 uppercase tracking-widest">{{order.paymentMethod}}</span>
+                            </div>
+                        </td>
+                        <td class="px-10 py-8">
+                            <div class="flex items-center gap-3">
+                                <span [ngClass]="{
+                                    'bg-yellow-500 text-white shadow-yellow-200': order.orderStatus === 'Packing',
+                                    'bg-blue-500 text-white shadow-blue-200': order.orderStatus === 'Shipping',
+                                    'bg-green-500 text-white shadow-green-200': order.orderStatus === 'Delivered',
+                                    'bg-red-500 text-white shadow-red-200': order.orderStatus === 'Cancelled'
+                                  }"
+                                    class="px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest shadow-2xl">
+                                    {{order.orderStatus}}
+                                </span>
+                            </div>
+                        </td>
+                        <td class="px-10 py-8 text-right">
+                            <a [routerLink]="[order.id]"
+                                class="inline-flex items-center gap-2 text-[10px] font-black text-navy uppercase tracking-widest hover:text-gold transition-all group/btn">
+                                Intelligence
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                    class="h-4 w-4 transform group-hover/btn:translate-x-1 transition-transform"
+                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
+                                        d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                                </svg>
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- System Empty State -->
+        <div *ngIf="(filteredOrders$ | async)?.length === 0" class="py-24 text-center">
+            <div
+                class="w-32 h-32 bg-gray-50 rounded-[2.5rem] flex items-center justify-center mx-auto mb-8 shadow-inner">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-200" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+            </div>
+            <h3 class="text-3xl font-black text-navy tracking-tight">Deployment Index Empty</h3>
+            <p class="text-xs text-gray-400 font-bold uppercase tracking-[0.3em] mt-3">No tracking data found for
+                current configuration</p>
+            <button (click)="statusFilter = ''; searchTerm = ''"
+                class="mt-10 px-10 py-4 bg-navy text-white rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-gold transition-all shadow-xl shadow-navy/20">
+                Reset Deployment Grid
+            </button>
+        </div>
+    </div>
+</div>

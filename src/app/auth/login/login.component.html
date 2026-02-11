@@ -1,0 +1,148 @@
+<div class="login-page-container min-h-screen flex items-center justify-center p-6 bg-navy">
+    <!-- Animated Background Elements -->
+    <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+        <div class="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] bg-gold/10 rounded-full blur-[120px]"></div>
+        <div class="absolute -bottom-[10%] -right-[10%] w-[40%] h-[40%] bg-navy-light/30 rounded-full blur-[120px]">
+        </div>
+    </div>
+
+    <div class="glass-card flex w-full max-w-5xl overflow-hidden min-h-[650px] relative z-10">
+        <!-- Left Side: Brand Experience -->
+        <div
+            class="hidden lg:flex lg:w-1/2 bg-navy relative items-center justify-center overflow-hidden border-r border-white/5">
+            <!-- Dynamic Pattern Overlay -->
+            <div class="absolute inset-0 opacity-20"
+                style="background-image: radial-gradient(var(--gold) 1px, transparent 1px); background-size: 30px 30px;">
+            </div>
+
+            <div class="relative z-20 text-center px-12">
+                <div class="brand-orbit mx-auto mb-16">
+                    <div class="orbit-ring ring-1"></div>
+                    <div class="orbit-ring ring-2"></div>
+                    <img src="assets/logo.jpeg" alt="BuildPro" class="logo-main shadow-2xl">
+                </div>
+
+                <h1 class="text-3xl font-bold text-white mb-3 tracking-tight">BuildPro <span
+                        class="text-gold">Admin</span></h1>
+                <p class="text-gray-400 text-base leading-relaxed font-light">
+                    Managing the pulse of modern construction with precision and elegance.
+                </p>
+
+                <!-- Status Pills -->
+                <div class="mt-12 flex flex-wrap justify-center gap-3">
+                    <span
+                        class="px-4 py-2 bg-white/5 backdrop-blur-md rounded-full text-xs text-gray-300 border border-white/10">Active
+                        Fleet: 245</span>
+                    <span
+                        class="px-4 py-2 bg-white/5 backdrop-blur-md rounded-full text-xs text-gray-300 border border-white/10">Pending
+                        Orders: 12</span>
+                    <span
+                        class="px-4 py-2 bg-white/5 backdrop-blur-md rounded-full text-xs text-gray-300 border border-white/10">System:
+                        Operational</span>
+                </div>
+            </div>
+
+            <!-- Bottom Accent -->
+            <div class="absolute bottom-0 left-0 w-full h-2 bg-gradient-to-r from-navy via-gold to-navy"></div>
+        </div>
+
+        <!-- Right Side: Clean Auth Form -->
+        <div class="w-full lg:w-1/2 p-10 md:p-16 flex flex-col justify-center bg-white">
+            <div class="mb-12">
+                <span
+                    class="inline-block px-3 py-1 bg-gold/10 text-gold text-xs font-bold rounded-lg mb-4 tracking-widest uppercase">Secured
+                    Portal</span>
+                <h2 class="text-3xl font-bold text-navy mb-2">Welcome Back</h2>
+                <p class="text-gray-500 text-sm font-medium">Please enter your specialized credentials</p>
+            </div>
+
+            <form (ngSubmit)="onLogin()" #loginForm="ngForm" class="space-y-8">
+                <div class="input-group">
+                    <label class="block text-xs font-black text-navy/80 mb-2 uppercase tracking-wider">Email
+                        Address</label>
+                    <div class="relative group">
+                        <span class="input-icon text-gold">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                            </svg>
+                        </span>
+                        <input type="email" name="email" [(ngModel)]="email" required
+                            class="premium-input bg-white border-navy/10" placeholder="admin&#64;buildpro.com">
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <div class="flex justify-between items-center mb-2">
+                        <label class="block text-xs font-black text-navy/80 uppercase tracking-wider">Password</label>
+                        <a href="javascript:void(0)" class="text-xs font-bold text-gold hover:underline">Support?</a>
+                    </div>
+                    <div class="relative group">
+                        <span class="input-icon text-gold">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                            </svg>
+                        </span>
+                        <input [type]="showPassword ? 'text' : 'password'" name="password" [(ngModel)]="password"
+                            required class="premium-input bg-white border-navy/10" placeholder="••••••••">
+                        <button type="button" (click)="showPassword = !showPassword"
+                            class="absolute right-4 top-1/2 -translate-y-1/2 text-navy-light/60 hover:text-navy transition-colors">
+                            <svg *ngIf="!showPassword" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                            </svg>
+                            <svg *ngIf="showPassword" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a9.97 9.97 0 011.563-3.088m6.225-4.51A10.05 10.05 0 0112 5c4.478 0 8.268 2.943 9.542 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21m-2.101-2.101L17.5 17.5m-9.299-9.299L3 3m5.541 5.541a3.5 3.5 0 104.95 4.95" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div *ngIf="error"
+                    class="bg-red-50 text-red-600 p-4 rounded-xl text-sm font-bold flex items-center gap-3 animate-headshake border border-red-100">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd"
+                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                            clip-rule="evenodd" />
+                    </svg>
+                    {{error}}
+                </div>
+
+                <button type="submit" class="premium-btn group">
+                    <span class="relative z-10 font-black">VERIFY & ACCESS SYSTEM</span>
+                </button>
+
+                <div class="pt-8 text-center border-t border-gray-100 mt-12">
+                    <div class="flex justify-center gap-10 items-center">
+                        <div class="flex flex-col items-center">
+                            <div
+                                class="w-10 h-10 rounded border-2 border-navy mb-1 flex items-center justify-center font-black text-[10px] tracking-tighter text-navy shadow-sm">
+                                ISO</div>
+                            <span class="text-[8px] font-black text-navy uppercase">9001:2015</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <div
+                                class="w-10 h-10 rounded-full border-2 border-navy mb-1 flex items-center justify-center font-black text-[12px] text-navy shadow-sm">
+                                CE</div>
+                            <span class="text-[8px] font-black text-navy uppercase">Compliant</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <div
+                                class="w-10 h-10 rounded-lg bg-navy mb-1 flex items-center justify-center font-black text-[10px] text-white shadow-md">
+                                SSL</div>
+                            <span class="text-[8px] font-black text-navy uppercase">Secured</span>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

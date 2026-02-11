@@ -1,0 +1,109 @@
+/* SidebarComponent Styles */
+.active {
+    background-color: #F7931E !important;
+    color: white !important;
+}
+
+/* Premium Sidebar Design System */
+.sidebar-container {
+    background: linear-gradient(180deg, var(--navy-deep), var(--navy-light));
+    border-right: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.nav-item {
+    position: relative;
+    color: #94a3b8;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.nav-item:hover {
+    background: rgba(255, 255, 255, 0.03);
+    color: white;
+}
+
+.active-item {
+    background: rgba(247, 147, 30, 0.1) !important;
+    color: white !important;
+    border: 1px solid rgba(247, 147, 30, 0.2);
+}
+
+.active-item .icon-box svg {
+    color: var(--gold);
+    filter: drop-shadow(0 0 8px var(--gold-glow));
+}
+
+.active-item .active-dot {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.active-item span {
+    color: white !important;
+    font-weight: 800;
+}
+
+/* Custom Scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+}
+
+.custom-scrollbar:hover::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.logout-btn {
+    border: 1px solid rgba(239, 68, 68, 0.1);
+}
+
+@keyframes spin-slow {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes spin-reverse-slow {
+    from {
+        transform: rotate(360deg);
+    }
+
+    to {
+        transform: rotate(0deg);
+    }
+}
+
+.animate-spin-slow {
+    animation: spin-slow 12s linear infinite;
+}
+
+.animate-spin-reverse-slow {
+    animation: spin-reverse-slow 8s linear infinite;
+}
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+        transform: translateX(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.animate-fade-in {
+    animation: fade-in 0.5s ease forwards;
+}
