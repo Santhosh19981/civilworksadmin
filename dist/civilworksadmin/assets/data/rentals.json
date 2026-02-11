@@ -1,0 +1,18 @@
+[
+    {
+        "id": 1,
+        "name": "JCB 3CX Eco",
+        "image": "https://images.unsplash.com/photo-1504307651254-35680f356dfd?q=80&w=400",
+        "mobile": "9876543210",
+        "description": "Eco-friendly and powerful backhoe loader.",
+        "available": true
+    },
+    {
+        "id": 2,
+        "name": "Tower Crane TC-20",
+        "image": "https://images.unsplash.com/photo-1504917595217-d4dc5f64d041?q=80&w=400",
+        "mobile": "9876543211",
+        "description": "High altitude reach for skyscraper projects.",
+        "available": false
+    }
+]
