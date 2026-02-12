@@ -1,0 +1,18 @@
+[
+    {
+        "id": 1,
+        "name": "John Doe",
+        "email": "john@example.com",
+        "mobile": "9876543210",
+        "totalOrders": 5,
+        "totalSpent": 15000
+    },
+    {
+        "id": 2,
+        "name": "Jane Smith",
+        "email": "jane@example.com",
+        "mobile": "9876543212",
+        "totalOrders": 1,
+        "totalSpent": 120
+    }
+]

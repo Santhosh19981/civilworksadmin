@@ -1,0 +1,42 @@
+[
+    {
+        "id": 1,
+        "name": "Heavy Duty Excavator",
+        "category": "Excavator",
+        "price": 2500,
+        "description": "High performance excavator for major construction work.",
+        "stock": 5,
+        "image": "https://images.unsplash.com/photo-1579402513437-05c08272844c?q=80&w=400",
+        "status": "active"
+    },
+    {
+        "id": 2,
+        "name": "Electric Concrete Mixer",
+        "category": "Concrete Mixer",
+        "price": 450,
+        "description": "Portable and efficient concrete mixer.",
+        "stock": 12,
+        "image": "https://images.unsplash.com/photo-1541888946425-d81bb19480c5?q=80&w=400",
+        "status": "active"
+    },
+    {
+        "id": 3,
+        "name": "Steel Scaffolding Set",
+        "category": "Scaffolding",
+        "price": 120,
+        "description": "Robust steel scaffolding for external building work.",
+        "stock": 25,
+        "image": "https://images.unsplash.com/photo-1504307651254-35680f356dfd?q=80&w=400",
+        "status": "active"
+    },
+    {
+        "id": 4,
+        "name": "Rotary Hammer Drill",
+        "category": "Power Tools",
+        "price": 85,
+        "description": "Professional grade rotary hammer drill.",
+        "stock": 2,
+        "image": "https://images.unsplash.com/photo-1581092160562-40aa08e78837?q=80&w=400",
+        "status": "active"
+    }
+]
