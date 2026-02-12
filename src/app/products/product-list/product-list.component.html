@@ -50,92 +50,92 @@
         </button>
     </div>
 
-    <!-- Product Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-10">
-        <div *ngFor="let product of (filteredProducts$ | async)"
-            class="product-card group bg-white rounded-[3rem] p-10 border border-gray-50 shadow-2xl hover:shadow-3xl transition-all duration-700 relative overflow-hidden">
-
-            <!-- Category Badge -->
-            <div class="absolute top-8 left-8 z-20">
-                <span
-                    class="px-5 py-2.5 bg-navy/5 backdrop-blur-md text-[9px] font-black text-navy uppercase tracking-widest rounded-full border border-white/20">
-                    {{product.category}}
-                </span>
-            </div>
-
-            <!-- Header: Image & Price -->
-            <div class="relative mb-10 group-hover:scale-[1.02] transition-transform duration-700">
-                <div class="relative h-64 w-full rounded-[2.5rem] overflow-hidden bg-gray-50">
-                    <!-- Mesh Gradient Overlay -->
-                    <div
-                        class="absolute inset-0 bg-gradient-to-tr from-navy/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 z-10">
-                    </div>
-                    <img [src]="product.image"
-                        class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000">
-                </div>
-
-                <div class="absolute -bottom-6 right-6 z-20">
-                    <div
-                        class="bg-gold text-white px-8 py-4 rounded-2xl font-black text-xl shadow-2xl shadow-gold/40 flex flex-col items-center leading-none">
-                        <span class="text-[10px] uppercase tracking-widest mb-1 opacity-80">Rate</span>
-                        ${{product.price}}
-                    </div>
-                </div>
-            </div>
-
-            <!-- Content -->
-            <div class="space-y-6">
-                <div>
-                    <h3 class="text-2xl font-black text-navy group-hover:text-gold transition-colors duration-500">
-                        {{product.name}}</h3>
-                    <div class="flex items-center gap-4 mt-3">
-                        <div
-                            class="flex items-center gap-1.5 px-3 py-1 bg-green-50 text-green-600 rounded-lg border border-green-100">
-                            <div class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
-                            <span class="text-[10px] font-black uppercase tracking-tighter">System Ready</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Metrics Grid -->
-                <div class="grid grid-cols-2 gap-4 py-6 border-y border-gray-50">
-                    <div class="space-y-1">
-                        <span class="text-[9px] font-black text-gray-300 uppercase tracking-widest">Inventory
-                            Level</span>
-                        <div class="flex items-center gap-2">
-                            <span [class]="product.stock < 5 ? 'text-red-500 font-black' : 'text-navy font-black'"
-                                class="text-xl">
-                                {{product.stock}}
+    <!-- Product Table -->
+    <div class="premium-card rounded-[2rem] overflow-hidden border border-gray-100 shadow-xl bg-white">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-gray-50/50 border-b border-gray-100">
+                        <th class="px-6 py-5 text-[10px] font-black text-navy/40 uppercase tracking-[0.2em]">Asset</th>
+                        <th class="px-6 py-5 text-[10px] font-black text-navy/40 uppercase tracking-[0.2em]">Category
+                        </th>
+                        <th class="px-6 py-5 text-[10px] font-black text-navy/40 uppercase tracking-[0.2em]">Price</th>
+                        <th class="px-6 py-5 text-[10px] font-black text-navy/40 uppercase tracking-[0.2em]">Stock</th>
+                        <th class="px-6 py-5 text-[10px] font-black text-navy/40 uppercase tracking-[0.2em]">Status</th>
+                        <th class="px-6 py-5 text-[10px] font-black text-navy/40 uppercase tracking-[0.2em] text-right">
+                            Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-50">
+                    <tr *ngFor="let product of (filteredProducts$ | async)"
+                        class="group hover:bg-gray-50/30 transition-colors duration-300">
+                        <td class="px-6 py-4">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-xl bg-gray-50 overflow-hidden border border-gray-100">
+                                    <img [src]="product.image"
+                                        class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                                </div>
+                                <div>
+                                    <h3
+                                        class="text-sm font-black text-navy tracking-tight group-hover:text-gold transition-colors">
+                                        {{product.name}}</h3>
+                                    <div class="flex items-center gap-1 mt-0.5">
+                                        <div class="w-1 h-1 rounded-full bg-green-500"></div>
+                                        <span
+                                            class="text-[8px] font-black text-gray-400 uppercase tracking-tighter">System
+                                            Ready</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <span
+                                class="px-3 py-1 bg-navy/5 text-[9px] font-black text-navy uppercase tracking-widest rounded-full border border-navy/5">
+                                {{product.category}}
                             </span>
-                            <span class="text-[10px] font-bold text-gray-400">Units</span>
-                        </div>
-                    </div>
-                    <div class="space-y-1">
-                        <span class="text-[9px] font-black text-gray-300 uppercase tracking-widest">Status</span>
-                        <button (click)="toggleStatus(product)"
-                            [class]="product.status === 'active' ? 'text-green-500' : 'text-gray-400'"
-                            class="text-[10px] font-black uppercase tracking-widest hover:text-gold transition-colors">
-                            {{product.status}}
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Footer Actions -->
-                <div class="flex items-center gap-4 pt-4">
-                    <a [routerLink]="['edit', product.id]"
-                        class="flex-1 py-4 bg-navy/5 text-navy text-[10px] font-black rounded-2xl uppercase tracking-[0.2em] text-center hover:bg-navy hover:text-white transition-all duration-500">
-                        Edit Control
-                    </a>
-                    <button (click)="deleteProduct(product.id)"
-                        class="p-4 bg-red-50 text-red-400 rounded-2xl hover:bg-red-500 hover:text-white transition-all duration-500">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                        </svg>
-                    </button>
-                </div>
-            </div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <span class="text-sm font-black text-navy">${{product.price}}</span>
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="flex items-center gap-2">
+                                <span [class]="product.stock < 5 ? 'text-red-500' : 'text-navy'"
+                                    class="text-sm font-black">
+                                    {{product.stock}}
+                                </span>
+                                <span class="text-[8px] font-bold text-gray-400 uppercase">Units</span>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <button (click)="toggleStatus(product)"
+                                [class]="product.status === 'active' ? 'text-green-500 bg-green-50 border-green-100' : 'text-gray-400 bg-gray-50 border-gray-100'"
+                                class="px-3 py-1 rounded-lg text-[9px] font-black tracking-widest uppercase border transition-all hover:scale-105">
+                                {{product.status}}
+                            </button>
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="flex items-center justify-end gap-2">
+                                <a [routerLink]="['edit', product.id]"
+                                    class="p-2 bg-navy/5 text-navy rounded-lg hover:bg-navy hover:text-white transition-all">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                    </svg>
+                                </a>
+                                <button (click)="deleteProduct(product.id)"
+                                    class="p-2 bg-red-50 text-red-500 rounded-lg hover:bg-red-500 hover:text-white transition-all">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 

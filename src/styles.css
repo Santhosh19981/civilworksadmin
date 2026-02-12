@@ -19,7 +19,7 @@ body {
   @apply bg-[#f8fafc] text-navy;
   margin: 0;
   overflow: hidden;
-  font-family: 'Outfit', sans-serif;
+  font-family: 'Inter', sans-serif;
 }
 
 .card {
@@ -34,6 +34,27 @@ body {
 
 .btn-primary {
   @apply bg-primary text-white px-6 py-2 rounded-lg font-medium transition-all hover:bg-opacity-90 active:scale-95;
+}
+
+/* Global Input Styling */
+input:not([type="checkbox"]):not([type="radio"]),
+select,
+textarea {
+  border: 1px solid #d1d5db !important;
+  /* Standard gray-300 */
+  border-radius: 0.75rem;
+  /* rounded-xl fallback */
+  transition: all 0.3s ease;
+}
+
+input:not([type="checkbox"]):not([type="radio"]):focus,
+select:focus,
+textarea:focus {
+  border-color: #F7931E !important;
+  /* primary color */
+  box-shadow: 0 0 0 4px rgba(247, 147, 30, 0.4);
+  /* gold-glow fallback */
+  outline: none;
 }
 
 /* Custom Scrollbar */

@@ -6,54 +6,51 @@
         </div>
     </div>
 
-    <div class="glass-card flex w-full max-w-5xl overflow-hidden min-h-[650px] relative z-10">
+    <div class="glass-card flex w-full max-w-4xl overflow-hidden min-h-[500px] relative z-10 shadow-2xl">
         <!-- Left Side: Brand Experience -->
         <div
-            class="hidden lg:flex lg:w-1/2 bg-navy relative items-center justify-center overflow-hidden border-r border-white/5">
+            class="hidden lg:flex lg:w-[45%] bg-navy relative items-center justify-center overflow-hidden border-r border-white/5">
             <!-- Dynamic Pattern Overlay -->
-            <div class="absolute inset-0 opacity-20"
-                style="background-image: radial-gradient(var(--gold) 1px, transparent 1px); background-size: 30px 30px;">
+            <div class="absolute inset-0 opacity-10"
+                style="background-image: radial-gradient(var(--gold) 1px, transparent 1px); background-size: 20px 20px;">
             </div>
 
-            <div class="relative z-20 text-center px-12">
-                <div class="brand-orbit mx-auto mb-16">
+            <div class="relative z-20 text-center px-10">
+                <div class="brand-orbit mx-auto mb-10 scale-90">
                     <div class="orbit-ring ring-1"></div>
                     <div class="orbit-ring ring-2"></div>
-                    <img src="assets/logo.jpeg" alt="BuildPro" class="logo-main shadow-2xl">
+                    <img src="assets/logo.jpeg" alt="BuildPro" class="logo-main shadow-lg">
                 </div>
 
-                <h1 class="text-3xl font-bold text-white mb-3 tracking-tight">BuildPro <span
+                <h1 class="text-2xl font-black text-white mb-2 tracking-tight">BuildPro <span
                         class="text-gold">Admin</span></h1>
-                <p class="text-gray-400 text-base leading-relaxed font-light">
-                    Managing the pulse of modern construction with precision and elegance.
+                <p class="text-gray-400 text-xs leading-relaxed font-bold uppercase tracking-wider opacity-60">
+                    Precision Infrastructure Governance.
                 </p>
 
                 <!-- Status Pills -->
-                <div class="mt-12 flex flex-wrap justify-center gap-3">
+                <div class="mt-8 flex flex-wrap justify-center gap-2">
                     <span
-                        class="px-4 py-2 bg-white/5 backdrop-blur-md rounded-full text-xs text-gray-300 border border-white/10">Active
-                        Fleet: 245</span>
+                        class="px-3 py-1.5 bg-white/5 backdrop-blur-md rounded-lg text-[8px] font-black text-gray-300 border border-white/10 uppercase tracking-widest">Fleet:
+                        245</span>
                     <span
-                        class="px-4 py-2 bg-white/5 backdrop-blur-md rounded-full text-xs text-gray-300 border border-white/10">Pending
-                        Orders: 12</span>
-                    <span
-                        class="px-4 py-2 bg-white/5 backdrop-blur-md rounded-full text-xs text-gray-300 border border-white/10">System:
-                        Operational</span>
+                        class="px-3 py-1.5 bg-white/5 backdrop-blur-md rounded-lg text-[8px] font-black text-gray-300 border border-white/10 uppercase tracking-widest">Operational</span>
                 </div>
             </div>
 
             <!-- Bottom Accent -->
-            <div class="absolute bottom-0 left-0 w-full h-2 bg-gradient-to-r from-navy via-gold to-navy"></div>
+            <div class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-navy via-gold to-navy"></div>
         </div>
 
         <!-- Right Side: Clean Auth Form -->
-        <div class="w-full lg:w-1/2 p-10 md:p-16 flex flex-col justify-center bg-white">
-            <div class="mb-12">
+        <div class="w-full lg:w-[55%] p-8 md:p-12 flex flex-col justify-center bg-white">
+            <div class="mb-10">
                 <span
-                    class="inline-block px-3 py-1 bg-gold/10 text-gold text-xs font-bold rounded-lg mb-4 tracking-widest uppercase">Secured
+                    class="inline-block px-2.5 py-1 bg-gold/10 text-gold text-[8px] font-black rounded-lg mb-3 tracking-widest uppercase border border-gold/10">Secured
                     Portal</span>
-                <h2 class="text-3xl font-bold text-navy mb-2">Welcome Back</h2>
-                <p class="text-gray-500 text-sm font-medium">Please enter your specialized credentials</p>
+                <h2 class="text-2xl font-black text-navy mb-1 tracking-tight">Welcome Back</h2>
+                <p class="text-gray-400 text-[10px] font-bold uppercase tracking-widest">Specialized Authorization
+                    Required</p>
             </div>
 
             <form (ngSubmit)="onLogin()" #loginForm="ngForm" class="space-y-8">

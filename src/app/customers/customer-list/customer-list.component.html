@@ -38,44 +38,42 @@
                 <tbody class="divide-y divide-gray-50">
                     <tr *ngFor="let c of (customers$ | async)"
                         class="hover:bg-gray-50/50 transition-all duration-500 group">
-                        <td class="px-10 py-8">
-                            <div class="flex items-center gap-6">
+                        <td class="px-8 py-4">
+                            <div class="flex items-center gap-4">
                                 <div
-                                    class="w-16 h-16 rounded-[1.25rem] bg-navy text-white flex items-center justify-center text-xl font-black shadow-2xl shadow-navy/20 group-hover:bg-gold transition-colors duration-500">
+                                    class="w-10 h-10 rounded-xl bg-navy text-white flex items-center justify-center text-sm font-black shadow-lg shadow-navy/20 group-hover:bg-gold transition-colors duration-500">
                                     {{c.name.charAt(0)}}
                                 </div>
                                 <div class="flex flex-col">
                                     <span
-                                        class="font-black text-navy text-xl tracking-tight group-hover:text-gold transition-colors">{{c.name}}</span>
-                                    <span
-                                        class="text-[9px] font-black text-gray-300 uppercase tracking-widest mt-1">Verified
+                                        class="font-black text-navy text-sm tracking-tight group-hover:text-gold transition-colors">{{c.name}}</span>
+                                    <span class="text-[8px] font-black text-gray-300 uppercase tracking-widest">Verified
                                         Partner</span>
                                 </div>
                             </div>
                         </td>
-                        <td class="px-10 py-8">
-                            <div class="flex flex-col gap-1">
-                                <span class="text-xs font-bold text-navy/80 tracking-wide">{{c.email}}</span>
+                        <td class="px-8 py-4">
+                            <div class="flex flex-col">
+                                <span class="text-[10px] font-bold text-navy/80 tracking-wide">{{c.email}}</span>
                                 <span
-                                    class="text-[10px] font-black text-gray-300 tracking-[0.2em] font-mono">{{c.mobile}}</span>
+                                    class="text-[9px] font-black text-gray-300 tracking-widest font-mono">{{c.mobile}}</span>
                             </div>
                         </td>
-                        <td class="px-10 py-8">
+                        <td class="px-8 py-4">
                             <div
-                                class="inline-flex items-center gap-2 px-4 py-2 bg-navy/5 rounded-xl border border-navy/5">
-                                <span class="text-lg font-black text-navy">{{c.totalOrders}}</span>
-                                <span
-                                    class="text-[9px] font-black text-navy/40 uppercase tracking-widest">Deployments</span>
+                                class="inline-flex items-center gap-2 px-3 py-1 bg-navy/5 rounded-lg border border-navy/5">
+                                <span class="text-xs font-black text-navy">{{c.totalOrders}}</span>
+                                <span class="text-[8px] font-black text-navy/40 uppercase tracking-widest">Orders</span>
                             </div>
                         </td>
-                        <td class="px-10 py-8">
+                        <td class="px-8 py-4">
                             <span
-                                class="text-2xl font-black text-navy tracking-tighter group-hover:text-gold transition-colors">${{c.totalSpent}}</span>
+                                class="text-sm font-black text-navy tracking-tight group-hover:text-gold transition-colors">${{c.totalSpent}}</span>
                         </td>
-                        <td class="px-10 py-8 text-right">
+                        <td class="px-8 py-4 text-right">
                             <button (click)="viewHistory(c)"
-                                class="px-8 py-3 bg-navy/5 text-navy text-[10px] font-black rounded-xl uppercase tracking-widest hover:bg-navy hover:text-white transition-all duration-500 shadow-sm group-hover:shadow-xl group-hover:shadow-navy/10">
-                                Analyze Activity
+                                class="px-4 py-2 bg-navy/5 text-navy text-[9px] font-black rounded-lg uppercase tracking-widest hover:bg-navy hover:text-white transition-all">
+                                Analyze
                             </button>
                         </td>
                     </tr>

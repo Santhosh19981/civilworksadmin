@@ -19,14 +19,14 @@
         </button>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <!-- Revenue Velocity Diagnostics -->
-        <div class="p-10 bg-white rounded-[3.5rem] border border-gray-50 shadow-3xl relative overflow-hidden group">
+        <div class="p-8 bg-white rounded-[2.5rem] border border-gray-50 shadow-3xl relative overflow-hidden group">
             <div class="absolute -right-20 -top-20 w-48 h-48 bg-gold/5 rounded-full blur-3xl"></div>
-            <h4 class="text-xl font-black text-navy mb-10 flex items-center gap-4">
+            <h4 class="text-lg font-black text-navy mb-8 flex items-center gap-4">
                 <div
-                    class="w-12 h-12 rounded-2xl bg-navy/5 flex items-center justify-center text-navy group-hover:bg-gold group-hover:text-white transition-all">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                    class="w-10 h-10 rounded-xl bg-navy/5 flex items-center justify-center text-navy group-hover:bg-gold group-hover:text-white transition-all">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
                         stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
@@ -34,16 +34,16 @@
                 </div>
                 Growth Velocity
             </h4>
-            <canvas id="growthChart" class="max-h-[350px]"></canvas>
+            <canvas id="growthChart" class="max-h-[300px]"></canvas>
         </div>
 
         <!-- Categorical Distribution -->
-        <div class="p-10 bg-white rounded-[3.5rem] border border-gray-50 shadow-3xl relative overflow-hidden group">
+        <div class="p-8 bg-white rounded-[2.5rem] border border-gray-50 shadow-3xl relative overflow-hidden group">
             <div class="absolute -left-20 -bottom-20 w-48 h-48 bg-navy/5 rounded-full blur-3xl"></div>
-            <h4 class="text-xl font-black text-navy mb-10 flex items-center gap-4">
+            <h4 class="text-lg font-black text-navy mb-8 flex items-center gap-4">
                 <div
-                    class="w-12 h-12 rounded-2xl bg-navy/5 flex items-center justify-center text-navy group-hover:bg-gold group-hover:text-white transition-all">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                    class="w-10 h-10 rounded-xl bg-navy/5 flex items-center justify-center text-navy group-hover:bg-gold group-hover:text-white transition-all">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
                         stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
@@ -53,16 +53,16 @@
                 </div>
                 Sector Distribution
             </h4>
-            <canvas id="categoryReportChart" class="max-h-[350px]"></canvas>
+            <canvas id="categoryReportChart" class="max-h-[300px]"></canvas>
         </div>
     </div>
 
     <!-- Diagnostic Archive -->
-    <div class="bg-white rounded-[3.5rem] border border-gray-50 shadow-3xl overflow-hidden relative">
-        <div class="p-10 border-b border-gray-50 bg-gray-50/30">
-            <h4 class="text-2xl font-black text-navy tracking-tight">Elite Selling <span class="text-gold">Matrix</span>
+    <div class="bg-white rounded-[2.5rem] border border-gray-50 shadow-3xl overflow-hidden relative">
+        <div class="p-8 border-b border-gray-50 bg-gray-50/30">
+            <h4 class="text-xl font-black text-navy tracking-tight">Elite Selling <span class="text-gold">Matrix</span>
             </h4>
-            <p class="text-[9px] font-black text-gray-300 uppercase tracking-widest mt-1">Primary Asset Performance
+            <p class="text-[8px] font-black text-gray-300 uppercase tracking-widest mt-1">Primary Asset Performance
                 Benchmarks</p>
         </div>
 
@@ -70,31 +70,30 @@
             <table class="w-full text-left border-collapse">
                 <thead>
                     <tr class="border-b border-gray-50">
-                        <th class="px-10 py-8 text-[10px] font-black text-gray-300 uppercase tracking-widest">Asset
+                        <th class="px-8 py-5 text-[10px] font-black text-gray-300 uppercase tracking-widest">Asset
                             Identity</th>
                         <th
-                            class="px-10 py-8 text-[10px] font-black text-gray-300 uppercase tracking-widest text-center">
-                            Liquidity Event Count</th>
-                        <th
-                            class="px-10 py-8 text-[10px] font-black text-gray-300 uppercase tracking-widest text-right">
-                            Yield Contribution</th>
+                            class="px-8 py-5 text-[10px] font-black text-gray-300 uppercase tracking-widest text-center">
+                            Liquidity Events</th>
+                        <th class="px-8 py-5 text-[10px] font-black text-gray-300 uppercase tracking-widest text-right">
+                            Yield</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-50">
                     <tr *ngFor="let item of topProducts" class="hover:bg-gray-50/50 transition-all duration-500 group">
-                        <td class="px-10 py-8">
+                        <td class="px-8 py-4">
                             <span
-                                class="font-black text-navy text-lg tracking-tight group-hover:text-gold transition-colors">{{item.name}}</span>
+                                class="font-black text-navy text-sm tracking-tight group-hover:text-gold transition-colors">{{item.name}}</span>
                         </td>
-                        <td class="px-10 py-8 text-center">
+                        <td class="px-8 py-4 text-center">
                             <div
-                                class="inline-flex items-center gap-2 px-4 py-2 bg-navy/5 rounded-xl border border-navy/5">
-                                <span class="text-lg font-black text-navy">{{item.qty}}</span>
-                                <span class="text-[9px] font-black text-navy/40 uppercase tracking-widest">Orders</span>
+                                class="inline-flex items-center gap-2 px-3 py-1 bg-navy/5 rounded-lg border border-navy/5">
+                                <span class="text-sm font-black text-navy">{{item.qty}}</span>
+                                <span class="text-[8px] font-black text-navy/40 uppercase tracking-widest">Units</span>
                             </div>
                         </td>
-                        <td class="px-10 py-8 text-right">
-                            <span class="text-2xl font-black text-gold tracking-tighter">${{item.revenue}}</span>
+                        <td class="px-8 py-4 text-right">
+                            <span class="text-lg font-black text-gold tracking-tighter">${{item.revenue}}</span>
                         </td>
                     </tr>
                 </tbody>

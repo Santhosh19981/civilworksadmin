@@ -99,37 +99,36 @@
                     <tbody class="divide-y divide-gray-50">
                         <tr *ngFor="let p of (payments$ | async)"
                             class="hover:bg-gray-50/50 transition-all duration-500 group">
-                            <td class="px-10 py-8">
+                            <td class="px-6 py-4">
                                 <div class="flex flex-col">
                                     <span
-                                        class="text-[11px] font-black text-navy font-mono tracking-tighter">TXN_{{p.transactionId.slice(-8)}}</span>
-                                    <span
-                                        class="text-[9px] font-black text-gray-300 uppercase tracking-widest mt-1">Order
+                                        class="text-[10px] font-black text-navy font-mono tracking-tighter">#{{p.transactionId.slice(-8)}}</span>
+                                    <span class="text-[8px] font-bold text-gray-300 uppercase tracking-widest">Order
                                         #{{p.orderId}}</span>
                                 </div>
                             </td>
-                            <td class="px-10 py-8">
+                            <td class="px-6 py-4">
                                 <span
-                                    class="text-xs font-bold text-navy tracking-wide group-hover:text-gold transition-colors">{{p.customer}}</span>
+                                    class="text-sm font-black text-navy tracking-tight group-hover:text-gold transition-colors">{{p.customer}}</span>
                             </td>
-                            <td class="px-10 py-8">
+                            <td class="px-6 py-4">
                                 <span
-                                    class="text-xl font-black text-navy tracking-tighter group-hover:text-gold transition-colors">${{p.amount}}</span>
+                                    class="text-sm font-black text-navy tracking-tighter group-hover:text-gold transition-colors">${{p.amount}}</span>
                             </td>
-                            <td class="px-10 py-8">
+                            <td class="px-6 py-4">
                                 <span [ngClass]="{
-                                    'bg-green-500 text-white shadow-green-200': p.status === 'Paid',
-                                    'bg-yellow-500 text-white shadow-yellow-200': p.status === 'Pending',
-                                    'bg-red-500 text-white shadow-red-200': p.status === 'Failed',
-                                    'bg-gray-500 text-white shadow-gray-200': p.status === 'Refunded'
+                                    'bg-green-500 text-white': p.status === 'Paid',
+                                    'bg-yellow-500 text-white': p.status === 'Pending',
+                                    'bg-red-500 text-white': p.status === 'Failed',
+                                    'bg-gray-500 text-white': p.status === 'Refunded'
                                 }"
-                                    class="px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest shadow-2xl">
+                                    class="px-2.5 py-1 rounded-lg text-[8px] font-black uppercase tracking-widest shadow-md">
                                     {{p.status}}
                                 </span>
                             </td>
-                            <td class="px-10 py-8 text-right">
+                            <td class="px-6 py-4 text-right">
                                 <button (click)="issueRefund(p)"
-                                    class="px-6 py-2 bg-red-50 text-red-500 text-[10px] font-black rounded-xl uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all opacity-0 group-hover:opacity-100 shadow-sm hover:shadow-xl hover:shadow-red-500/20">
+                                    class="px-3 py-1.5 bg-red-50 text-red-500 text-[9px] font-black rounded-lg uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all opacity-0 group-hover:opacity-100">
                                     Reversal
                                 </button>
                             </td>

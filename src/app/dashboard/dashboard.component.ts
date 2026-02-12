@@ -107,11 +107,11 @@ export class DashboardComponent implements OnInit, AfterViewInit {
                     scales: {
                         y: {
                             grid: { color: 'rgba(0,0,0,0.03)', drawBorder: false },
-                            ticks: { font: { weight: 'bold', family: 'Outfit' }, color: '#94a3b8' }
+                            ticks: { font: { weight: 'bold', family: 'Inter' }, color: '#94a3b8' }
                         },
                         x: {
                             grid: { display: false },
-                            ticks: { font: { weight: 'bold', family: 'Outfit' }, color: '#94a3b8' }
+                            ticks: { font: { weight: 'bold', family: 'Inter' }, color: '#94a3b8' }
                         }
                     }
                 }
@@ -170,7 +170,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
                     maintainAspectRatio: false,
                     animation: { animateRotate: true, animateScale: true, duration: 2000 },
                     plugins: {
-                        legend: { position: 'bottom', labels: { font: { weight: 'bold', family: 'Outfit' }, padding: 25, color: '#0b2c4d' } }
+                        legend: { position: 'bottom', labels: { font: { weight: 'bold', family: 'Inter' }, padding: 25, color: '#0b2c4d' } }
                     }
                 }
             });
@@ -195,7 +195,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
                     cutout: '80%',
                     animation: { animateRotate: true, animateScale: true, duration: 2000 },
                     plugins: {
-                        legend: { position: 'bottom', labels: { font: { weight: 'bold', family: 'Outfit' }, padding: 25, color: '#0b2c4d' } }
+                        legend: { position: 'bottom', labels: { font: { weight: 'bold', family: 'Inter' }, padding: 25, color: '#0b2c4d' } }
                     }
                 }
             });

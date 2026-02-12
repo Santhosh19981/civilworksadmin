@@ -68,58 +68,57 @@
                 <tbody class="divide-y divide-gray-50">
                     <tr *ngFor="let order of (filteredOrders$ | async)"
                         class="hover:bg-gray-50/50 transition-all duration-500 group">
-                        <td class="px-10 py-8">
+                        <td class="px-6 py-4">
                             <span
-                                class="px-4 py-2 bg-navy text-white text-[11px] font-black rounded-xl shadow-lg shadow-navy/20">
+                                class="px-2.5 py-1.5 bg-navy text-white text-[9px] font-black rounded-lg shadow-md shadow-navy/20">
                                 #{{order.id}}
                             </span>
                         </td>
-                        <td class="px-10 py-8">
+                        <td class="px-6 py-4">
                             <div class="flex flex-col">
                                 <span
-                                    class="font-black text-navy text-lg tracking-tight group-hover:text-gold transition-colors">{{order.customer}}</span>
-                                <span
-                                    class="text-[9px] font-black text-gray-300 uppercase tracking-widest mt-1">Authorized
+                                    class="font-black text-navy text-sm tracking-tight group-hover:text-gold transition-colors">{{order.customer}}</span>
+                                <span class="text-[8px] font-black text-gray-300 uppercase tracking-widest">Authorized
                                     User</span>
                             </div>
                         </td>
-                        <td class="px-10 py-8">
+                        <td class="px-6 py-4">
                             <span
-                                class="text-xs font-bold text-gray-400 group-hover:text-navy transition-colors">{{order.date}}</span>
+                                class="text-[10px] font-bold text-gray-400 group-hover:text-navy transition-colors">{{order.date}}</span>
                         </td>
-                        <td class="px-10 py-8">
-                            <span class="text-xl font-black text-gold tracking-tighter">${{order.totalAmount}}</span>
+                        <td class="px-6 py-4">
+                            <span class="text-sm font-black text-gold tracking-tighter">${{order.totalAmount}}</span>
                         </td>
-                        <td class="px-10 py-8">
-                            <div class="flex items-center gap-2">
+                        <td class="px-6 py-4">
+                            <div class="flex items-center gap-1.5">
                                 <span
                                     [class]="order.paymentStatus === 'Paid' ? 'text-green-500 bg-green-50' : 'text-yellow-600 bg-yellow-50'"
-                                    class="px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest border border-current opacity-80">
+                                    class="px-2 py-1 rounded-md text-[8px] font-black uppercase tracking-widest border border-current opacity-80">
                                     {{order.paymentStatus}}
                                 </span>
                                 <span
-                                    class="text-[9px] font-black text-navy/30 uppercase tracking-widest">{{order.paymentMethod}}</span>
+                                    class="text-[8px] font-black text-navy/30 uppercase tracking-widest">{{order.paymentMethod}}</span>
                             </div>
                         </td>
-                        <td class="px-10 py-8">
-                            <div class="flex items-center gap-3">
+                        <td class="px-6 py-4">
+                            <div class="flex items-center">
                                 <span [ngClass]="{
-                                    'bg-yellow-500 text-white shadow-yellow-200': order.orderStatus === 'Packing',
-                                    'bg-blue-500 text-white shadow-blue-200': order.orderStatus === 'Shipping',
-                                    'bg-green-500 text-white shadow-green-200': order.orderStatus === 'Delivered',
-                                    'bg-red-500 text-white shadow-red-200': order.orderStatus === 'Cancelled'
+                                    'bg-yellow-500 text-white': order.orderStatus === 'Packing',
+                                    'bg-blue-500 text-white': order.orderStatus === 'Shipping',
+                                    'bg-green-500 text-white': order.orderStatus === 'Delivered',
+                                    'bg-red-500 text-white': order.orderStatus === 'Cancelled'
                                   }"
-                                    class="px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest shadow-2xl">
+                                    class="px-2.5 py-1 rounded-lg text-[8px] font-black uppercase tracking-widest shadow-lg">
                                     {{order.orderStatus}}
                                 </span>
                             </div>
                         </td>
-                        <td class="px-10 py-8 text-right">
+                        <td class="px-6 py-4 text-right">
                             <a [routerLink]="[order.id]"
-                                class="inline-flex items-center gap-2 text-[10px] font-black text-navy uppercase tracking-widest hover:text-gold transition-all group/btn">
-                                Intelligence
+                                class="inline-flex items-center gap-1 text-[9px] font-black text-navy uppercase tracking-widest hover:text-gold transition-all group/btn">
+                                Intel
                                 <svg xmlns="http://www.w3.org/2000/svg"
-                                    class="h-4 w-4 transform group-hover/btn:translate-x-1 transition-transform"
+                                    class="h-3 w-3 transform group-hover/btn:translate-x-0.5 transition-transform"
                                     fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
                                         d="M13 7l5 5m0 0l-5 5m5-5H6" />
