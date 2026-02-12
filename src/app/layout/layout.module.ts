@@ -19,7 +19,7 @@ const routes: Routes = [
             { path: 'payments', loadChildren: () => import('../payments/payments.module').then(m => m.PaymentsModule) },
             { path: 'customers', loadChildren: () => import('../customers/customers.module').then(m => m.CustomersModule) },
             { path: 'reports', loadChildren: () => import('../reports/reports.module').then(m => m.ReportsModule) },
-            { path: 'settings', loadChildren: () => import('../settings/settings.module').then(m => m.SettingsModule) }
+            // { path: 'settings', loadChildren: () => import('../settings/settings.module').then(m => m.SettingsModule) }
         ]
     }
 ];
