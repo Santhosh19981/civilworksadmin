@@ -1,6 +1,7 @@
 [
     {
         "id": "ORD-101",
+        "type": "Buy Products",
         "customer": "John Doe",
         "date": "2024-02-10",
         "totalAmount": 2950,
@@ -24,6 +25,7 @@
     },
     {
         "id": "ORD-102",
+        "type": "Rentals",
         "customer": "Jane Smith",
         "date": "2024-02-11",
         "totalAmount": 120,

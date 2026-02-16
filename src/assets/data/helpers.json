@@ -1,0 +1,44 @@
+[
+    {
+        "id": 1,
+        "serviceName": "Carpenter",
+        "description": "Expert woodwork, furniture installation, and custom cabinetry.",
+        "status": "Active"
+    },
+    {
+        "id": 2,
+        "serviceName": "Painter",
+        "description": "Professional interior and exterior painting with premium finishes.",
+        "status": "Active"
+    },
+    {
+        "id": 3,
+        "serviceName": "Mason",
+        "description": "High-quality brickwork, stone setting, and concrete construction.",
+        "status": "Active"
+    },
+    {
+        "id": 4,
+        "serviceName": "Plumber",
+        "description": "Comprehensive plumbing solutions, including pipe fitting and drainage.",
+        "status": "Active"
+    },
+    {
+        "id": 5,
+        "serviceName": "Electrician",
+        "description": "Certified electrical wiring, maintenance, and smart home installations.",
+        "status": "Active"
+    },
+    {
+        "id": 6,
+        "serviceName": "Welder",
+        "description": "Precision metal fabrication and industrial welding services.",
+        "status": "Inactive"
+    },
+    {
+        "id": 7,
+        "serviceName": "Flooring Expert",
+        "description": "Specialists in tile, marble, hardwood, and laminate flooring.",
+        "status": "Active"
+    }
+]

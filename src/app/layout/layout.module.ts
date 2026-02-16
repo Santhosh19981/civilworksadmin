@@ -18,6 +18,7 @@ const routes: Routes = [
             { path: 'orders', loadChildren: () => import('../orders/orders.module').then(m => m.OrdersModule) },
             { path: 'payments', loadChildren: () => import('../payments/payments.module').then(m => m.PaymentsModule) },
             { path: 'customers', loadChildren: () => import('../customers/customers.module').then(m => m.CustomersModule) },
+            { path: 'helpers', loadChildren: () => import('../helpers/helpers.module').then(m => m.HelpersModule) },
             { path: 'reports', loadChildren: () => import('../reports/reports.module').then(m => m.ReportsModule) },
             { path: 'settings', loadChildren: () => import('../settings/settings.module').then(m => m.SettingsModule) }
         ]

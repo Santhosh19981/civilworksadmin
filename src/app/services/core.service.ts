@@ -13,6 +13,7 @@ export class CoreService {
     private orders = new BehaviorSubject<any[]>([]);
     private payments = new BehaviorSubject<any[]>([]);
     private customers = new BehaviorSubject<any[]>([]);
+    private helpers = new BehaviorSubject<any[]>([]);
     private settings = new BehaviorSubject<any>({
         deliveryCharge: 50,
         taxPercent: 12,
@@ -31,6 +32,7 @@ export class CoreService {
         this.loadFromStorageOrJson('orders', 'assets/data/orders.json', this.orders);
         this.loadFromStorageOrJson('payments', 'assets/data/payments.json', this.payments);
         this.loadFromStorageOrJson('customers', 'assets/data/customers.json', this.customers);
+        this.loadFromStorageOrJson('helpers', 'assets/data/helpers.json', this.helpers);
 
         const savedSettings = localStorage.getItem('settings');
         if (savedSettings) {
@@ -40,11 +42,17 @@ export class CoreService {
 
     private loadFromStorageOrJson(key: string, jsonPath: string, subject: BehaviorSubject<any[]>) {
         const saved = localStorage.getItem(key);
-        if (saved) {
-            subject.next(JSON.parse(saved));
+        const parsed = saved ? JSON.parse(saved) : null;
+
+        // Force reload from JSON if data is invalid or using old schema for 'helpers'
+        const isHelpersSchemaInvalid = key === 'helpers' && parsed && parsed.length > 0 && !parsed[0].serviceName;
+
+        if (parsed && Array.isArray(parsed) && parsed.length > 0 && !isHelpersSchemaInvalid) {
+            subject.next(parsed);
         } else {
-            this.http.get<any[]>(jsonPath).subscribe(data => {
-                this.save(key, data, subject);
+            this.http.get<any[]>(jsonPath).subscribe({
+                next: (data) => this.save(key, data, subject),
+                error: (err) => console.error(`Error loading ${key}:`, err)
             });
         }
     }
@@ -55,7 +63,7 @@ export class CoreService {
     }
 
     // Generic CRUD
-    getData(key: 'products' | 'categories' | 'rentals' | 'orders' | 'payments' | 'customers' | 'settings'): Observable<any> {
+    getData(key: 'products' | 'categories' | 'rentals' | 'orders' | 'payments' | 'customers' | 'settings' | 'helpers'): Observable<any> {
         switch (key) {
             case 'products': return this.products.asObservable();
             case 'categories': return this.categories.asObservable();
@@ -63,6 +71,7 @@ export class CoreService {
             case 'orders': return this.orders.asObservable();
             case 'payments': return this.payments.asObservable();
             case 'customers': return this.customers.asObservable();
+            case 'helpers': return this.helpers.asObservable();
             case 'settings': return this.settings.asObservable();
         }
     }
