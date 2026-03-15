@@ -2,20 +2,22 @@
     <!-- Header & Intelligence Filters -->
     <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
         <div>
-            <h2 class="text-4xl font-black text-navy tracking-tight">Order <span class="text-gold">Intelligence</span>
+            <h2 class="text-4xl font-black text-navy tracking-tight">Order <span class="text-gold">List</span>
             </h2>
-            <p class="text-xs text-gray-400 font-bold uppercase tracking-[0.3em] mt-2">Real-time deployment tracking</p>
+            <p class="text-xs text-gray-400 font-bold uppercase tracking-[0.3em] mt-2">Track all active orders</p>
         </div>
 
         <div class="flex flex-col md:flex-row items-stretch md:items-center gap-4">
             <div class="relative group">
-                <select [(ngModel)]="statusFilter"
+                <select [(ngModel)]="statusFilter" (change)="onStatusChange()"
                     class="pl-6 pr-12 py-5 bg-white border-2 border-gray-50 rounded-[2rem] focus:border-gold outline-none transition-all w-full md:w-64 shadow-2xl shadow-navy/5 font-bold text-navy appearance-none cursor-pointer">
-                    <option value="">Global Status</option>
-                    <option value="Packing">In Logistics</option>
-                    <option value="Shipping">In Transit</option>
-                    <option value="Delivered">Completed</option>
-                    <option value="Cancelled">Terminated</option>
+                    <option value="">All Status</option>
+                    <option value="pending">Pending</option>
+                    <option value="confirmed">Confirmed</option>
+                    <option value="processing">Processing</option>
+                    <option value="shipped">Shipped</option>
+                    <option value="delivered">Delivered</option>
+                    <option value="cancelled">Cancelled</option>
                 </select>
                 <div
                     class="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-navy/30 group-hover:text-gold transition-colors">
@@ -35,88 +37,83 @@
                             d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
                 </div>
-                <input type="text" [(ngModel)]="searchTerm" placeholder="Order ID / Customer..."
+                <input type="text" [(ngModel)]="searchTerm" (keyup.enter)="onSearch()" placeholder="Search..."
                     class="pl-14 pr-8 py-5 bg-white border-2 border-gray-50 rounded-[2rem] focus:border-gold outline-none transition-all w-full md:w-80 shadow-2xl shadow-navy/5 font-bold text-navy placeholder:text-gray-300">
             </div>
         </div>
     </div>
 
     <!-- Tracking Module -->
-    <div class="bg-white rounded-[3.5rem] border border-gray-50 shadow-3xl overflow-hidden relative">
-        <!-- Decoration Area -->
-        <div class="absolute -right-32 -top-32 w-64 h-64 bg-gold/5 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="premium-card rounded-[2rem] overflow-hidden border border-gray-100 shadow-xl bg-white relative">
+        <div *ngIf="orders.length === 0 && orders.length === 0" 
+            class="absolute inset-0 bg-white/50 backdrop-blur-[2px] z-10 flex items-center justify-center">
+            <!-- Simplified loading for orders since it's fast but good to have consistency -->
+        </div>
 
         <div class="overflow-x-auto relative z-10">
             <table class="w-full text-left border-collapse">
                 <thead>
-                    <tr class="border-b border-gray-50">
-                        <th class="px-10 py-8 text-[10px] font-black text-gray-300 uppercase tracking-widest">Tracking
-                            Identity</th>
-                        <th class="px-10 py-8 text-[10px] font-black text-gray-300 uppercase tracking-widest">Client
-                            Name</th>
-                        <th class="px-10 py-8 text-[10px] font-black text-gray-300 uppercase tracking-widest">Log Date
-                        </th>
-                        <th class="px-10 py-8 text-[10px] font-black text-gray-300 uppercase tracking-widest">Valuation
-                        </th>
-                        <th class="px-10 py-8 text-[10px] font-black text-gray-300 uppercase tracking-widest">
-                            Transaction</th>
-                        <th class="px-10 py-8 text-[10px] font-black text-gray-300 uppercase tracking-widest">Status
-                            Flow</th>
-                        <th class="px-10 py-8 text-right"></th>
+                    <tr class="bg-gray-50/50 border-b border-gray-100">
+                        <th class="px-8 py-5 text-[10px] font-black text-navy/40 uppercase tracking-[0.2em]">Order ID</th>
+                        <th class="px-8 py-5 text-[10px] font-black text-navy/40 uppercase tracking-[0.2em]">Customer</th>
+                        <th class="px-8 py-5 text-[10px] font-black text-navy/40 uppercase tracking-[0.2em]">Date</th>
+                        <th class="px-8 py-5 text-[10px] font-black text-navy/40 uppercase tracking-[0.2em]">Amount</th>
+                        <th class="px-8 py-5 text-[10px] font-black text-navy/40 uppercase tracking-[0.2em]">Payment</th>
+                        <th class="px-8 py-5 text-[10px] font-black text-navy/40 uppercase tracking-[0.2em]">Status</th>
+                        <th class="px-8 py-5 text-right"></th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-50">
-                    <tr *ngFor="let order of (filteredOrders$ | async)"
-                        class="hover:bg-gray-50/50 transition-all duration-500 group">
-                        <td class="px-6 py-4">
+                    <tr *ngFor="let order of orders"
+                        class="group hover:bg-gray-50/50 transition-all duration-300">
+                        <td class="px-8 py-6">
                             <span
                                 class="px-2.5 py-1.5 bg-navy text-white text-[9px] font-black rounded-lg shadow-md shadow-navy/20">
                                 #{{order.id}}
                             </span>
                         </td>
-                        <td class="px-6 py-4">
+                        <td class="px-8 py-6">
                             <div class="flex flex-col">
                                 <span
                                     class="font-black text-navy text-sm tracking-tight group-hover:text-gold transition-colors">{{order.customer}}</span>
-                                <span class="text-[8px] font-black text-gray-300 uppercase tracking-widest">Authorized
-                                    User</span>
+                                <span class="text-[8px] font-black text-gray-300 uppercase tracking-widest">Customer</span>
                             </div>
                         </td>
-                        <td class="px-6 py-4">
+                        <td class="px-8 py-6">
                             <span
-                                class="text-[10px] font-bold text-gray-400 group-hover:text-navy transition-colors">{{order.date}}</span>
+                                class="text-[10px] font-bold text-gray-400 group-hover:text-navy transition-colors">{{order.created_at | date}}</span>
                         </td>
-                        <td class="px-6 py-4">
-                            <span class="text-sm font-black text-gold tracking-tighter">${{order.totalAmount}}</span>
+                        <td class="px-8 py-6">
+                            <span class="text-sm font-black text-gold tracking-tighter">${{order.total_amount}}</span>
                         </td>
-                        <td class="px-6 py-4">
+                        <td class="px-8 py-6">
                             <div class="flex items-center gap-1.5">
                                 <span
-                                    [class]="order.paymentStatus === 'Paid' ? 'text-green-500 bg-green-50' : 'text-yellow-600 bg-yellow-50'"
+                                    [class]="order.payment_status === 'paid' ? 'text-green-500 bg-green-50' : 'text-yellow-600 bg-yellow-50'"
                                     class="px-2 py-1 rounded-md text-[8px] font-black uppercase tracking-widest border border-current opacity-80">
-                                    {{order.paymentStatus}}
+                                    {{order.payment_status}}
                                 </span>
                                 <span
-                                    class="text-[8px] font-black text-navy/30 uppercase tracking-widest">{{order.paymentMethod}}</span>
+                                    class="text-[8px] font-black text-navy/30 uppercase tracking-widest">{{order.payment_method}}</span>
                             </div>
                         </td>
-                        <td class="px-6 py-4">
+                        <td class="px-8 py-6">
                             <div class="flex items-center">
                                 <span [ngClass]="{
-                                    'bg-yellow-500 text-white': order.orderStatus === 'Packing',
-                                    'bg-blue-500 text-white': order.orderStatus === 'Shipping',
-                                    'bg-green-500 text-white': order.orderStatus === 'Delivered',
-                                    'bg-red-500 text-white': order.orderStatus === 'Cancelled'
+                                    'bg-yellow-500 text-white': order.order_status === 'pending',
+                                    'bg-blue-500 text-white': order.order_status === 'processing',
+                                    'bg-green-500 text-white': order.order_status === 'delivered',
+                                    'bg-red-500 text-white': order.order_status === 'cancelled'
                                   }"
                                     class="px-2.5 py-1 rounded-lg text-[8px] font-black uppercase tracking-widest shadow-lg">
-                                    {{order.orderStatus}}
+                                    {{order.order_status}}
                                 </span>
                             </div>
                         </td>
-                        <td class="px-6 py-4 text-right">
+                        <td class="px-8 py-6 text-right">
                             <a [routerLink]="[order.id]"
                                 class="inline-flex items-center gap-1 text-[9px] font-black text-navy uppercase tracking-widest hover:text-gold transition-all group/btn">
-                                Intel
+                                Details
                                 <svg xmlns="http://www.w3.org/2000/svg"
                                     class="h-3 w-3 transform group-hover/btn:translate-x-0.5 transition-transform"
                                     fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -129,24 +126,25 @@
                 </tbody>
             </table>
         </div>
-
-        <!-- System Empty State -->
-        <div *ngIf="(filteredOrders$ | async)?.length === 0" class="py-24 text-center">
-            <div
-                class="w-32 h-32 bg-gray-50 rounded-[2.5rem] flex items-center justify-center mx-auto mb-8 shadow-inner">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-200" fill="none" viewBox="0 0 24 24"
+        <div *ngIf="orders.length === 0" class="p-20 text-center">
+            <div class="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-200" fill="none" viewBox="0 0 24 24"
                     stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                         d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
             </div>
-            <h3 class="text-3xl font-black text-navy tracking-tight">Deployment Index Empty</h3>
-            <p class="text-xs text-gray-400 font-bold uppercase tracking-[0.3em] mt-3">No tracking data found for
-                current configuration</p>
-            <button (click)="statusFilter = ''; searchTerm = ''"
-                class="mt-10 px-10 py-4 bg-navy text-white rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-gold transition-all shadow-xl shadow-navy/20">
-                Reset Deployment Grid
-            </button>
+            <h3 class="text-xl font-black text-navy tracking-tight">No Orders Found</h3>
+            <p class="text-gray-400 font-bold text-xs uppercase tracking-widest mt-2">Try adjusting your filters</p>
         </div>
+        
+        <!-- Pagination -->
+        <app-pagination *ngIf="orders.length > 0"
+            [total]="pagination.total" 
+            [page]="pagination.page" 
+            [limit]="pagination.limit" 
+            [totalPages]="pagination.totalPages"
+            (pageChange)="onPageChange($event)">
+        </app-pagination>
     </div>
 </div>

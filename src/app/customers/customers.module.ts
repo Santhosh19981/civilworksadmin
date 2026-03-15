@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { CustomerListComponent } from './customer-list/customer-list.component';
 import { RouterModule, Routes } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { SharedModule } from '../shared/shared.module';
 
 const routes: Routes = [
     { path: '', component: CustomerListComponent }
@@ -10,6 +11,6 @@ const routes: Routes = [
 
 @NgModule({
     declarations: [CustomerListComponent],
-    imports: [CommonModule, FormsModule, RouterModule.forChild(routes)]
+    imports: [CommonModule, FormsModule, SharedModule, RouterModule.forChild(routes)]
 })
 export class CustomersModule { }

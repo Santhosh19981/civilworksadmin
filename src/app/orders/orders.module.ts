@@ -4,6 +4,7 @@ import { OrderListComponent } from './order-list/order-list.component';
 import { OrderDetailsComponent } from './order-details/order-details.component';
 import { RouterModule, Routes } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { SharedModule } from '../shared/shared.module';
 
 const routes: Routes = [
     { path: '', component: OrderListComponent },
@@ -12,6 +13,6 @@ const routes: Routes = [
 
 @NgModule({
     declarations: [OrderListComponent, OrderDetailsComponent],
-    imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterModule.forChild(routes)]
+    imports: [CommonModule, FormsModule, ReactiveFormsModule, SharedModule, RouterModule.forChild(routes)]
 })
 export class OrdersModule { }

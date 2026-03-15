@@ -9,22 +9,53 @@ declare var Chart: any;
     styleUrls: ['./payment-list.component.css']
 })
 export class PaymentListComponent implements OnInit, AfterViewInit {
-    payments$: Observable<any[]>;
+    payments: any[] = [];
     totalRevenue = 0;
     onlinePayments = 0;
     codPayments = 0;
+    searchTerm = '';
+
+    pagination: any = {
+        total: 0,
+        page: 1,
+        limit: 10,
+        totalPages: 0
+    };
 
     constructor(private core: CoreService) {
-        this.payments$ = this.core.getData('payments');
+        this.loadPayments();
     }
 
-    ngOnInit() {
-        this.payments$.subscribe(payments => {
-            this.totalRevenue = payments.filter(p => p.status === 'Paid').reduce((sum, p) => sum + p.amount, 0);
-            this.onlinePayments = payments.filter(p => p.method === 'Online' && p.status === 'Paid').reduce((sum, p) => sum + p.amount, 0);
-            this.codPayments = payments.filter(p => p.method === 'COD').reduce((sum, p) => sum + p.amount, 0);
+    loadPayments(page: number = 1) {
+        this.core.getData('payments', page, this.pagination.limit, { search: this.searchTerm }).subscribe(res => {
+            this.payments = res.data;
+            this.pagination = res.pagination;
+        });
+
+        this.core.getPaymentStats().subscribe(stats => {
+            this.totalRevenue = stats.liquidity;
+            this.onlinePayments = stats.settlements;
+            this.codPayments = stats.collections;
+            this.reversals = stats.reversals;
         });
     }
+
+    reversals = 0;
+
+    calculateStats(payments: any[]) {
+        // Obsolete - using server stats
+    }
+
+    onSearch() {
+        this.pagination.page = 1;
+        this.loadPayments();
+    }
+
+    onPageChange(page: number) {
+        this.loadPayments(page);
+    }
+
+    ngOnInit() { }
 
     ngAfterViewInit() {
         new Chart('revenueTrendChart', {

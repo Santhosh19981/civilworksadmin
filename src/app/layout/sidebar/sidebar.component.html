@@ -24,7 +24,8 @@
 
     <!-- Navigation -->
     <nav class="flex-1 overflow-y-auto py-8 px-4 space-y-3 custom-scrollbar relative z-10">
-        <a *ngFor="let item of menuItems" [routerLink]="item.path" routerLinkActive="active-item"
+        <a *ngFor="let item of filteredMenuItems" [routerLink]="item.path" routerLinkActive="active-item"
+            [routerLinkActiveOptions]="{exact: item.exact || false}"
             class="nav-item group flex items-center gap-4 px-4 py-3.5 rounded-xl transition-all duration-300 hover:bg-white/5"
             [title]="collapsed ? item.label : ''">
 

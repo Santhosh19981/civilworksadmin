@@ -87,14 +87,14 @@
                             required class="premium-input bg-white border-navy/10" placeholder="••••••••">
                         <button type="button" (click)="showPassword = !showPassword"
                             class="absolute right-4 top-1/2 -translate-y-1/2 text-navy-light/60 hover:text-navy transition-colors">
-                            <svg *ngIf="!showPassword" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                            <svg *ngIf="showPassword" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
                                 stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                             </svg>
-                            <svg *ngIf="showPassword" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                            <svg *ngIf="!showPassword" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
                                 stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a9.97 9.97 0 011.563-3.088m6.225-4.51A10.05 10.05 0 0112 5c4.478 0 8.268 2.943 9.542 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21m-2.101-2.101L17.5 17.5m-9.299-9.299L3 3m5.541 5.541a3.5 3.5 0 104.95 4.95" />
@@ -113,8 +113,14 @@
                     {{error}}
                 </div>
 
-                <button type="submit" class="premium-btn group">
-                    <span class="relative z-10 font-black">VERIFY & ACCESS SYSTEM</span>
+                <button type="submit" [disabled]="loading" class="premium-btn group" [class.opacity-70]="loading" [class.cursor-not-allowed]="loading">
+                    <span class="relative z-10 font-black flex items-center justify-center gap-2">
+                        <svg *ngIf="loading" class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                        </svg>
+                        {{ loading ? 'VERIFYING...' : 'VERIFY & ACCESS SYSTEM' }}
+                    </span>
                 </button>
 
                 <div class="pt-8 text-center border-t border-gray-100 mt-12">

@@ -1,0 +1,11 @@
+.premium-card {
+    background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+}
+
+.shadow-3xl {
+    box-shadow: 0 40px 100px -20px rgba(15, 23, 42, 0.15);
+}
+
+tr:last-child {
+    border-bottom: none;
+}

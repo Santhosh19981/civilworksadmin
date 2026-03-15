@@ -31,41 +31,44 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-50">
-                    <tr *ngFor="let item of (rentals$ | async)"
-                        class="group hover:bg-gray-50/30 transition-colors duration-300">
-                        <td class="px-6 py-4">
+                    <tr *ngFor="let rental of rentals"
+                        class="group hover:bg-gray-50/50 transition-all duration-500">
+                        <td class="px-8 py-6">
                             <div class="flex items-center gap-4">
                                 <div
                                     class="w-16 h-12 rounded-xl bg-gray-50 overflow-hidden border border-gray-100 shadow-sm">
-                                    <img [src]="item.image"
-                                        class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                                    <img [src]="rental.image"
+                                        class="w-full h-full object-cover transition-transform duration-500">
                                 </div>
                                 <div>
                                     <h3
                                         class="text-sm font-black text-navy tracking-tight group-hover:text-gold transition-colors">
-                                        {{item.name}}</h3>
-                                    <p class="text-[9px] text-gray-300 font-bold uppercase tracking-wider line-clamp-1">
-                                        {{item.description}}</p>
+                                        {{rental.name}}</h3>
+                                    <div class="flex items-center gap-2 mt-1">
+                                        <span class="text-[8px] font-black px-2 py-0.5 bg-navy/5 text-navy rounded-md uppercase tracking-widest">{{rental.category_name || 'Uncategorized'}}</span>
+                                    </div>
+                                    <p class="text-[9px] text-gray-300 font-bold uppercase tracking-wider line-clamp-1 mt-1">
+                                        {{rental.description}}</p>
                                 </div>
                             </div>
                         </td>
-                        <td class="px-6 py-4">
+                        <td class="px-8 py-6">
                             <div class="flex flex-col">
                                 <span class="text-[8px] font-black text-gray-300 uppercase tracking-widest">Support
                                     Line</span>
-                                <span class="text-[10px] font-black text-navy tracking-widest">{{item.mobile}}</span>
+                                <span class="text-[10px] font-black text-navy tracking-widest">{{rental.mobile}}</span>
                             </div>
                         </td>
-                        <td class="px-6 py-4">
+                        <td class="px-8 py-6">
                             <span
-                                [class]="item.available ? 'bg-green-50 text-green-500 border-green-100' : 'bg-red-50 text-red-500 border-red-100'"
+                                [class]="rental.available ? 'bg-green-50 text-green-500 border-green-100' : 'bg-red-50 text-red-500 border-red-100'"
                                 class="px-3 py-1 text-[9px] font-black rounded-lg border tracking-widest uppercase">
-                                {{item.available ? 'AVAILABLE' : 'DEPLOYED'}}
+                                {{rental.available ? 'AVAILABLE' : 'DEPLOYED'}}
                             </span>
                         </td>
-                        <td class="px-6 py-4">
+                        <td class="px-8 py-6">
                             <div class="flex items-center justify-end gap-2">
-                                <a [routerLink]="['edit', item.id]"
+                                <a [routerLink]="['edit', rental.id]"
                                     class="p-2 bg-navy/5 text-navy rounded-lg hover:bg-navy hover:text-white transition-all">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
                                         viewBox="0 0 24 24" stroke="currentColor">
@@ -73,7 +76,7 @@
                                             d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                                     </svg>
                                 </a>
-                                <button (click)="deleteRental(item.id)"
+                                <button (click)="deleteRental(rental.id)"
                                     class="p-2 bg-red-50 text-red-500 rounded-lg hover:bg-red-500 hover:text-white transition-all">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
                                         viewBox="0 0 24 24" stroke="currentColor">
@@ -87,5 +90,26 @@
                 </tbody>
             </table>
         </div>
+
+        <!-- Elegant Empty State -->
+        <div *ngIf="rentals.length === 0" class="p-20 text-center">
+            <div class="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-200" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                        d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                </svg>
+            </div>
+            <h3 class="text-xl font-black text-navy tracking-tight">No Rentals Found</h3>
+            <p class="text-gray-400 font-bold text-xs uppercase tracking-widest mt-2">Start by deploying your first rental asset</p>
+        </div>
+        <!-- Pagination -->
+        <app-pagination 
+            [total]="pagination.total" 
+            [page]="pagination.page" 
+            [limit]="pagination.limit" 
+            [totalPages]="pagination.totalPages"
+            (pageChange)="onPageChange($event)">
+        </app-pagination>
     </div>
 </div>

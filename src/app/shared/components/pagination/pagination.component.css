@@ -1,0 +1,15 @@
+button.active {
+  background-color: #0c1a32; /* Navy */
+  color: white;
+  border-color: #0c1a32;
+  box-shadow: 0 10px 20px -5px rgba(12, 26, 50, 0.3);
+}
+
+button:not(.active):hover {
+  background-color: #f7b92420; /* Gold with opacity */
+  border-color: #f7b924;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}

@@ -11,9 +11,7 @@
     perspective: 2000px;
 }
 
-.rental-card:hover {
-    transform: translateY(-20px) scale(1.03) rotateX(2deg);
-}
+
 
 .shadow-3xl {
     box-shadow: 0 35px 60px -15px rgba(6, 25, 45, 0.1);

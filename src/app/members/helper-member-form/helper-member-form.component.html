@@ -1,0 +1,102 @@
+<div class="max-w-4xl mx-auto pb-12 animate-fade-in">
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-12">
+        <div>
+            <h2 class="text-4xl font-black text-navy tracking-tight">
+                {{isEdit ? 'Edit' : 'Add'}} <span class="text-gold">Helper</span>
+            </h2>
+            <p class="text-xs text-gray-400 font-bold uppercase tracking-[0.3em] mt-2">
+                {{isEdit ? 'Update helper information' : 'Register a new helper'}}
+            </p>
+        </div>
+        <button routerLink="/helper-members"
+            class="px-8 py-4 bg-gray-50 text-navy rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-navy hover:text-white transition-all border border-gray-100 shadow-sm">
+            Back to List
+        </button>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Image Upload Section -->
+        <div class="lg:col-span-1">
+            <div class="bg-white p-8 rounded-[2.5rem] shadow-3xl border border-gray-50 text-center sticky top-8">
+                <div class="relative w-48 h-48 mx-auto mb-6 group">
+                    <div class="absolute inset-0 bg-navy/5 rounded-[2rem] border-2 border-dashed border-gray-200 group-hover:border-gold/50 transition-colors overflow-hidden">
+                        <img *ngIf="member.image" [src]="member.image" class="w-full h-full object-cover">
+                        <div *ngIf="!member.image" class="w-full h-full flex flex-col items-center justify-center text-gray-300">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            </svg>
+                            <span class="text-[10px] font-black uppercase tracking-widest">No Photo</span>
+                        </div>
+                    </div>
+                    
+                    <label class="absolute -bottom-4 left-1/2 -translate-x-1/2 bg-navy text-white px-6 py-3 rounded-xl text-[9px] font-black uppercase tracking-widest cursor-pointer hover:bg-gold transition-all shadow-xl whitespace-nowrap">
+                        {{uploading ? 'Processing...' : 'Upload Photo'}}
+                        <input type="file" (change)="onFileSelected($event)" class="hidden" accept="image/*">
+                    </label>
+                </div>
+                <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest leading-relaxed">
+                    JPG or PNG formats.<br>Max 2MB file size.
+                </p>
+            </div>
+        </div>
+
+        <!-- Form Section -->
+        <div class="lg:col-span-2">
+            <div class="bg-white p-10 rounded-[2.5rem] shadow-3xl border border-gray-50 space-y-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-2">
+                        <label class="block text-[9px] font-black text-navy/40 uppercase tracking-[0.2em]">Full Name</label>
+                        <input type="text" [(ngModel)]="member.name"
+                            placeholder="Enter full name"
+                            class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-gold outline-none transition-all font-black text-navy shadow-inner">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-[9px] font-black text-navy/40 uppercase tracking-[0.2em]">Mobile Number</label>
+                        <input type="text" [(ngModel)]="member.mobile"
+                            placeholder="Enter phone number"
+                            class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-gold outline-none transition-all font-black text-navy shadow-inner">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-2">
+                        <label class="block text-[9px] font-black text-navy/40 uppercase tracking-[0.2em]">Service Type</label>
+                        <select [(ngModel)]="member.helper_id"
+                            class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-gold outline-none transition-all font-black text-navy shadow-inner appearance-none">
+                            <option value="">Select a service</option>
+                            <option *ngFor="let service of services" [value]="service.id">{{service.service_name}}</option>
+                        </select>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-[9px] font-black text-navy/40 uppercase tracking-[0.2em]">Experience</label>
+                        <input type="text" [(ngModel)]="member.experience"
+                            placeholder="e.g. 5+ years"
+                            class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-gold outline-none transition-all font-black text-navy shadow-inner">
+                    </div>
+                </div>
+
+                <div class="space-y-6 pt-4">
+                    <div class="flex items-center justify-between p-6 bg-navy text-white rounded-[1.5rem] shadow-xl">
+                        <div class="flex flex-col">
+                            <span class="text-[11px] font-black uppercase tracking-widest leading-none">Helper Status</span>
+                            <span class="text-[8px] font-bold opacity-60 mt-1 uppercase tracking-wider">Currently available for work</span>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" [checked]="member.status === 'active'" 
+                                (change)="member.status = member.status === 'active' ? 'inactive' : 'active'" 
+                                class="sr-only peer">
+                            <div class="w-12 h-7 bg-white/10 rounded-full peer peer-checked:bg-gold transition-all after:content-[''] after:absolute after:top-1 after:left-1 after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-5"></div>
+                        </label>
+                    </div>
+
+                    <button (click)="save()" [disabled]="loading"
+                        class="w-full py-5 bg-gold text-white rounded-[2rem] font-black text-xs uppercase tracking-[0.2em] hover:bg-navy transition-all duration-500 shadow-2xl shadow-gold/20 flex items-center justify-center gap-4 relative overflow-hidden group">
+                        <div *ngIf="loading" class="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                        <span [class.opacity-0]="loading">{{isEdit ? 'Update Details' : 'Register Helper'}}</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

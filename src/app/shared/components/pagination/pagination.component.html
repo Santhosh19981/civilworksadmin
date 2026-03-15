@@ -1,0 +1,45 @@
+<div class="flex items-center justify-between px-8 py-6 bg-white border-t border-gray-100 rounded-b-[2rem]">
+  <!-- Info -->
+  <div class="flex items-center gap-2">
+    <p class="text-[10px] font-black text-navy/40 uppercase tracking-[0.2em]">
+      Showing <span class="text-navy">{{startRange}}</span> to <span class="text-navy">{{endRange}}</span> of <span class="text-navy">{{total}}</span> Parameters
+    </p>
+  </div>
+
+  <!-- Pagination Controls -->
+  <div class="flex items-center gap-2">
+    <!-- Previous -->
+    <button 
+      (click)="onPageChange(page - 1)" 
+      [disabled]="page === 1"
+      class="p-2 rounded-xl border border-gray-100 text-navy hover:bg-navy hover:text-white disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-navy transition-all duration-300"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+      </svg>
+    </button>
+
+    <!-- Page Numbers -->
+    <div class="flex items-center gap-1">
+      <button 
+        *ngFor="let p of pages"
+        (click)="onPageChange(p)"
+        [class.active]="p === page"
+        class="w-10 h-10 rounded-xl border border-gray-100 text-[10px] font-black uppercase tracking-widest transition-all duration-500 hover:border-gold hover:text-gold"
+      >
+        {{p}}
+      </button>
+    </div>
+
+    <!-- Next -->
+    <button 
+      (click)="onPageChange(page + 1)" 
+      [disabled]="page === totalPages"
+      class="p-2 rounded-xl border border-gray-100 text-navy hover:bg-navy hover:text-white disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-navy transition-all duration-300"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+      </svg>
+    </button>
+  </div>
+</div>

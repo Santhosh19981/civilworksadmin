@@ -9,38 +9,64 @@ import { map } from 'rxjs/operators';
     styleUrls: ['./product-list.component.css']
 })
 export class ProductListComponent implements OnInit {
-    products$: Observable<any[]>;
-    categories$: Observable<any[]>;
+    products: any[] = [];
+    categories: any[] = [];
     searchTerm = '';
     selectedCategory = '';
-    filteredProducts$: Observable<any[]>;
+    
+    pagination: any = {
+        total: 0,
+        page: 1,
+        limit: 10,
+        totalPages: 0
+    };
 
     constructor(private core: CoreService) {
-        this.products$ = this.core.getData('products');
-        this.categories$ = this.core.getData('categories');
+        this.loadProducts();
+        this.core.getData('categories', 1, 100).subscribe(res => {
+            this.categories = res.data.filter((cat: any) => cat.parent_id === null);
+        });
+    }
 
-        // Logic for filtering
-        this.filteredProducts$ = combineLatest([this.products$, this.categories$]).pipe(
-            map(([products]) => {
-                return products.filter(p => {
-                    const matchesSearch = p.name.toLowerCase().includes(this.searchTerm.toLowerCase());
-                    const matchesCategory = !this.selectedCategory || p.category === this.selectedCategory;
-                    return matchesSearch && matchesCategory;
-                });
-            })
-        );
+    loadProducts(page: number = 1) {
+        const filters = {
+            search: this.searchTerm,
+            category_id: this.selectedCategory
+        };
+        this.core.getData('products', page, 10, filters).subscribe(res => {
+            this.products = res.data;
+            this.pagination = res.pagination;
+        });
+    }
+
+    onSearch() {
+        this.loadProducts(1);
+    }
+
+    onCategoryChange() {
+        this.loadProducts(1);
+    }
+
+    onPageChange(page: number) {
+        this.loadProducts(page);
     }
 
     ngOnInit() { }
 
     toggleStatus(product: any) {
         const newStatus = product.status === 'active' ? 'inactive' : 'active';
-        this.core.updateItem('products', product.id, { status: newStatus });
+        this.core.updateItem('products', product.id, { status: newStatus }).subscribe({
+            next: () => this.loadProducts(this.pagination.page),
+            error: (err) => alert('Failed to update status')
+        });
     }
 
     deleteProduct(id: any) {
         if (confirm('Are you sure you want to delete this product?')) {
-            this.core.deleteItem('products', id);
+            this.core.deleteItem('products', id).subscribe({
+                next: () => this.loadProducts(this.pagination.page),
+                error: (err) => alert('Failed to delete product')
+            });
         }
     }
 }

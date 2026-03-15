@@ -18,19 +18,22 @@ export class EditHelperComponent implements OnInit {
 
     ngOnInit() {
         this.id = this.route.snapshot.params['id'];
-        this.core.getData('helpers').subscribe(helpers => {
-            const found = helpers.find((h: any) => h.id == this.id);
-            if (found) {
-                this.helper = { ...found };
-            }
+        this.core.getData(`helpers/${this.id}`).subscribe(res => {
+            this.helper = res.data;
         });
     }
 
     onSubmit() {
-        if (this.helper.serviceName && this.helper.description) {
-            this.core.updateItem('helpers', parseInt(this.id), this.helper);
-            alert('Helper updated successfully!');
-            this.router.navigate(['/helpers']);
+        if (this.helper.serviceName || this.helper.name) {
+            this.core.updateItem('helpers', parseInt(this.id), this.helper).subscribe({
+                next: () => {
+                    alert('Helper updated successfully!');
+                    this.router.navigate(['/helpers/services']);
+                },
+                error: (err) => {
+                    console.error('Error updating helper', err);
+                }
+            });
         }
     }
 }

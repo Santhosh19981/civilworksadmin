@@ -3,105 +3,71 @@ import { BehaviorSubject, Observable, of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { tap, map } from 'rxjs/operators';
 
+import { environment } from '../../environments/environment';
+
 @Injectable({
     providedIn: 'root'
 })
 export class CoreService {
-    private products = new BehaviorSubject<any[]>([]);
-    private categories = new BehaviorSubject<any[]>([]);
-    private rentals = new BehaviorSubject<any[]>([]);
-    private orders = new BehaviorSubject<any[]>([]);
-    private payments = new BehaviorSubject<any[]>([]);
-    private customers = new BehaviorSubject<any[]>([]);
-    private helpers = new BehaviorSubject<any[]>([]);
-    private settings = new BehaviorSubject<any>({
-        deliveryCharge: 50,
-        taxPercent: 12,
-        enableCOD: true,
-        themeColor: '#0B2C4D'
-    });
+    constructor(private http: HttpClient) { }
 
-    constructor(private http: HttpClient) {
-        this.initData();
+    getStats(): Observable<any> {
+        return this.http.get(`${environment.apiUrl}/dashboard/stats`).pipe(map((res: any) => res.data));
     }
 
-    private initData() {
-        this.loadFromStorageOrJson('products', 'assets/data/products.json', this.products);
-        this.loadFromStorageOrJson('categories', 'assets/data/categories.json', this.categories);
-        this.loadFromStorageOrJson('rentals', 'assets/data/rentals.json', this.rentals);
-        this.loadFromStorageOrJson('orders', 'assets/data/orders.json', this.orders);
-        this.loadFromStorageOrJson('payments', 'assets/data/payments.json', this.payments);
-        this.loadFromStorageOrJson('customers', 'assets/data/customers.json', this.customers);
-        this.loadFromStorageOrJson('helpers', 'assets/data/helpers.json', this.helpers);
-
-        const savedSettings = localStorage.getItem('settings');
-        if (savedSettings) {
-            this.settings.next(JSON.parse(savedSettings));
-        }
+    getPaymentStats(): Observable<any> {
+        return this.http.get(`${environment.apiUrl}/dashboard/payments/stats`).pipe(map((res: any) => res.data));
     }
 
-    private loadFromStorageOrJson(key: string, jsonPath: string, subject: BehaviorSubject<any[]>) {
-        const saved = localStorage.getItem(key);
-        const parsed = saved ? JSON.parse(saved) : null;
-
-        // Force reload from JSON if data is invalid or using old schema for 'helpers'
-        const isHelpersSchemaInvalid = key === 'helpers' && parsed && parsed.length > 0 && !parsed[0].serviceName;
-
-        if (parsed && Array.isArray(parsed) && parsed.length > 0 && !isHelpersSchemaInvalid) {
-            subject.next(parsed);
-        } else {
-            this.http.get<any[]>(jsonPath).subscribe({
-                next: (data) => this.save(key, data, subject),
-                error: (err) => console.error(`Error loading ${key}:`, err)
-            });
-        }
-    }
-
-    private save(key: string, data: any, subject: BehaviorSubject<any>) {
-        localStorage.setItem(key, JSON.stringify(data));
-        subject.next(data);
+    getRevenueReport(days: number = 30): Observable<any> {
+        return this.http.get(`${environment.apiUrl}/dashboard/reports/revenue?days=${days}`).pipe(map((res: any) => res.data));
     }
 
     // Generic CRUD
-    getData(key: 'products' | 'categories' | 'rentals' | 'orders' | 'payments' | 'customers' | 'settings' | 'helpers'): Observable<any> {
-        switch (key) {
-            case 'products': return this.products.asObservable();
-            case 'categories': return this.categories.asObservable();
-            case 'rentals': return this.rentals.asObservable();
-            case 'orders': return this.orders.asObservable();
-            case 'payments': return this.payments.asObservable();
-            case 'customers': return this.customers.asObservable();
-            case 'helpers': return this.helpers.asObservable();
-            case 'settings': return this.settings.asObservable();
+    getData(key: string, page: number = 1, limit: number = 10, filters: any = {}): Observable<any> {
+        let endpoint = key;
+        if (key === 'customers') endpoint = 'users?role=customer';
+
+        let url = `${environment.apiUrl}/${endpoint}`;
+        const separator = url.includes('?') ? '&' : '?';
+        url += `${separator}page=${page}&limit=${limit}`;
+
+        for (const [key, value] of Object.entries(filters)) {
+            if (value !== undefined && value !== null && value !== '') {
+                url += `&${key}=${value}`;
+            }
         }
+
+        return this.http.get<any>(url);
     }
 
-    addItem(key: string, item: any) {
-        const subject = (this as any)[key];
-        const current = subject.value;
-        const newData = [...current, { ...item, id: Date.now() }];
-        this.save(key, newData, subject);
+    addItem(key: string, item: any): Observable<any> {
+        return this.http.post<any>(`${environment.apiUrl}/${key}/admin`, item);
     }
 
-    updateItem(key: string, id: any, updates: any) {
-        const subject = (this as any)[key];
-        const current = subject.value;
-        const index = current.findIndex((i: any) => i.id === id || i.orderId === id || i.transactionId === id);
-        if (index > -1) {
-            const newData = [...current];
-            newData[index] = { ...newData[index], ...updates };
-            this.save(key, newData, subject);
-        }
+    updateItem(key: string, id: any, updates: any): Observable<any> {
+        return this.http.put<any>(`${environment.apiUrl}/${key}/admin/${id}`, updates);
     }
 
-    deleteItem(key: string, id: any) {
-        const subject = (this as any)[key];
-        const current = subject.value;
-        const newData = current.filter((i: any) => i.id !== id);
-        this.save(key, newData, subject);
+    deleteItem(key: string, id: any): Observable<any> {
+        return this.http.delete<any>(`${environment.apiUrl}/${key}/admin/${id}`);
     }
 
-    updateSettings(newSettings: any) {
-        this.save('settings', newSettings, this.settings);
+    getSettings(): Observable<any> {
+        return this.http.get(`${environment.apiUrl}/settings`).pipe(map((res: any) => res.data));
+    }
+
+    updateSettings(data: any): Observable<any> {
+        return this.http.put(`${environment.apiUrl}/admin/settings`, data);
+    }
+
+    uploadImage(file: File | Blob): Observable<any> {
+        const formData = new FormData();
+        formData.append('image', file);
+        return this.http.post(`${environment.apiUrl}/upload`, formData).pipe(map((res: any) => res.data));
+    }
+
+    updateProfile(data: any): Observable<any> {
+        return this.http.put<any>(`${environment.apiUrl}/users/profile`, data);
     }
 }

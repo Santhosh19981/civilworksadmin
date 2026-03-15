@@ -1,0 +1,102 @@
+<div class="max-w-4xl mx-auto space-y-10 pb-10">
+    <div class="flex items-center justify-between">
+        <div>
+            <h2 class="text-3xl font-black text-navy tracking-tight">Add New <span class="text-gold">Worker</span></h2>
+            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-[0.3em] mt-2">Register a new specialized worker to the list</p>
+        </div>
+        <a routerLink="/helpers/workers"
+            class="px-6 py-3 bg-navy/5 text-navy rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-navy hover:text-white transition-all">
+            Back to List
+        </a>
+    </div>
+
+    <div class="bg-white p-10 rounded-[2.5rem] border border-gray-50 shadow-2xl">
+        <form (ngSubmit)="onSubmit()" #memberForm="ngForm" class="space-y-8">
+            <!-- Image Upload Section -->
+            <div class="flex flex-col items-center justify-center p-8 border-2 border-dashed border-gray-100 rounded-[2.5rem] bg-gray-50/50 group hover:border-gold/30 transition-all cursor-pointer relative overflow-hidden" (click)="fileInput.click()">
+                <input type="file" #fileInput (change)="onFileSelected($event)" accept="image/*" class="hidden">
+                <div *ngIf="!member.image" class="text-center space-y-3">
+                    <div class="w-16 h-16 bg-white rounded-2xl shadow-sm flex items-center justify-center mx-auto group-hover:scale-110 transition-transform">
+                        <svg class="w-8 h-8 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <span class="block text-[10px] font-black text-navy uppercase tracking-widest">Profile Photo</span>
+                        <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Click to upload worker image</span>
+                    </div>
+                </div>
+                <div *ngIf="member.image" class="relative group/preview w-32 h-32 rounded-3xl overflow-hidden border-4 border-white shadow-2xl">
+                    <img [src]="member.image" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-navy/60 opacity-0 group-hover/preview:opacity-100 transition-opacity flex items-center justify-center">
+                        <span class="text-[8px] font-black text-white uppercase tracking-widest">Change Photo</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="space-y-3">
+                    <label class="block text-[10px] font-black text-navy/40 uppercase tracking-widest">Worker Name</label>
+                    <input type="text" name="name" [(ngModel)]="member.name" required
+                        placeholder="Full Name"
+                        class="w-full px-8 py-5 bg-gray-50 border-2 border-transparent rounded-[1.5rem] focus:bg-white focus:border-gold outline-none transition-all font-bold text-navy shadow-inner">
+                </div>
+                <div class="space-y-3">
+                    <label class="block text-[10px] font-black text-navy/40 uppercase tracking-widest">Experience</label>
+                    <input type="text" name="experience" [(ngModel)]="member.experience" required
+                        placeholder="e.g. 5 Years"
+                        class="w-full px-8 py-5 bg-gray-50 border-2 border-transparent rounded-[1.5rem] focus:bg-white focus:border-gold outline-none transition-all font-bold text-navy shadow-inner">
+                </div>
+            </div>
+
+            <!-- Multi-Service Selection Area -->
+            <div class="space-y-4">
+                <label class="block text-[10px] font-black text-navy/40 uppercase tracking-widest">Specialized Services (Multi-select)</label>
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+                    <div *ngFor="let s of services" 
+                         (click)="onServiceToggle(s.id, {target: {checked: !isServiceSelected(s.id)}})"
+                         [class.bg-gold]="isServiceSelected(s.id)"
+                         [class.text-white]="isServiceSelected(s.id)"
+                         [class.bg-gray-50]="!isServiceSelected(s.id)"
+                         class="p-4 rounded-2xl cursor-pointer hover:shadow-md transition-all border border-transparent flex flex-col items-center justify-center text-center space-y-2 group">
+                        <div [class.bg-white]="isServiceSelected(s.id)" 
+                             [ngClass]="{'bg-navy/5': !isServiceSelected(s.id)}"
+                             class="w-10 h-10 rounded-xl flex items-center justify-center transition-colors">
+                            <span class="text-[10px] font-black" [class.text-gold]="isServiceSelected(s.id)" [class.text-navy]="!isServiceSelected(s.id)">{{ (s.service_name || s.name).charAt(0) }}</span>
+                        </div>
+                        <span class="text-[9px] font-black uppercase tracking-widest leading-tight">{{ s.service_name || s.name }}</span>
+                        <input type="checkbox" class="hidden" [checked]="isServiceSelected(s.id)">
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="space-y-3">
+                    <label class="block text-[10px] font-black text-navy/40 uppercase tracking-widest">Mobile Number</label>
+                    <input type="text" name="mobile" [(ngModel)]="member.mobile" required
+                        placeholder="Phone number"
+                        class="w-full px-8 py-5 bg-gray-50 border-2 border-transparent rounded-[1.5rem] focus:bg-white focus:border-gold outline-none transition-all font-bold text-navy shadow-inner">
+                </div>
+                <div class="flex items-center justify-between p-8 bg-gold/5 rounded-[1.5rem] border border-gold/10">
+                    <div>
+                        <span class="block text-xs font-black text-navy uppercase tracking-widest">Active Status</span>
+                        <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Toggle availability for bookings</span>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" name="status" [checked]="member.status === 'active'"
+                            (change)="member.status = $any($event.target).checked ? 'active' : 'inactive'"
+                            class="sr-only peer">
+                        <div
+                            class="w-14 h-8 bg-gray-200 rounded-full peer peer-checked:bg-gold transition-all after:content-[''] after:absolute after:top-1 after:left-1 after:bg-white after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:after:translate-x-6">
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <button type="submit" [disabled]="!memberForm.valid || loading"
+                class="w-full py-5 bg-gold text-white rounded-[1.5rem] font-black text-xs uppercase tracking-widest hover:bg-navy transition-all shadow-xl shadow-gold/20 disabled:opacity-50 disabled:cursor-not-allowed">
+                {{ loading ? 'Saving...' : 'Save Worker Profile' }}
+            </button>
+        </form>
+    </div>
+</div>

@@ -1,4 +1,4 @@
-<div class="max-w-4xl mx-auto space-y-6 pb-8">
+<div class="max-w-4xl mx-auto space-y-6 pb-8" (window:paste)="onPaste($event)">
     <!-- Executive Header -->
     <div class="flex items-center justify-between px-2">
         <div class="flex items-center gap-5">
@@ -11,10 +11,9 @@
                 </svg>
             </a>
             <div>
-                <h2 class="text-2xl font-black text-navy tracking-tight">Product <span
-                        class="text-gold">Governance</span></h2>
-                <p class="text-[8px] text-gray-300 font-black uppercase tracking-[0.3em] mt-1">Inventory Asset
-                    Initialization</p>
+                <h2 class="text-2xl font-black text-navy tracking-tight">{{isEdit ? 'Edit' : 'Add'}} <span
+                        class="text-gold">Product</span></h2>
+                <p class="text-[8px] text-gray-300 font-black uppercase tracking-[0.3em] mt-1">Product Details</p>
             </div>
         </div>
 
@@ -44,14 +43,13 @@
                                 d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                         </svg>
                     </div>
-                    <p class="text-base font-black text-navy tracking-tight">Asset Image</p>
-                    <p class="text-[7px] font-black text-gray-300 uppercase tracking-widest mt-1 px-2">Initialize
-                        visual representation</p>
+                    <p class="text-base font-black text-navy tracking-tight">Image</p>
+                    <p class="text-[7px] font-black text-gray-300 uppercase tracking-widest mt-1 px-2">Upload or paste product image</p>
                 </div>
 
                 <div *ngIf="imagePreview" class="relative z-10 w-full">
                     <div class="relative rounded-[1.5rem] overflow-hidden shadow-xl group/img">
-                        <img [src]="imagePreview"
+                        <img [src]="imagePreview || defaultImage"
                             class="w-full aspect-square object-cover transition-transform duration-700 group-hover/img:scale-110">
                         <div
                             class="absolute inset-0 bg-navy/40 opacity-0 group-hover/img:opacity-100 transition-opacity flex items-center justify-center">
@@ -66,7 +64,12 @@
                         </div>
                     </div>
                     <p class="text-[8px] font-black text-red-400 uppercase tracking-widest mt-4 cursor-pointer hover:text-red-600 transition-colors"
-                        (click)="imagePreview = ''">Clear Visualization</p>
+                        (click)="imagePreview = ''">Remove Image</p>
+                </div>
+
+                <div *ngIf="isUploading" class="absolute inset-0 bg-white/80 backdrop-blur-sm z-30 flex flex-col items-center justify-center">
+                    <div class="w-12 h-12 border-4 border-gold border-t-transparent rounded-full animate-spin mb-4"></div>
+                    <p class="text-[10px] font-black text-navy uppercase tracking-widest">Uploading Asset...</p>
                 </div>
 
                 <input type="file" (change)="onFileChange($event)"
@@ -84,8 +87,8 @@
                         </svg>
                     </div>
                     <div>
-                        <p class="text-[8px] font-black uppercase tracking-widest text-white/40">Audit Note</p>
-                        <p class="text-[10px] font-bold mt-0.5 text-white/80 uppercase">Authorization Required</p>
+                        <p class="text-[8px] font-black uppercase tracking-widest text-white/40">Information</p>
+                        <p class="text-[10px] font-bold mt-0.5 text-white/80 uppercase">Admin Access</p>
                     </div>
                 </div>
             </div>
@@ -100,40 +103,50 @@
                 <!-- Identity Group -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="space-y-2">
-                        <label class="block text-[9px] font-black text-navy/40 uppercase tracking-[0.2em]">Asset
-                            Label</label>
+                        <label class="block text-[9px] font-black text-navy/40 uppercase tracking-[0.2em]">Product Name</label>
                         <input type="text" [(ngModel)]="product.name" name="name" required
                             class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-gold outline-none transition-all font-black text-navy text-base shadow-inner"
                             placeholder="e.g. Industrial Excavator v2">
                     </div>
                     <div class="space-y-2">
-                        <label class="block text-[9px] font-black text-navy/40 uppercase tracking-[0.2em]">Category
-                            Sector</label>
+                        <label class="block text-[9px] font-black text-navy/40 uppercase tracking-[0.2em]">Category</label>
                         <div class="relative">
-                            <select [(ngModel)]="product.category" name="category" required
+                            <select [(ngModel)]="mainCategoryId" name="main_category" (change)="onCategoryChange()" required
                                 class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-gold outline-none transition-all font-black text-navy text-base shadow-inner appearance-none cursor-pointer">
-                                <option *ngFor="let cat of (categories$ | async)" [value]="cat.name">{{cat.name}}
-                                </option>
+                                <option [ngValue]="null" disabled>Select Category</option>
+                                <option *ngFor="let cat of mainCategories" [value]="cat.id">{{cat.name}}</option>
                             </select>
                             <div class="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-navy/20">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                                    stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
-                                        d="M19 9l-7 7-7-7" />
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7" />
                                 </svg>
                             </div>
                         </div>
                     </div>
                     <div class="space-y-2">
-                        <label class="block text-[9px] font-black text-navy/40 uppercase tracking-[0.2em]">Base
-                            Valuation ($)</label>
+                        <label class="block text-[9px] font-black text-navy/40 uppercase tracking-[0.2em]">Subcategory</label>
+                        <div class="relative">
+                            <select [(ngModel)]="product.subcategory_id" name="subcategory_id" required
+                                [disabled]="!mainCategoryId"
+                                class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-gold outline-none transition-all font-black text-navy text-base shadow-inner appearance-none cursor-pointer disabled:opacity-50">
+                                <option [ngValue]="null" disabled>Select Subcategory</option>
+                                <option *ngFor="let sub of subcategories" [value]="sub.id">{{sub.name}}</option>
+                            </select>
+                            <div class="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-navy/20">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-[9px] font-black text-navy/40 uppercase tracking-[0.2em]">Price ($)</label>
                         <input type="number" [(ngModel)]="product.price" name="price" required
                             class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-gold outline-none transition-all font-black text-navy text-base shadow-inner"
                             placeholder="0.00">
                     </div>
                     <div class="space-y-2">
-                        <label class="block text-[9px] font-black text-navy/40 uppercase tracking-[0.2em]">Inventory
-                            Reserve</label>
+                        <label class="block text-[9px] font-black text-navy/40 uppercase tracking-[0.2em]">Stock Quantity</label>
                         <input type="number" [(ngModel)]="product.stock" name="stock" required
                             class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-gold outline-none transition-all font-black text-navy text-base shadow-inner"
                             placeholder="0">
@@ -141,8 +154,7 @@
                 </div>
 
                 <div class="space-y-2">
-                    <label class="block text-[9px] font-black text-navy/40 uppercase tracking-[0.2em]">Asset
-                        Specifications</label>
+                    <label class="block text-[9px] font-black text-navy/40 uppercase tracking-[0.2em]">Description</label>
                     <textarea [(ngModel)]="product.description" name="description" rows="3"
                         class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-gold outline-none transition-all font-bold text-navy text-xs shadow-inner resize-none custom-scrollbar"
                         placeholder="Detailed engineering and deployment specifications..."></textarea>
@@ -160,9 +172,8 @@
                         </label>
                         <div class="max-w-[150px] md:max-w-none">
                             <p class="text-[11px] font-black text-navy uppercase tracking-widest leading-none">
-                                Operational Status</p>
-                            <p class="text-[7px] font-bold text-gray-300 uppercase tracking-widest mt-1">Set asset as
-                                active</p>
+                                Active</p>
+                            <p class="text-[7px] font-bold text-gray-300 uppercase tracking-widest mt-1">Toggle status</p>
                         </div>
                     </div>
 
@@ -173,7 +184,7 @@
                         </button>
                         <button type="submit"
                             class="px-5 py-2 bg-navy text-white rounded-xl font-black text-[8px] uppercase tracking-widest shadow-lg shadow-navy/10 hover:bg-gold transition-all duration-500 whitespace-nowrap">
-                            {{isEdit ? 'Authorize Updates' : 'System Initialize'}}
+                            {{isEdit ? 'Update Product' : 'Save Product'}}
                         </button>
                     </div>
                 </div>

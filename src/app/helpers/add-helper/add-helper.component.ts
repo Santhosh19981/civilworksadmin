@@ -17,9 +17,15 @@ export class AddHelperComponent {
 
     onSubmit() {
         if (this.helper.serviceName && this.helper.description) {
-            this.core.addItem('helpers', this.helper);
-            alert('Helper added successfully!');
-            this.router.navigate(['/helpers']);
+            this.core.addItem('helpers', this.helper).subscribe({
+                next: () => {
+                    alert('Helper added successfully!');
+                    this.router.navigate(['/helpers/services']);
+                },
+                error: (err) => {
+                    console.error('Error adding helper', err);
+                }
+            });
         }
     }
 }

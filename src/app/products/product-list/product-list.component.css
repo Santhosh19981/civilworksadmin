@@ -10,9 +10,7 @@
     perspective: 2000px;
 }
 
-.product-card:hover {
-    transform: translateY(-20px) scale(1.03);
-}
+
 
 .scroll-hide::-webkit-scrollbar {
     display: none;

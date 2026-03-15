@@ -48,16 +48,18 @@
         </div>
 
         <!-- User Profile -->
-        <div class="flex items-center gap-4 group cursor-pointer">
+        <div class="flex items-center gap-4 group cursor-pointer" routerLink="/profile" *ngIf="currentUser">
             <div class="text-right hidden sm:block">
-                <p class="text-sm font-black text-navy leading-none">BUILDPRO ADMIN</p>
-                <p class="text-[10px] text-gold font-bold tracking-widest uppercase mt-1">Head Manager</p>
+                <p class="text-sm font-black text-navy leading-none uppercase">{{ currentUser.name }}</p>
+                <p class="text-[10px] text-gold font-bold tracking-widest uppercase mt-1">{{ currentUser.role?.replace('_', ' ') }}</p>
             </div>
             <div class="relative">
-                <div
+                <div *ngIf="!currentUser.image"
                     class="w-11 h-11 rounded-xl bg-gradient-to-br from-navy to-navy-light flex items-center justify-center text-white font-black shadow-lg group-hover:shadow-gold/20 group-hover:scale-105 transition-all duration-300 border-2 border-white">
-                    AD
+                    {{ userAvatar }}
                 </div>
+                <img *ngIf="currentUser.image" [src]="userAvatar" 
+                    class="w-11 h-11 rounded-xl object-cover shadow-lg group-hover:shadow-gold/20 group-hover:scale-105 transition-all duration-300 border-2 border-white">
                 <div
                     class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white shadow-sm">
                 </div>

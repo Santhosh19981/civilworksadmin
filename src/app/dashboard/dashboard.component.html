@@ -52,15 +52,15 @@
             class="premium-card p-10 rounded-[2.5rem] bg-white border border-gray-100 shadow-xl relative overflow-hidden">
             <div class="flex items-center justify-between mb-10 relative z-10">
                 <div>
-                    <h4 class="text-xl font-black text-navy tracking-tight">Performance Velocity</h4>
-                    <p class="text-xs text-gray-400 font-bold uppercase tracking-widest mt-1">Monthly Order Distribution
+                    <h4 class="text-xl font-black text-navy tracking-tight">Order Trends</h4>
+                    <p class="text-xs text-gray-400 font-bold uppercase tracking-widest mt-1">Monthly Orders
                     </p>
                 </div>
                 <div class="flex gap-2">
                     <button
                         class="px-4 py-2 bg-navy text-white text-[10px] font-black rounded-xl hover:bg-gold transition-colors">YTD</button>
                     <button
-                        class="px-4 py-2 bg-gray-50 text-navy text-[10px] font-black rounded-xl hover:bg-gray-100 transition-colors">2024</button>
+                        class="px-4 py-2 bg-gray-50 text-navy text-[10px] font-black rounded-xl hover:bg-gray-100 transition-colors">{{currentYear}}</button>
                 </div>
             </div>
             <div class="relative min-h-[300px]">
@@ -73,12 +73,12 @@
             class="premium-card p-10 rounded-[2.5rem] bg-white border border-gray-100 shadow-xl relative overflow-hidden">
             <div class="flex items-center justify-between mb-10 relative z-10">
                 <div>
-                    <h4 class="text-xl font-black text-navy tracking-tight">Financial Stream</h4>
-                    <p class="text-xs text-gray-400 font-bold uppercase tracking-widest mt-1">Revenue Stream Analytics
+                    <h4 class="text-xl font-black text-navy tracking-tight">Revenue Trends</h4>
+                    <p class="text-xs text-gray-400 font-bold uppercase tracking-widest mt-1">Revenue Analytics
                     </p>
                 </div>
                 <div class="px-4 py-2 bg-gold/10 text-gold text-xs font-black rounded-xl tracking-tighter">
-                    $ 42,500.00
+                    $ {{dashboardData?.stats?.totalRevenue | number:'1.2-2'}}
                 </div>
             </div>
             <div class="relative min-h-[300px]">
@@ -91,7 +91,7 @@
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
         <!-- Payment Methods -->
         <div class="premium-card p-8 rounded-[2rem] bg-white border border-gray-100 shadow-xl">
-            <h4 class="text-sm font-black text-navy uppercase tracking-[0.2em] mb-8">Transaction Mix</h4>
+            <h4 class="text-sm font-black text-navy uppercase tracking-[0.2em] mb-8">Payment Methods</h4>
             <div class="relative h-[220px]">
                 <canvas id="paymentPieChart"></canvas>
             </div>
@@ -99,7 +99,7 @@
 
         <!-- Top Categories -->
         <div class="premium-card p-8 rounded-[2rem] bg-white border border-gray-100 shadow-xl">
-            <h4 class="text-sm font-black text-navy uppercase tracking-[0.2em] mb-8">Category Dominance</h4>
+            <h4 class="text-sm font-black text-navy uppercase tracking-[0.2em] mb-8">Top Categories</h4>
             <div class="relative h-[220px]">
                 <canvas id="categoryDoughnutChart"></canvas>
             </div>
@@ -107,7 +107,7 @@
 
         <!-- System Alerts -->
         <div class="premium-card p-8 rounded-[2rem] bg-white border border-gray-100 shadow-xl">
-            <h4 class="text-sm font-black text-navy uppercase tracking-[0.2em] mb-6">Operational Pulse</h4>
+            <h4 class="text-sm font-black text-navy uppercase tracking-[0.2em] mb-6">Alerts</h4>
             <div class="space-y-4">
                 <div
                     class="flex items-center gap-5 p-5 bg-red-50/50 rounded-2xl border border-red-100/50 group hover:border-red-200 transition-all cursor-pointer">
@@ -120,9 +120,8 @@
                         </svg>
                     </div>
                     <div>
-                        <p class="text-sm font-black text-navy uppercase tracking-tighter">Low Inventory</p>
-                        <p class="text-[10px] text-red-500 font-bold uppercase tracking-widest mt-0.5">3 Stocks Below
-                            Margin</p>
+                        <p class="text-sm font-black text-navy uppercase tracking-tighter">Low Stock</p>
+                        <p class="text-[10px] text-red-500 font-bold uppercase tracking-widest mt-0.5">{{dashboardData?.stats?.lowStockProducts}} items remaining</p>
                     </div>
                 </div>
 
@@ -137,9 +136,8 @@
                         </svg>
                     </div>
                     <div>
-                        <p class="text-sm font-black text-navy uppercase tracking-tighter">Rental Overdue</p>
-                        <p class="text-[10px] text-gold font-bold uppercase tracking-widest mt-0.5">2 Orders Past
-                            Collection</p>
+                        <p class="text-sm font-black text-navy uppercase tracking-tighter">Late Returns</p>
+                        <p class="text-[10px] text-gold font-bold uppercase tracking-widest mt-0.5">{{dashboardData?.stats?.overdueRentals}} Overdue items</p>
                     </div>
                 </div>
             </div>

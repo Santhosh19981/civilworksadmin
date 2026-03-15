@@ -9,45 +9,53 @@ import { map } from 'rxjs/operators';
     styleUrls: ['./helpers-list.component.css']
 })
 export class HelpersListComponent implements OnInit {
-    helpers$: Observable<any[]>;
+    helpers: any[] = [];
     searchTerm = '';
-    filteredHelpers$: Observable<any[]>;
+    loading = false;
+    pagination: any = {
+        total: 0,
+        page: 1,
+        limit: 10,
+        totalPages: 0
+    };
 
-
-    private searchSubject = new BehaviorSubject<string>('');
 
     constructor(private core: CoreService) {
-        this.helpers$ = this.core.getData('helpers');
-        this.filteredHelpers$ = combineLatest([
-            this.helpers$,
-            this.searchSubject.asObservable()
-        ]).pipe(
-            map(([helpers, search]) => {
-                return helpers.filter(h => {
-                    const name = h.serviceName || h.name || '';
-                    const desc = h.description || '';
-                    const matchesSearch = !search ||
-                        name.toLowerCase().includes(search.toLowerCase()) ||
-                        desc.toLowerCase().includes(search.toLowerCase());
-                    return matchesSearch;
-                });
-            })
-        );
+        this.loadHelpers();
+    }
 
-        // Ensure subjects emit initial values
-        this.searchSubject.next('');
+    loadHelpers(page: number = 1) {
+        this.loading = true;
+        this.core.getData('helpers', page, this.pagination.limit, { search: this.searchTerm }).subscribe({
+            next: (res: any) => {
+                this.helpers = res.data;
+                this.pagination = res.pagination;
+                this.loading = false;
+            },
+            error: (err) => {
+                console.error('Error loading helpers', err);
+                this.loading = false;
+            }
+        });
     }
 
     ngOnInit(): void { }
 
     onSearch() {
-        this.searchSubject.next(this.searchTerm);
+        this.pagination.page = 1;
+        this.loadHelpers();
+    }
+
+    onPageChange(page: number) {
+        this.pagination.page = page;
+        this.loadHelpers(page);
     }
 
     deleteHelper(id: any) {
-        if (confirm('Are you sure you want to delete this helper?')) {
-            this.core.deleteItem('helpers', id);
-            alert('Helper deleted successfully!');
+        if (confirm('Are you sure you want to delete this helper service?')) {
+            this.core.deleteItem('helpers/admin', id).subscribe(() => {
+                this.loadHelpers(this.pagination.page);
+            });
         }
     }
 }

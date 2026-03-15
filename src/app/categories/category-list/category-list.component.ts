@@ -8,7 +8,13 @@ import { Observable } from 'rxjs';
     styleUrls: ['./category-list.component.css']
 })
 export class CategoryListComponent implements OnInit {
-    categories$: Observable<any[]>;
+    categories: any[] = [];
+    pagination: any = {
+        total: 0,
+        page: 1,
+        limit: 10,
+        totalPages: 0
+    };
     showModal = false;
     isEdit = false;
     currentCat: any = { name: '', icon: 'categories', status: 'active' };
@@ -25,7 +31,18 @@ export class CategoryListComponent implements OnInit {
     }
 
     constructor(private core: CoreService) {
-        this.categories$ = this.core.getData('categories');
+        this.loadCategories();
+    }
+
+    loadCategories(page: number = 1) {
+        this.core.getData('categories', page).subscribe(res => {
+            this.categories = res.data;
+            this.pagination = res.pagination;
+        });
+    }
+
+    onPageChange(page: number) {
+        this.loadCategories(page);
     }
 
     ngOnInit() { }

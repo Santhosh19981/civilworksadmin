@@ -12,23 +12,36 @@ export class LoginComponent {
     password = '';
     showPassword = false;
     error = '';
+    loading = false;
 
     constructor(private auth: AuthService, private router: Router) { }
 
     onLogin() {
-        console.log('Login attempt:', this.email);
-        if (this.auth.login(this.email, this.password)) {
-            console.log('Login successful, navigating to dashboard...');
-            this.router.navigateByUrl('/dashboard').then(success => {
-                if (success) {
-                    console.log('Navigation successful');
+        // Clear previous error and set loading
+        this.error = '';
+        this.loading = true;
+
+        this.auth.login(this.email, this.password).subscribe({
+            next: (res) => {
+                this.loading = false;
+                this.router.navigateByUrl('/dashboard');
+            },
+            error: (err) => {
+                this.loading = false;
+                console.error('Login failed:', err);
+
+                if (err.status === 0) {
+                    // Network error / server not reachable
+                    this.error = 'Cannot connect to server. Please try again later.';
+                } else if (err.error?.message) {
+                    // API returned a structured error message
+                    this.error = err.error.message;
+                } else if (err.message) {
+                    this.error = err.message;
                 } else {
-                    console.error('Navigation failed');
+                    this.error = 'Invalid email or password. Please try again.';
                 }
-            });
-        } else {
-            console.error('Login failed: Invalid credentials');
-            this.error = 'Invalid email or password. Please try again.';
-        }
+            }
+        });
     }
 }

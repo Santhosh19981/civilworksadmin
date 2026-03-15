@@ -1,0 +1,145 @@
+<div class="space-y-10 pb-10">
+    <!-- Header -->
+    <div class="flex items-center justify-between">
+        <div>
+            <h2 class="text-3xl font-black text-navy tracking-tight">Rental Categories</h2>
+            <p class="text-xs text-gray-400 font-bold uppercase tracking-widest mt-1">Manage categories for rental assets</p>
+        </div>
+        <button (click)="openAddModal()"
+            class="px-8 py-4 bg-navy text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-gold transition-all duration-500 shadow-xl shadow-navy/20 flex items-center gap-3">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4" />
+            </svg>
+            Add Category
+        </button>
+    </div>
+
+    <!-- Category Table -->
+    <div class="premium-card rounded-[2rem] overflow-hidden border border-gray-100 shadow-xl bg-white">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-gray-50/50 border-b border-gray-100">
+                        <th class="px-8 py-5 text-[10px] font-black text-navy/40 uppercase tracking-[0.2em]">Icon</th>
+                        <th class="px-8 py-5 text-[10px] font-black text-navy/40 uppercase tracking-[0.2em]">Name</th>
+                        <th class="px-8 py-5 text-[10px] font-black text-navy/40 uppercase tracking-[0.2em]">Status</th>
+                        <th class="px-8 py-5 text-[10px] font-black text-navy/40 uppercase tracking-[0.2em] text-right">
+                            Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-50">
+                    <tr *ngFor="let cat of categories"
+                        class="group hover:bg-gray-50/50 transition-all duration-300">
+                        <td class="px-8 py-6">
+                            <div
+                                class="w-10 h-10 rounded-xl bg-navy/5 flex items-center justify-center text-navy group-hover:bg-gold group-hover:text-white transition-all duration-500">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                        [attr.d]="getIcon(cat.name)" />
+                                </svg>
+                            </div>
+                        </td>
+                        <td class="px-8 py-6">
+                            <div>
+                                <h3
+                                    class="text-sm font-black text-navy tracking-tight group-hover:text-gold transition-colors">
+                                    {{cat.name}}</h3>
+                                <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Active Rental Category</p>
+                            </div>
+                        </td>
+                        <td class="px-8 py-6">
+                            <button (click)="toggleStatus(cat)"
+                                [class]="cat.status === 'active' ? 'bg-green-50 text-green-600 border-green-100' : 'bg-gray-50 text-gray-400 border-gray-100'"
+                                class="px-3 py-1 rounded-lg text-[9px] font-black tracking-widest uppercase border transition-all hover:scale-105 active:scale-95">
+                                {{cat.status}}
+                            </button>
+                        </td>
+                        <td class="px-8 py-6">
+                            <div class="flex items-center justify-end gap-2">
+                                <button (click)="editCategory(cat)"
+                                    class="p-2 bg-navy/5 text-navy rounded-lg hover:bg-navy hover:text-white transition-all">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                    </svg>
+                                </button>
+                                <button (click)="deleteCategory(cat.id)"
+                                    class="p-2 bg-red-50 text-red-500 rounded-lg hover:bg-red-500 hover:text-white transition-all">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Elegant Empty State -->
+        <div *ngIf="categories.length === 0" class="p-20 text-center">
+            <div class="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-200" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                        d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                </svg>
+            </div>
+            <h3 class="text-xl font-black text-navy tracking-tight">No Rental Categories Found</h3>
+            <p class="text-gray-400 font-bold text-xs uppercase tracking-widest mt-2">Create your first category to get started</p>
+        </div>
+
+        <!-- Pagination -->
+        <app-pagination *ngIf="categories.length > 0"
+            [total]="pagination.total" 
+            [page]="pagination.page" 
+            [limit]="pagination.limit" 
+            [totalPages]="pagination.totalPages"
+            (pageChange)="onPageChange($event)">
+        </app-pagination>
+    </div>
+
+    <!-- Premium Modal -->
+    <div *ngIf="showModal"
+        class="fixed inset-0 bg-navy/80 backdrop-blur-xl z-[100] flex items-center justify-center p-6 overflow-hidden">
+        <div class="bg-white rounded-[3rem] w-full max-w-xl p-12 shadow-3xl relative overflow-hidden">
+            <!-- Modal Accent -->
+            <div class="absolute top-0 right-0 w-64 h-64 bg-gold/5 rounded-full blur-3xl -mr-32 -mt-32"></div>
+
+            <div class="relative z-10">
+                <div class="mb-10 text-center">
+                    <span
+                        class="inline-block px-4 py-2 bg-gold/10 text-gold text-[10px] font-black rounded-xl mb-4 tracking-[0.2em] uppercase">Admin Area</span>
+                    <h3 class="text-3xl font-black text-navy tracking-tight">{{isEdit ? 'Update' : 'Add'}}
+                        Rental Category</h3>
+                    <p class="text-xs text-gray-400 font-bold uppercase tracking-widest mt-2">Category Details</p>
+                </div>
+
+                <form (ngSubmit)="saveCategory()" class="space-y-8">
+                    <div class="space-y-3">
+                        <label class="block text-[10px] font-black text-navy/40 uppercase tracking-[0.2em]">Name</label>
+                        <input type="text" [(ngModel)]="currentCat.name" name="name" required
+                            class="w-full px-8 py-5 bg-gray-50 border-2 border-transparent rounded-[1.5rem] focus:bg-white focus:border-gold outline-none transition-all font-bold text-navy placeholder:text-gray-300"
+                            placeholder="e.g. Scaffolding">
+                    </div>
+
+                    <div class="flex items-center gap-6 pt-6">
+                        <button type="button" (click)="showModal = false"
+                            class="flex-1 py-5 bg-red-50 border-2 border-red-100 rounded-[1.5rem] font-black text-xs text-red-500 uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all">
+                            Cancel
+                        </button>
+                        <button type="submit"
+                            class="flex-1 py-5 bg-navy text-white rounded-[1.5rem] font-black text-xs uppercase tracking-widest shadow-2xl shadow-navy/30 hover:bg-gold transition-all">
+                            {{isEdit ? 'Save Changes' : 'Add Category'}}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,13 +1,13 @@
 <div class="space-y-12 pb-12">
-    <!-- Financial Intelligence Header -->
+    <!-- Payment Overview -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
         <div class="relative group p-8 bg-navy rounded-[2.5rem] shadow-2xl shadow-navy/30 overflow-hidden">
             <div
                 class="absolute -right-10 -top-10 w-32 h-32 bg-gold/10 rounded-full blur-2xl group-hover:bg-gold/20 transition-all duration-500">
             </div>
-            <p class="text-white/40 text-[10px] font-black uppercase tracking-[0.2em] relative z-10">Total Asset
-                Liquidity</p>
-            <h3 class="text-4xl font-black text-white mt-3 relative z-10 tracking-tighter">${{totalRevenue}}</h3>
+            <p class="text-white/40 text-[10px] font-black uppercase tracking-[0.2em] relative z-10">Total
+                Revenue</p>
+            <h3 class="text-4xl font-black text-white mt-3 relative z-10 tracking-tighter">${{totalRevenue | number:'1.2-2'}}</h3>
             <div class="mt-6 flex items-center gap-2 relative z-10">
                 <span
                     class="px-2 py-1 bg-green-500/20 text-green-400 text-[9px] font-black rounded-lg uppercase tracking-widest">+15.8%
@@ -17,14 +17,14 @@
 
         <div class="relative group p-8 bg-white rounded-[2.5rem] border border-gray-50 shadow-3xl overflow-hidden">
             <div class="absolute -right-10 -top-10 w-32 h-32 bg-navy/5 rounded-full blur-2xl"></div>
-            <p class="text-navy/30 text-[10px] font-black uppercase tracking-[0.2em]">Digital Settlements</p>
-            <h3 class="text-4xl font-black text-navy mt-3 tracking-tighter">${{onlinePayments}}</h3>
-            <p class="text-[9px] font-black text-gray-300 uppercase tracking-widest mt-6">85 Automated Transactions</p>
+            <p class="text-navy/30 text-[10px] font-black uppercase tracking-[0.2em]">Online Payments</p>
+            <h3 class="text-4xl font-black text-navy mt-3 tracking-tighter">${{onlinePayments | number:'1.2-2'}}</h3>
+            <p class="text-[9px] font-black text-gray-300 uppercase tracking-widest mt-6">Automated Transactions</p>
         </div>
 
         <div class="relative group p-8 bg-white rounded-[2.5rem] border border-gray-50 shadow-3xl overflow-hidden">
-            <p class="text-navy/30 text-[10px] font-black uppercase tracking-[0.2em]">On-Site Collections</p>
-            <h3 class="text-4xl font-black text-navy mt-3 tracking-tighter">${{codPayments}}</h3>
+            <p class="text-navy/30 text-[10px] font-black uppercase tracking-[0.2em]">Cash Payments</p>
+            <h3 class="text-4xl font-black text-navy mt-3 tracking-tighter">${{codPayments | number:'1.2-2'}}</h3>
             <div class="w-full bg-gray-50 h-2 rounded-full mt-7 shadow-inner overflow-hidden">
                 <div class="bg-gold h-full rounded-full shadow-[0_0_15px_rgba(247,147,30,0.4)]" [style.width.%]="40">
                 </div>
@@ -33,9 +33,9 @@
 
         <div
             class="relative group p-8 bg-white rounded-[2.5rem] border border-gray-100 shadow-3xl overflow-hidden border-dashed">
-            <p class="text-red-500/40 text-[10px] font-black uppercase tracking-[0.2em]">Capital Reversals</p>
-            <h3 class="text-4xl font-black text-red-500 mt-3 tracking-tighter">$420</h3>
-            <p class="text-[9px] font-black text-red-300 uppercase tracking-widest mt-6">Critical Risk Threshold: Low
+            <p class="text-red-500/40 text-[10px] font-black uppercase tracking-[0.2em]">Refunds</p>
+            <h3 class="text-4xl font-black text-red-500 mt-3 tracking-tighter">${{reversals | number:'1.2-2'}}</h3>
+            <p class="text-[9px] font-black text-red-300 uppercase tracking-widest mt-6">Low Risk
             </p>
         </div>
     </div>
@@ -54,29 +54,28 @@
                             d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
                     </svg>
                 </div>
-                Revenue Velocity
+                Revenue Trends
             </h4>
             <canvas id="revenueTrendChart" class="max-h-[300px]"></canvas>
         </div>
 
-        <!-- Ledger Module -->
-        <div class="lg:col-span-2 bg-white rounded-[3.5rem] border border-gray-50 shadow-3xl overflow-hidden relative">
-            <div class="p-10 flex items-center justify-between border-b border-gray-50 bg-gray-50/30">
+        <!-- Payment History -->
+        <div class="lg:col-span-2 premium-card rounded-[2rem] overflow-hidden border border-gray-100 shadow-xl bg-white relative">
+            <div class="p-8 flex items-center justify-between border-b border-gray-100 bg-gray-50/30">
                 <div>
-                    <h4 class="text-xl font-black text-navy tracking-tight">Audit <span class="text-gold">Ledger</span>
+                    <h4 class="text-xl font-black text-navy tracking-tight">Payment <span class="text-gold">History</span>
                     </h4>
-                    <p class="text-[9px] font-black text-gray-300 uppercase tracking-widest mt-1">Transaction Node
-                        Monitoring</p>
+                    <p class="text-[9px] font-black text-gray-300 uppercase tracking-widest mt-1">List of all payments</p>
                 </div>
                 <div class="relative group">
                     <div class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-300" fill="none"
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-300 group-hover:text-gold transition-colors" fill="none"
                             viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
                                 d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                         </svg>
                     </div>
-                    <input type="text" placeholder="Trace Transaction..."
+                    <input type="text" [(ngModel)]="searchTerm" (keyup.enter)="onSearch()" placeholder="Search payments..."
                         class="pl-12 pr-6 py-4 bg-white border border-gray-100 rounded-2xl text-[10px] font-black uppercase tracking-widest outline-none shadow-xl shadow-navy/5 focus:border-gold transition-all w-64">
                 </div>
             </div>
@@ -84,58 +83,70 @@
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse">
                     <thead>
-                        <tr class="border-b border-gray-50">
-                            <th class="px-10 py-8 text-[10px] font-black text-gray-300 uppercase tracking-widest">
-                                Transaction Hash</th>
-                            <th class="px-10 py-8 text-[10px] font-black text-gray-300 uppercase tracking-widest">Client
-                                Path</th>
-                            <th class="px-10 py-8 text-[10px] font-black text-gray-300 uppercase tracking-widest">
-                                Valuation</th>
-                            <th class="px-10 py-8 text-[10px] font-black text-gray-300 uppercase tracking-widest">
-                                Settlement</th>
-                            <th class="px-10 py-8 text-right"></th>
+                        <tr class="bg-gray-50/50 border-b border-gray-100">
+                            <th class="px-8 py-5 text-[10px] font-black text-navy/40 uppercase tracking-[0.2em]">Transaction ID</th>
+                            <th class="px-8 py-5 text-[10px] font-black text-navy/40 uppercase tracking-[0.2em]">Customer Name</th>
+                            <th class="px-8 py-5 text-[10px] font-black text-navy/40 uppercase tracking-[0.2em]">Amount</th>
+                            <th class="px-8 py-5 text-[10px] font-black text-navy/40 uppercase tracking-[0.2em]">Status</th>
+                            <th class="px-8 py-5 text-right"></th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-50">
-                        <tr *ngFor="let p of (payments$ | async)"
-                            class="hover:bg-gray-50/50 transition-all duration-500 group">
-                            <td class="px-6 py-4">
+                        <tr *ngFor="let p of payments"
+                            class="group hover:bg-gray-50/50 transition-all duration-300">
+                            <td class="px-8 py-6">
                                 <div class="flex flex-col">
                                     <span
-                                        class="text-[10px] font-black text-navy font-mono tracking-tighter">#{{p.transactionId.slice(-8)}}</span>
+                                        class="text-[10px] font-black text-navy font-mono tracking-tighter">#{{p.transaction_id.slice(-8)}}</span>
                                     <span class="text-[8px] font-bold text-gray-300 uppercase tracking-widest">Order
-                                        #{{p.orderId}}</span>
+                                        #{{p.reference_id}}</span>
                                 </div>
                             </td>
-                            <td class="px-6 py-4">
+                            <td class="px-8 py-6">
                                 <span
-                                    class="text-sm font-black text-navy tracking-tight group-hover:text-gold transition-colors">{{p.customer}}</span>
+                                    class="text-sm font-black text-navy tracking-tight group-hover:text-gold transition-colors">{{p.user_name}}</span>
                             </td>
-                            <td class="px-6 py-4">
+                            <td class="px-8 py-6">
                                 <span
                                     class="text-sm font-black text-navy tracking-tighter group-hover:text-gold transition-colors">${{p.amount}}</span>
                             </td>
-                            <td class="px-6 py-4">
-                                <span [ngClass]="{
-                                    'bg-green-500 text-white': p.status === 'Paid',
-                                    'bg-yellow-500 text-white': p.status === 'Pending',
-                                    'bg-red-500 text-white': p.status === 'Failed',
-                                    'bg-gray-500 text-white': p.status === 'Refunded'
-                                }"
-                                    class="px-2.5 py-1 rounded-lg text-[8px] font-black uppercase tracking-widest shadow-md">
-                                    {{p.status}}
-                                </span>
+                            <td class="px-8 py-6">
+                                <div class="flex items-center">
+                                    <span [ngClass]="{
+                                        'bg-green-500 text-white': p.status === 'paid',
+                                        'bg-yellow-500 text-white': p.status === 'pending',
+                                        'bg-red-500 text-white': p.status === 'failed',
+                                        'bg-gray-500 text-white': p.status === 'refunded'
+                                    }"
+                                        class="px-2.5 py-1 rounded-lg text-[8px] font-black uppercase tracking-widest shadow-md">
+                                        {{p.status}}
+                                    </span>
+                                </div>
                             </td>
-                            <td class="px-6 py-4 text-right">
+                            <td class="px-8 py-6 text-right">
                                 <button (click)="issueRefund(p)"
                                     class="px-3 py-1.5 bg-red-50 text-red-500 text-[9px] font-black rounded-lg uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all opacity-0 group-hover:opacity-100">
-                                    Reversal
+                                    Refund
                                 </button>
                             </td>
                         </tr>
                     </tbody>
                 </table>
             </div>
+
+            <div *ngIf="payments.length === 0" class="p-20 text-center">
+                <h3 class="text-xl font-black text-navy tracking-tight">No Payments Found</h3>
+                <p class="text-gray-400 font-bold text-xs uppercase tracking-widest mt-2">Try adjusting your search filters</p>
+            </div>
+
+            <!-- Pagination -->
+            <app-pagination *ngIf="payments.length > 0"
+                [total]="pagination.total" 
+                [page]="pagination.page" 
+                [limit]="pagination.limit" 
+                [totalPages]="pagination.totalPages"
+                (pageChange)="onPageChange($event)">
+            </app-pagination>
         </div>
     </div>
 </div>

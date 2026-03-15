@@ -4,6 +4,7 @@ import { ProductListComponent } from './product-list/product-list.component';
 import { ProductFormComponent } from './product-form/product-form.component';
 import { RouterModule, Routes } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { SharedModule } from '../shared/shared.module';
 
 const routes: Routes = [
     { path: '', component: ProductListComponent },
@@ -17,6 +18,7 @@ const routes: Routes = [
         CommonModule,
         FormsModule,
         ReactiveFormsModule,
+        SharedModule,
         RouterModule.forChild(routes)
     ]
 })

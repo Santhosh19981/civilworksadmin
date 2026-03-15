@@ -1,0 +1,186 @@
+<div class="max-w-5xl mx-auto pb-12 animate-fade-in relative">
+    
+    <!-- Toast Notification -->
+    <div *ngIf="showToastMsg" 
+        [ngClass]="{'bg-green-50 text-green-800 border-green-200': toastType === 'success', 'bg-red-50 text-red-800 border-red-200': toastType === 'error'}"
+        class="fixed top-24 right-8 z-50 flex items-center gap-4 px-6 py-4 rounded-2xl border shadow-2xl animate-fade-in transition-all duration-300 transform">
+        <div [ngClass]="{'bg-green-100 text-green-600': toastType === 'success', 'bg-red-100 text-red-600': toastType === 'error'}" class="w-10 h-10 rounded-full flex items-center justify-center">
+            <svg *ngIf="toastType === 'success'" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+            </svg>
+            <svg *ngIf="toastType === 'error'" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+            </svg>
+        </div>
+        <p class="text-sm font-bold">{{toastMessage}}</p>
+        <button (click)="showToastMsg = false" class="ml-4 text-gray-400 hover:text-gray-600">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+    </div>
+
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-12">
+        <div>
+            <h2 class="text-4xl font-black text-navy tracking-tight">
+                {{isEdit ? 'Update' : 'New'}} <span class="text-gold">Employee</span>
+            </h2>
+            <p class="text-xs text-gray-400 font-bold uppercase tracking-[0.3em] mt-2">
+                {{isEdit ? 'Modify access and profile' : 'Register staff and set permissions'}}
+            </p>
+        </div>
+        <button routerLink="/employees"
+            class="px-8 py-4 bg-gray-50 text-navy rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-navy hover:text-white transition-all border border-gray-100 shadow-sm">
+            Back to List
+        </button>
+    </div>
+
+    <form [formGroup]="employeeForm" (ngSubmit)="save()" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Profile Column -->
+        <div class="lg:col-span-1 space-y-8">
+            <div class="bg-white p-8 rounded-[2.5rem] shadow-3xl border border-gray-50 text-center">
+                <div class="relative w-40 h-40 mx-auto mb-6 group">
+                    <div class="absolute inset-0 bg-navy/5 rounded-[2rem] border-2 border-dashed border-gray-200 group-hover:border-gold/50 transition-colors overflow-hidden">
+                        <img *ngIf="employeeImage" [src]="employeeImage" class="w-full h-full object-cover">
+                        <div *ngIf="!employeeImage" class="w-full h-full flex flex-col items-center justify-center text-gray-300">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            </svg>
+                        </div>
+                    </div>
+                    <label class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-navy text-white p-2 rounded-xl cursor-pointer hover:bg-gold transition-all shadow-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                        </svg>
+                        <input type="file" (change)="onFileSelected($event)" class="hidden" accept="image/*">
+                    </label>
+                </div>
+                <h3 class="font-black text-navy text-lg leading-tight capitalize">{{employeeForm.get('name')?.value || 'New Staff'}}</h3>
+                <p class="text-xs text-gray-400 font-bold uppercase tracking-widest mt-1">Profile Photo</p>
+            </div>
+
+            <div class="bg-navy p-8 rounded-[2.5rem] shadow-3xl text-white">
+                <h4 class="text-[10px] font-black uppercase tracking-[0.2em] opacity-40 mb-6">Staff Status</h4>
+                <div class="flex items-center justify-between p-6 bg-white/5 rounded-2xl border border-white/10">
+                    <span class="text-xs font-black uppercase tracking-widest">Active Access</span>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" [checked]="employeeStatus === 'active'" 
+                            (change)="employeeStatus = employeeStatus === 'active' ? 'inactive' : 'active'" 
+                            class="sr-only peer">
+                        <div class="w-11 h-6 bg-white/10 rounded-full peer peer-checked:bg-gold transition-all after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-5"></div>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Details & Access Column -->
+        <div class="lg:col-span-2 space-y-8">
+            <!-- Basic Info -->
+            <div class="bg-white p-10 rounded-[2.5rem] shadow-3xl border border-gray-50 space-y-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-2">
+                        <label class="block text-[9px] font-black text-navy/40 uppercase tracking-[0.2em]">Name</label>
+                        <input type="text" formControlName="name"
+                            class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-gold outline-none transition-all font-black text-navy"
+                            [ngClass]="{'border-red-400 focus:border-red-500': employeeForm.get('name')?.invalid && employeeForm.get('name')?.touched}">
+                        <div *ngIf="employeeForm.get('name')?.invalid && employeeForm.get('name')?.touched" class="text-red-500 text-xs font-bold mt-1 pl-2">
+                            Name is required (min 3 chars)
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-[9px] font-black text-navy/40 uppercase tracking-[0.2em]">Email Address</label>
+                        <input type="email" formControlName="email"
+                            class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-gold outline-none transition-all font-black text-navy"
+                            [ngClass]="{'border-red-400 focus:border-red-500': employeeForm.get('email')?.invalid && employeeForm.get('email')?.touched}">
+                        <div *ngIf="employeeForm.get('email')?.invalid && employeeForm.get('email')?.touched" class="text-red-500 text-xs font-bold mt-1 pl-2">
+                            Valid email is required
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-2">
+                        <label class="block text-[9px] font-black text-navy/40 uppercase tracking-[0.2em]">Mobile Number</label>
+                        <input type="text" formControlName="mobile"
+                            class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-gold outline-none transition-all font-black text-navy"
+                            [ngClass]="{'border-red-400 focus:border-red-500': employeeForm.get('mobile')?.invalid && employeeForm.get('mobile')?.touched}">
+                        <div *ngIf="employeeForm.get('mobile')?.invalid && employeeForm.get('mobile')?.touched" class="text-red-500 text-xs font-bold mt-1 pl-2">
+                            Valid mobile number is required
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-[9px] font-black text-navy/40 uppercase tracking-[0.2em]">System Role</label>
+                        <select formControlName="role_id" (change)="onRoleChange()"
+                            class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-gold outline-none transition-all font-black text-navy appearance-none">
+                            <option [value]="1">Super Admin (All Access)</option>
+                            <option [value]="2">Admin (Staff Admin)</option>
+                            <option [value]="3">Manager (Operations)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div *ngIf="!isEdit" class="space-y-2">
+                    <label class="block text-[9px] font-black text-navy/40 uppercase tracking-[0.2em]">
+                        {{isEdit ? 'Change Password (Optional)' : 'Initial Password'}}
+                    </label>
+                    <div class="relative">
+                        <input [type]="showPassword ? 'text' : 'password'" formControlName="password"
+                            class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-gold outline-none transition-all font-black text-navy pr-12"
+                            [ngClass]="{'border-red-400 focus:border-red-500': employeeForm.get('password')?.invalid && employeeForm.get('password')?.touched}">
+                        <button type="button" (click)="showPassword = !showPassword"
+                            class="absolute right-4 top-4 text-gray-400 hover:text-navy transition-colors">
+                            <svg *ngIf="showPassword" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                            <svg *ngIf="!showPassword" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div *ngIf="employeeForm.get('password')?.invalid && employeeForm.get('password')?.touched" class="text-red-500 text-xs font-bold mt-1 pl-2">
+                        Password must be at least 6 characters
+                    </div>
+                </div>
+            </div>
+
+            <!-- Page Access Permissions -->
+            <div class="bg-white p-10 rounded-[2.5rem] shadow-3xl border border-gray-50">
+                <div class="flex items-center justify-between mb-8">
+                    <div>
+                        <h4 class="text-xl font-black text-navy tracking-tight">Page Access</h4>
+                        <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-1">Select accessible modules</p>
+                    </div>
+                    <button type="button" (click)="applyDefaultPermissions()" 
+                        class="text-[9px] font-black uppercase tracking-widest text-gold hover:text-navy transition-colors">
+                        Reset to role default
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                    <div *ngFor="let page of pages" 
+                        (click)="togglePermission(page.id)"
+                        [class]="selectedPermissions.has(page.id) ? 'bg-navy border-navy text-white' : 'bg-gray-50 border-transparent text-navy/40'"
+                        class="p-4 rounded-2xl border-2 cursor-pointer hover:border-gold transition-all duration-300">
+                        <div class="flex items-center gap-3">
+                            <div [class]="selectedPermissions.has(page.id) ? 'bg-gold' : 'bg-gray-200'" 
+                                class="w-4 h-4 rounded-md flex items-center justify-center transition-colors">
+                                <svg *ngIf="selectedPermissions.has(page.id)" xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 text-white" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                            <span class="text-[11px] font-black uppercase tracking-wider">{{page.label}}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-12 pt-8 border-t border-gray-50">
+                    <button type="submit" [disabled]="loading"
+                        class="w-full py-5 bg-gold text-white rounded-[2rem] font-black text-xs uppercase tracking-[0.2em] hover:bg-navy transition-all duration-500 shadow-2xl shadow-gold/20 flex items-center justify-center gap-4 group disabled:opacity-50 disabled:cursor-not-allowed">
+                        <div *ngIf="loading" class="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                        <span>{{isEdit ? 'Save Changes' : 'Register Employee'}}</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

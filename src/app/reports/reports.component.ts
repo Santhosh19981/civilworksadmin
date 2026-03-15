@@ -1,4 +1,5 @@
-import { Component, AfterViewInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { CoreService } from '../services/core.service';
 declare var Chart: any;
 
 @Component({
@@ -6,22 +7,51 @@ declare var Chart: any;
     templateUrl: './reports.component.html',
     styleUrls: ['./reports.component.css']
 })
-export class ReportsComponent implements AfterViewInit {
-    topProducts = [
-        { name: 'Heavy Duty Excavator', qty: 45, revenue: 112500 },
-        { name: 'Electric Concrete Mixer', qty: 120, revenue: 54000 },
-        { name: 'Steel Scaffolding Set', qty: 85, revenue: 10200 },
-        { name: 'Rotary Hammer Drill', qty: 250, revenue: 21250 }
-    ];
+export class ReportsComponent implements OnInit {
+    topProducts: any[] = [];
+    stats: any = {};
+    loading = true;
+    growthChart: any;
+    categoryChart: any;
 
-    ngAfterViewInit() {
-        new Chart('growthChart', {
+    constructor(private core: CoreService) { }
+
+    ngOnInit(): void {
+        this.loadReportsData();
+    }
+
+    loadReportsData() {
+        this.loading = true;
+        this.core.getStats().subscribe({
+            next: (res) => {
+                this.stats = res;
+                this.topProducts = res.bestSellers || [];
+                this.loading = false;
+                // Wait for Angular to render the *ngIf content
+                setTimeout(() => {
+                    this.initCharts(res);
+                }, 0);
+            },
+            error: (err) => {
+                console.error('Error fetching reports data', err);
+                this.loading = false;
+            }
+        });
+    }
+
+    initCharts(data: any) {
+        // Growth Trends Chart
+        if (this.growthChart) this.growthChart.destroy();
+        const growthLabels = data.revenueVelocity?.map((i: any) => i.month) || ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
+        const growthData = data.revenueVelocity?.map((i: any) => i.total) || [0, 0, 0, 0, 0, 0];
+
+        this.growthChart = new Chart('growthChart', {
             type: 'line',
             data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                labels: growthLabels,
                 datasets: [{
                     label: 'Revenue Growth',
-                    data: [5000, 15000, 25000, 22000, 35000, 48000],
+                    data: growthData,
                     borderColor: '#F7931E',
                     backgroundColor: 'rgba(247, 147, 30, 0.1)',
                     fill: true,
@@ -33,25 +63,35 @@ export class ReportsComponent implements AfterViewInit {
             }
         });
 
-        new Chart('categoryReportChart', {
+        // Category Distribution Chart
+        if (this.categoryChart) this.categoryChart.destroy();
+        const catLabels = data.categoryDistribution?.map((i: any) => i.name) || [];
+        const catData = data.categoryDistribution?.map((i: any) => i.count) || [];
+
+        this.categoryChart = new Chart('categoryReportChart', {
             type: 'bar',
             data: {
-                labels: ['Excavators', 'Mixers', 'Scaffolding', 'Tools'],
+                labels: catLabels,
                 datasets: [{
-                    label: 'Orders',
-                    data: [350, 420, 180, 560],
-                    backgroundColor: ['#0B2C4D', '#F7931E', '#FFC107', '#lightgray'],
+                    label: 'Total Products',
+                    data: catData,
+                    backgroundColor: ['#0B2C4D', '#F7931E', '#FFC107', '#lightgray', '#E0E0E0'],
                     borderRadius: 12
                 }]
             },
             options: {
                 indexAxis: 'y',
+                maintainAspectRatio: false,
                 plugins: { legend: { display: false } }
             }
         });
     }
 
     exportCSV() {
-        alert('Exporting Report-2024-Q2.csv ... Success!');
+        if (!this.topProducts.length) {
+            alert('No data to export.');
+            return;
+        }
+        alert('Exporting Analytical Report... Success!');
     }
 }

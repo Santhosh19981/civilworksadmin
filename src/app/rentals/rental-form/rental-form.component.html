@@ -1,4 +1,4 @@
-<div class="max-w-4xl mx-auto space-y-6 pb-8">
+<div class="max-w-4xl mx-auto space-y-6 pb-8" (window:paste)="onPaste($event)">
     <!-- Executive Header -->
     <div class="flex items-center justify-between px-2">
         <div class="flex items-center gap-5">
@@ -11,11 +11,9 @@
                 </svg>
             </a>
             <div>
-                <h2 class="text-2xl font-black text-navy tracking-tight">Rental <span class="text-gold">Archives</span>
+                <h2 class="text-2xl font-black text-navy tracking-tight">{{isEdit ? 'Edit' : 'Add'}} <span class="text-gold">Rental</span>
                 </h2>
-                <p class="text-[8px] text-gray-300 font-black uppercase tracking-[0.3em] mt-1">Asset Liquidity
-                    Registration
-                </p>
+                <p class="text-[8px] text-gray-300 font-black uppercase tracking-[0.3em] mt-1">Rental Details</p>
             </div>
         </div>
 
@@ -45,9 +43,8 @@
                                 d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                         </svg>
                     </div>
-                    <p class="text-base font-black text-navy tracking-tight">Rental Asset Image</p>
-                    <p class="text-[7px] font-black text-gray-300 uppercase tracking-widest mt-1 px-2">Uplink visual
-                        reference URL</p>
+                    <p class="text-base font-black text-navy tracking-tight">Image</p>
+                    <p class="text-[7px] font-black text-gray-300 uppercase tracking-widest mt-1 px-2">Upload or paste image</p>
                 </div>
 
                 <div *ngIf="rental.image" class="relative z-10 w-full">
@@ -66,7 +63,12 @@
                             </button>
                         </div>
                     </div>
-                    <p class="text-[8px] font-black text-navy uppercase tracking-widest mt-4">Asset Verified</p>
+                    <p class="text-[8px] font-black text-navy uppercase tracking-widest mt-4">Verified</p>
+                </div>
+
+                <div *ngIf="isUploading" class="absolute inset-0 bg-white/80 backdrop-blur-sm z-30 flex flex-col items-center justify-center">
+                    <div class="w-12 h-12 border-4 border-gold border-t-transparent rounded-full animate-spin mb-4"></div>
+                    <p class="text-[10px] font-black text-navy uppercase tracking-widest">Processing Asset...</p>
                 </div>
 
                 <input type="file" (change)="onFileChange($event)"
@@ -84,9 +86,8 @@
                         </svg>
                     </div>
                     <div>
-                        <p class="text-[8px] font-black uppercase tracking-widest text-navy/40">Compliance Note</p>
-                        <p class="text-[10px] font-bold mt-0.5 text-navy leading-relaxed uppercase italic">Immutable
-                            Ledger Logged</p>
+                        <p class="text-[8px] font-black uppercase tracking-widest text-navy/40">Status</p>
+                        <p class="text-[10px] font-bold mt-0.5 text-navy leading-relaxed uppercase italic">Available for Rent</p>
                     </div>
                 </div>
             </div>
@@ -101,34 +102,39 @@
                 <!-- Identity Group -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="md:col-span-2 space-y-2">
-                        <label class="block text-[9px] font-black text-navy/40 uppercase tracking-[0.2em]">Asset
-                            designation</label>
+                        <label class="block text-[9px] font-black text-navy/40 uppercase tracking-[0.2em]">Rental Name</label>
                         <input type="text" [(ngModel)]="rental.name" name="name" required
                             class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-gold outline-none transition-all font-black text-navy text-lg shadow-inner"
                             placeholder="e.g. Caterpillar 320 GC">
                     </div>
                     <div class="space-y-2">
+                        <label class="block text-[9px] font-black text-navy/40 uppercase tracking-[0.2em]">Category</label>
+                        <select [(ngModel)]="rental.rental_category_id" name="rental_category_id" required
+                            class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-gold outline-none transition-all font-black text-navy text-base shadow-inner appearance-none cursor-pointer">
+                            <option [ngValue]="null">Select Category</option>
+                            <option *ngFor="let cat of categories" [value]="cat.id">{{cat.name}}</option>
+                        </select>
+                    </div>
+                    <div class="space-y-2">
                         <label class="block text-[9px] font-black text-navy/40 uppercase tracking-[0.2em]">Contact
-                            Node</label>
+                            Number</label>
                         <input type="text" [(ngModel)]="rental.mobile" name="mobile" required
                             class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-gold outline-none transition-all font-black text-navy text-base shadow-inner"
                             placeholder="+91 (630) 000-0000">
                     </div>
                     <div class="space-y-2">
-                        <label class="block text-[9px] font-black text-navy/40 uppercase tracking-[0.2em]">Asset
-                            Link</label>
-                        <input type="text" [(ngModel)]="rental.image" name="image"
-                            class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-gold outline-none transition-all font-bold text-navy text-xs shadow-inner"
-                            placeholder="https://images.unsplash.com/...">
+                        <label class="block text-[9px] font-black text-navy/40 uppercase tracking-[0.2em]">Image URL</label>
+                        <input type="text" [(ngModel)]="rental.image" name="image" readonly
+                            class="w-full px-6 py-4 bg-gray-100 border-2 border-transparent rounded-2xl outline-none font-bold text-navy text-[10px] shadow-inner truncate"
+                            placeholder="Upload or paste image...">
                     </div>
                 </div>
 
                 <div class="space-y-2">
-                    <label class="block text-[9px] font-black text-navy/40 uppercase tracking-[0.2em]">Service
-                        Description</label>
+                    <label class="block text-[9px] font-black text-navy/40 uppercase tracking-[0.2em]">Description</label>
                     <textarea [(ngModel)]="rental.description" name="description" rows="3"
                         class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-gold outline-none transition-all font-bold text-navy text-xs shadow-inner resize-none custom-scrollbar"
-                        placeholder="Define the scope of use..."></textarea>
+                        placeholder="Detailed description..."></textarea>
                 </div>
 
                 <div
@@ -141,10 +147,8 @@
                             </div>
                         </label>
                         <div class="max-w-[150px] md:max-w-none">
-                            <p class="text-[11px] font-black uppercase tracking-widest leading-none">Liquidity Status
-                            </p>
-                            <p class="text-[7px] font-bold text-white/40 uppercase tracking-widest mt-1">Available for
-                                rent</p>
+                            <p class="text-[11px] font-black uppercase tracking-widest leading-none">Available</p>
+                            <p class="text-[7px] font-bold text-white/40 uppercase tracking-widest mt-1">Toggle availability</p>
                         </div>
                     </div>
                     <div class="flex items-center gap-3 ml-auto">
@@ -154,7 +158,7 @@
                         </button>
                         <button type="submit"
                             class="px-5 py-2 bg-gold text-navy rounded-xl font-black text-[8px] uppercase tracking-widest shadow-lg shadow-gold/10 hover:scale-105 active:scale-95 transition-all duration-500 whitespace-nowrap">
-                            {{isEdit ? 'Authorize' : 'Add'}}
+                            {{isEdit ? 'Update' : 'Add'}}
                         </button>
                     </div>
                 </div>

@@ -9,21 +9,42 @@ import { map } from 'rxjs/operators';
     styleUrls: ['./order-list.component.css']
 })
 export class OrderListComponent implements OnInit {
-    orders$: Observable<any[]>;
+    orders: any[] = [];
     searchTerm = '';
     statusFilter = '';
-    filteredOrders$: Observable<any[]>;
+    
+    pagination: any = {
+        total: 0,
+        page: 1,
+        limit: 10,
+        totalPages: 0
+    };
 
     constructor(private core: CoreService) {
-        this.orders$ = this.core.getData('orders');
-        this.filteredOrders$ = this.orders$.pipe(
-            map(orders => orders.filter(o => {
-                const matchesSearch = o.id.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-                    o.customer.toLowerCase().includes(this.searchTerm.toLowerCase());
-                const matchesStatus = !this.statusFilter || o.orderStatus === this.statusFilter;
-                return matchesSearch && matchesStatus;
-            }))
-        );
+        this.loadOrders();
+    }
+
+    loadOrders(page: number = 1) {
+        const filters = {
+            search: this.searchTerm,
+            status: this.statusFilter
+        };
+        this.core.getData('orders', page, 10, filters).subscribe(res => {
+            this.orders = res.data;
+            this.pagination = res.pagination;
+        });
+    }
+
+    onSearch() {
+        this.loadOrders(1);
+    }
+
+    onStatusChange() {
+        this.loadOrders(1);
+    }
+
+    onPageChange(page: number) {
+        this.loadOrders(page);
     }
 
     ngOnInit() { }
