@@ -1,6 +1,0 @@
-[
-  { "id": 1, "name": "Excavator", "icon": "🚜", "status": "active" },
-  { "id": 2, "name": "Concrete Mixer", "icon": "🏗️", "status": "active" },
-  { "id": 3, "name": "Scaffolding", "icon": "🏢", "status": "active" },
-  { "id": 4, "name": "Power Tools", "icon": "🛠️", "status": "active" }
-]
