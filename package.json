@@ -3,8 +3,8 @@
     "version": "1.0.0",
     "scripts": {
         "ng": "ng",
-        "start": "ng serve",
-        "start:qa": "ng serve --configuration qa",
+        "start": "ng serve --port 4201",
+        "start:qa": "ng serve --configuration qa --port 4201",
         "build": "ng build",
         "build:qa": "ng build --configuration qa",
         "test": "ng test",
