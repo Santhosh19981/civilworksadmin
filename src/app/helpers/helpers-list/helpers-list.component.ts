@@ -53,7 +53,7 @@ export class HelpersListComponent implements OnInit {
 
     deleteHelper(id: any) {
         if (confirm('Are you sure you want to delete this helper service?')) {
-            this.core.deleteItem('helpers/admin', id).subscribe(() => {
+            this.core.deleteItem('helpers', id).subscribe(() => {
                 this.loadHelpers(this.pagination.page);
             });
         }

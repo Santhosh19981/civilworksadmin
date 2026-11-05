@@ -5,7 +5,7 @@
             <h2 class="text-4xl font-black text-navy tracking-tight">Helpers <span class="text-gold">Management</span>
             </h2>
             <p class="text-[10px] text-gray-400 font-bold uppercase tracking-[0.3em] mt-2">Oversee your specialized
-                labor units</p>
+                labor units & sector placement</p>
         </div>
 
         <div class="flex flex-col md:flex-row items-stretch md:items-center gap-4">
@@ -37,7 +37,9 @@
                 <thead>
                     <tr class="bg-gray-50/50 border-b border-gray-100">
                         <th class="px-8 py-5 text-[10px] font-black text-navy/40 uppercase tracking-[0.2em]">Service</th>
-                        <th class="px-8 py-5 text-[10px] font-black text-navy/40 uppercase tracking-[0.2em]">Description</th>
+                        <th class="px-8 py-5 text-[10px] font-black text-navy/40 uppercase tracking-[0.2em]">Sector & Category</th>
+                        <th class="px-8 py-5 text-[10px] font-black text-navy/40 uppercase tracking-[0.2em]">Rate / Day</th>
+                        <th class="px-8 py-5 text-[10px] font-black text-navy/40 uppercase tracking-[0.2em]">Status</th>
                         <th class="px-8 py-5 text-[10px] font-black text-navy/40 uppercase tracking-[0.2em] text-right">Actions</th>
                     </tr>
                 </thead>
@@ -46,30 +48,57 @@
                         class="group hover:bg-gray-50/50 transition-all duration-300">
                         <td class="px-8 py-5">
                             <div class="flex items-center gap-4">
-                                <div class="w-10 h-10 rounded-xl bg-navy/5 overflow-hidden border-2 border-white shadow-sm flex-shrink-0">
-                                    <img [src]="h.image || 'assets/default-user.jpg'" (error)="$any($event.target).src = 'assets/default-user.jpg'" alt="Service" class="w-full h-full object-cover">
+                                <div class="w-12 h-12 rounded-2xl bg-navy/5 overflow-hidden border-2 border-white shadow-sm flex-shrink-0 flex items-center justify-center">
+                                    <img *ngIf="h.image" [src]="h.image" (error)="$any($event.target).style.display = 'none'" alt="Service" class="w-full h-full object-cover">
+                                    <svg *ngIf="!h.image" class="w-6 h-6 text-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                    </svg>
                                 </div>
-                                <h3 class="font-black text-navy text-sm tracking-tight group-hover:text-gold transition-colors">{{ h.service_name || h.name }}</h3>
+                                <div>
+                                    <h3 class="font-black text-navy text-sm tracking-tight group-hover:text-gold transition-colors">{{ h.service_name || h.name }}</h3>
+                                    <p class="text-gray-400 text-[11px] font-semibold line-clamp-1 max-w-xs mt-0.5">{{ h.description || 'Specialized Trade Service' }}</p>
+                                </div>
                             </div>
                         </td>
-                        <td class="px-8 py-5 text-gray-400 text-[11px] font-bold leading-relaxed max-w-md">{{h.description}}</td>
-                        <td class="px-8 py-5 text-right flex items-center justify-end gap-2">
-                            <a [routerLink]="['edit', h.id]"
-                                class="p-2 bg-navy/5 text-navy rounded-lg hover:bg-navy hover:text-white transition-all">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
-                                    stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                                </svg>
-                            </a>
-                            <button (click)="deleteHelper(h.id)"
-                                class="p-2 bg-red-50 text-red-500 rounded-lg hover:bg-red-500 hover:text-white transition-all">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
-                                    stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                </svg>
-                            </button>
+                        <td class="px-8 py-5">
+                            <div class="flex flex-col gap-1 items-start">
+                                <span class="px-2.5 py-1 rounded-md text-[10px] font-black uppercase tracking-wider bg-navy/5 text-navy border border-navy/10">
+                                    {{ h.main_category_name || 'Unassigned Sector' }}
+                                </span>
+                                <span *ngIf="h.category_name" class="text-[10px] font-bold text-gray-400 tracking-wide">
+                                    {{ h.category_name }} <span *ngIf="h.subcategory_name">• {{ h.subcategory_name }}</span>
+                                </span>
+                            </div>
+                        </td>
+                        <td class="px-8 py-5">
+                            <span class="font-black text-navy text-sm">₹{{ h.price_per_day || 0 }}</span>
+                            <span class="text-[10px] font-bold text-gray-400"> / day</span>
+                        </td>
+                        <td class="px-8 py-5">
+                            <span [class]="(h.status === 'Active' || h.status === 'active') ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-gray-50 text-gray-500 border-gray-100'"
+                                class="px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border">
+                                {{ h.status || 'Active' }}
+                            </span>
+                        </td>
+                        <td class="px-8 py-5 text-right">
+                            <div class="flex items-center justify-end gap-2">
+                                <a [routerLink]="['edit', h.id]"
+                                    class="p-2.5 bg-navy/5 text-navy rounded-xl hover:bg-navy hover:text-white transition-all">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                    </svg>
+                                </a>
+                                <button (click)="deleteHelper(h.id)"
+                                    class="p-2.5 bg-red-50 text-red-500 rounded-xl hover:bg-red-500 hover:text-white transition-all">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
+                                </button>
+                            </div>
                         </td>
                     </tr>
                 </tbody>

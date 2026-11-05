@@ -12,7 +12,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         { label: 'Total Products', value: 154, valuePrefix: '', trend: 12, icon: 'products', d: 'M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4', delay: 0, displayValue: 0 },
         { label: 'Total Rentals', value: 42, valuePrefix: '', trend: -5, icon: 'rentals', d: 'M13 10V3L4 14h7v7l9-11h-7z', delay: 100, displayValue: 0 },
         { label: 'Total Orders', value: 1250, valuePrefix: '', trend: 18, icon: 'orders', d: 'M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z', delay: 200, displayValue: 0 },
-        { label: 'Revenue', value: 42500, valuePrefix: '$', trend: 22, icon: 'revenue', d: 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z', delay: 300, displayValue: 0 }
+        { label: 'Revenue', value: 42500, valuePrefix: '₹', trend: 22, icon: 'revenue', d: 'M15 8.25H9m6 3H9m3 6-3-3h1.5a3 3 0 1 0 0-6M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z', delay: 300, displayValue: 0 }
     ];
 
     currentYear = new Date().getFullYear();
@@ -33,7 +33,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
                     { label: 'Total Products', value: data.stats.totalProducts, valuePrefix: '', trend: 12, icon: 'products', d: 'M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4', delay: 0, displayValue: 0 },
                     { label: 'Total Rentals', value: data.stats.totalRentals, valuePrefix: '', trend: -5, icon: 'rentals', d: 'M13 10V3L4 14h7v7l9-11h-7z', delay: 100, displayValue: 0 },
                     { label: 'Total Orders', value: data.stats.totalOrders, valuePrefix: '', trend: 18, icon: 'orders', d: 'M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z', delay: 200, displayValue: 0 },
-                    { label: 'Revenue', value: parseFloat(data.stats.totalRevenue), valuePrefix: '$', trend: 22, icon: 'revenue', d: 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z', delay: 300, displayValue: 0 }
+                    { label: 'Revenue', value: parseFloat(data.stats.totalRevenue), valuePrefix: '₹', trend: 22, icon: 'revenue', d: 'M15 8.25H9m6 3H9m3 6-3-3h1.5a3 3 0 1 0 0-6M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z', delay: 300, displayValue: 0 }
                 ];
                 this.animateCounters();
                 if (typeof Chart !== 'undefined') {
@@ -130,9 +130,22 @@ export class DashboardComponent implements OnInit, AfterViewInit {
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: (context: any) => ` Revenue: ₹${Number(context.raw || 0).toLocaleString('en-IN')}`
+                            }
+                        }
+                    },
                     scales: {
-                        y: { grid: { color: 'rgba(0,0,0,0.03)', drawBorder: false }, ticks: { color: '#94a3b8' } },
+                        y: {
+                            grid: { color: 'rgba(0,0,0,0.03)', drawBorder: false },
+                            ticks: {
+                                color: '#94a3b8',
+                                callback: (value: any) => `₹${value}`
+                            }
+                        },
                         x: { grid: { display: false }, ticks: { color: '#94a3b8' } }
                     }
                 }

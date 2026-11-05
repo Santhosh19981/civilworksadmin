@@ -12,8 +12,15 @@ const routes: Routes = [
         children: [
             { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
             { path: 'dashboard', loadChildren: () => import('../dashboard/dashboard.module').then(m => m.DashboardModule), data: { permission: 'dashboard' } },
-            { path: 'products', loadChildren: () => import('../products/products.module').then(m => m.ProductsModule), data: { permission: 'products' } },
+            { path: 'main-categories', loadChildren: () => import('../main-categories/main-categories.module').then(m => m.MainCategoriesModule), data: { permission: 'categories' } },
             { path: 'categories', loadChildren: () => import('../categories/categories.module').then(m => m.CategoriesModule), data: { permission: 'categories' } },
+            { path: 'subcategories', redirectTo: 'categories/subcategories', pathMatch: 'full' },
+            { path: 'units', loadChildren: () => import('../units/units.module').then(m => m.UnitsModule), data: { permission: 'products' } },
+            { path: 'products', loadChildren: () => import('../products/products.module').then(m => m.ProductsModule), data: { permission: 'products' } },
+            { path: 'vendors', loadChildren: () => import('../vendors/vendors.module').then(m => m.VendorsModule), data: { permission: 'helpers' } },
+            { path: 'skills', loadChildren: () => import('../skills/skills.module').then(m => m.SkillsModule), data: { permission: 'categories' } },
+            { path: 'advertisements', loadChildren: () => import('../advertisements/advertisements.module').then(m => m.AdvertisementsModule), data: { permission: 'categories' } },
+            { path: 'banners', redirectTo: 'advertisements', pathMatch: 'full' },
             { path: 'rentals', loadChildren: () => import('../rentals/rentals.module').then(m => m.RentalsModule), data: { permission: 'rentals' } },
             { path: 'orders', loadChildren: () => import('../orders/orders.module').then(m => m.OrdersModule), data: { permission: 'orders' } },
             { path: 'payments', loadChildren: () => import('../payments/payments.module').then(m => m.PaymentsModule), data: { permission: 'payments' } },
@@ -40,3 +47,4 @@ const routes: Routes = [
     ]
 })
 export class LayoutModule { }
+

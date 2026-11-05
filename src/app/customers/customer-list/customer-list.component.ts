@@ -60,8 +60,9 @@ export class CustomerListComponent implements OnInit {
 
     viewHistory(customer: any) {
         this.selectedCustomer = customer;
-        this.core.getData('orders').subscribe(orders => {
-            this.customerOrders = orders.filter((o: any) => o.customer === customer.name);
+        this.core.getData('orders', 1, 100).subscribe(res => {
+            const list = res.data || res || [];
+            this.customerOrders = list.filter((o: any) => o.user_id === customer.id || o.customer === customer.name);
         });
     }
 }

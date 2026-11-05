@@ -99,34 +99,108 @@
             </div>
 
             <form (ngSubmit)="onSubmit()" class="space-y-6 relative z-10">
-                <!-- Identity Group -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="md:col-span-2 space-y-2">
-                        <label class="block text-[9px] font-black text-navy/40 uppercase tracking-[0.2em]">Rental Name</label>
+                <!-- Identity & Hierarchy Group -->
+                <div class="space-y-6">
+                    <!-- Asset Name -->
+                    <div class="space-y-2">
+                        <label class="block text-[9px] font-black text-navy/40 uppercase tracking-[0.2em]">Rental Asset Name <span class="text-red-500">*</span></label>
                         <input type="text" [(ngModel)]="rental.name" name="name" required
-                            class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-gold outline-none transition-all font-black text-navy text-lg shadow-inner"
-                            placeholder="e.g. Caterpillar 320 GC">
-                    </div>
-                    <div class="space-y-2">
-                        <label class="block text-[9px] font-black text-navy/40 uppercase tracking-[0.2em]">Category</label>
-                        <select [(ngModel)]="rental.rental_category_id" name="rental_category_id" required
-                            class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-gold outline-none transition-all font-black text-navy text-base shadow-inner appearance-none cursor-pointer">
-                            <option [ngValue]="null">Select Category</option>
-                            <option *ngFor="let cat of categories" [value]="cat.id">{{cat.name}}</option>
-                        </select>
-                    </div>
-                    <div class="space-y-2">
-                        <label class="block text-[9px] font-black text-navy/40 uppercase tracking-[0.2em]">Contact
-                            Number</label>
-                        <input type="text" [(ngModel)]="rental.mobile" name="mobile" required
                             class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-gold outline-none transition-all font-black text-navy text-base shadow-inner"
-                            placeholder="+91 (630) 000-0000">
+                            placeholder="e.g. JCB 3DX Backhoe Loader or Caterpillar 320 GC">
                     </div>
-                    <div class="space-y-2">
-                        <label class="block text-[9px] font-black text-navy/40 uppercase tracking-[0.2em]">Image URL</label>
-                        <input type="text" [(ngModel)]="rental.image" name="image" readonly
-                            class="w-full px-6 py-4 bg-gray-100 border-2 border-transparent rounded-2xl outline-none font-bold text-navy text-[10px] shadow-inner truncate"
-                            placeholder="Upload or paste image...">
+
+                    <!-- 1. Main Sector & 2. Category -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- 1. Main Sector -->
+                        <div class="space-y-2">
+                            <label class="block text-[9px] font-black text-navy/40 uppercase tracking-[0.2em]">1. Main Sector <span class="text-red-500">*</span></label>
+                            <div class="relative">
+                                <select [(ngModel)]="rental.main_category_id" name="main_category_id" (change)="onMainCategoryChange(true)" required
+                                    class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-gold outline-none transition-all font-black text-navy text-sm shadow-inner appearance-none cursor-pointer">
+                                    <option [ngValue]="null">Select Sector (e.g. Construction / Interiors)</option>
+                                    <option *ngFor="let m of mainCategories" [value]="m.id">{{m.name}}</option>
+                                </select>
+                                <div class="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-navy/20">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 2. Category -->
+                        <div class="space-y-2">
+                            <label class="block text-[9px] font-black text-navy/40 uppercase tracking-[0.2em]">2. Category <span class="text-red-500">*</span></label>
+                            <div class="relative">
+                                <select [(ngModel)]="rental.category_id" name="category_id" (change)="onCategoryChange()" required
+                                    [disabled]="!rental.main_category_id"
+                                    class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-gold outline-none transition-all font-black text-navy text-sm shadow-inner appearance-none cursor-pointer disabled:opacity-50">
+                                    <option [ngValue]="null">Select Category</option>
+                                    <option *ngFor="let cat of filteredCategories" [value]="cat.id">{{cat.name}}</option>
+                                </select>
+                                <div class="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-navy/20">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3. Sub Category & 4. Unit -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- 3. Sub Category -->
+                        <div class="space-y-2">
+                            <label class="block text-[9px] font-black text-navy/40 uppercase tracking-[0.2em]">3. Sub Category <span class="text-red-500">*</span></label>
+                            <div class="relative">
+                                <select [(ngModel)]="rental.subcategory_id" name="subcategory_id" required
+                                    [disabled]="!rental.category_id"
+                                    class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-gold outline-none transition-all font-black text-navy text-sm shadow-inner appearance-none cursor-pointer disabled:opacity-50">
+                                    <option [ngValue]="null">Select Sub Category</option>
+                                    <option *ngFor="let sub of subcategories" [value]="sub.id">
+                                        {{sub.name}} [{{sub.type | uppercase}}]
+                                    </option>
+                                </select>
+                                <div class="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-navy/20">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 4. Rental Unit -->
+                        <div class="space-y-2">
+                            <label class="block text-[9px] font-black text-navy/40 uppercase tracking-[0.2em]">4. Rental Duration Unit <span class="text-red-500">*</span></label>
+                            <div class="relative">
+                                <select [(ngModel)]="rental.unit_id" name="unit_id" required
+                                    class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-gold outline-none transition-all font-black text-navy text-sm shadow-inner appearance-none cursor-pointer">
+                                    <option [ngValue]="null">Select Duration Unit</option>
+                                    <option *ngFor="let u of durationUnits" [value]="u.id">{{u.name}}</option>
+                                </select>
+                                <div class="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-navy/20">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Price per Day & Contact Mobile -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                            <label class="block text-[9px] font-black text-navy/40 uppercase tracking-[0.2em]">Rental Rate (₹) <span class="text-red-500">*</span></label>
+                            <input type="number" [(ngModel)]="rental.price_per_day" name="price_per_day" required min="0" step="any"
+                                class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-gold outline-none transition-all font-black text-navy text-base shadow-inner"
+                                placeholder="5000.00">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="block text-[9px] font-black text-navy/40 uppercase tracking-[0.2em]">Support / Contact Mobile</label>
+                            <input type="text" [(ngModel)]="rental.mobile" name="mobile"
+                                class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-gold outline-none transition-all font-black text-navy text-base shadow-inner"
+                                placeholder="+91 (630) 000-0000">
+                        </div>
                     </div>
                 </div>
 

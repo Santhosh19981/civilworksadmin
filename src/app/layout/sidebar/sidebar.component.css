@@ -64,6 +64,11 @@
     border: 1px solid rgba(239, 68, 68, 0.1);
 }
 
+.sidebar-toggle-btn:hover,
+.sidebar-expand-btn:hover {
+    box-shadow: 0 0 14px var(--gold-glow);
+}
+
 @keyframes spin-slow {
     from {
         transform: rotate(0deg);
@@ -106,4 +111,34 @@
 
 .animate-fade-in {
     animation: fade-in 0.5s ease forwards;
+}
+
+
+/* Mobile Off-canvas Drawer */
+@media (max-width: 768px) {
+    .sidebar-container {
+        position: fixed !important;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 50 !important;
+        box-shadow: 0 0 50px rgba(0, 0, 0, 0.6) !important;
+        transform: translateX(0);
+    }
+
+    .sidebar-container.w-20 {
+        width: 0 !important;
+        min-width: 0 !important;
+        max-width: 0 !important;
+        transform: translateX(-100%) !important;
+        pointer-events: none !important;
+        opacity: 0;
+    }
+
+    .sidebar-container.w-72 {
+        width: 280px !important;
+        min-width: 280px !important;
+        transform: translateX(0) !important;
+        opacity: 1;
+    }
 }

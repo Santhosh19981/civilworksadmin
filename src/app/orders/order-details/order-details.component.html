@@ -59,16 +59,17 @@
                 <div class="space-y-4">
                     <div class="flex items-center gap-4">
                         <div
-                            class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-primary font-bold">
-                            JD</div>
+                            class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-primary font-black">
+                            {{(order.user_name || order.customer || 'CU').substring(0, 2).toUpperCase()}}
+                        </div>
                         <div>
-                            <p class="font-bold text-navy">{{order.customer}}</p>
-                            <p class="text-xs text-gray-400">Customer ID: #CUST-{{order.id}}</p>
+                            <p class="font-bold text-navy">{{order.user_name || order.customer || 'Customer'}}</p>
+                            <p class="text-xs text-gray-400">User ID: #{{order.user_id || order.id}}</p>
                         </div>
                     </div>
                     <div class="pt-4 space-y-3">
-                        <p class="text-sm flex items-center gap-3 text-gray-600"><span>📞</span> {{order.mobile}}</p>
-                        <p class="text-sm flex items-start gap-3 text-gray-600"><span>📍</span> {{order.address}}</p>
+                        <p class="text-sm flex items-center gap-3 text-gray-600"><span>📞</span> {{order.user_mobile || order.address_mobile || order.mobile || 'Contact on file'}}</p>
+                        <p class="text-sm flex items-start gap-3 text-gray-600"><span>📍</span> {{order.address_line_1 ? (order.address_line_1 + (order.city ? ', ' + order.city : '')) : (order.address || 'Address provided at site')}}</p>
                     </div>
                 </div>
             </div>
@@ -78,15 +79,15 @@
                 <div class="space-y-3">
                     <div class="flex justify-between text-sm">
                         <span class="text-gray-400">Method:</span>
-                        <span class="font-bold text-navy">{{order.paymentMethod}}</span>
+                        <span class="font-bold text-navy uppercase">{{order.payment_method || order.paymentMethod || 'Online / Pay on site'}}</span>
                     </div>
                     <div class="flex justify-between text-sm">
                         <span class="text-gray-400">Status:</span>
-                        <span class="font-bold text-primary">{{order.paymentStatus}}</span>
+                        <span class="font-bold text-primary uppercase">{{order.payment_status || order.paymentStatus || 'Pending'}}</span>
                     </div>
                     <div class="pt-2 border-t mt-2">
                         <p class="text-[10px] uppercase text-gray-400 font-bold mb-1">Transaction Ref</p>
-                        <p class="text-xs font-mono font-bold text-gray-600">TXN-{{order.id}}-8899</p>
+                        <p class="text-xs font-mono font-bold text-gray-600">{{order.order_no || ('ORD-' + order.id)}}</p>
                     </div>
                 </div>
             </div>
@@ -107,21 +108,23 @@
                             <th class="px-6 py-3 text-xs font-bold text-gray-400 uppercase text-right">Subtotal</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-50 italic">
+                    <tbody class="divide-y divide-gray-50">
                         <tr *ngFor="let item of order.items">
-                            <td class="px-6 py-4 font-bold text-navy">{{item.name}}</td>
+                            <td class="px-6 py-4 font-bold text-navy">
+                                {{item.product_name || item.name || 'CivilWorks Product'}}
+                                <span *ngIf="item.unit_name" class="text-xs text-gray-400 font-normal"> ({{item.unit_name}})</span>
+                            </td>
                             <td class="px-6 py-4">{{item.quantity}}</td>
-                            <td class="px-6 py-4 font-mono text-gray-500">${{item.price}}</td>
-                            <td class="px-6 py-4 font-mono font-bold text-navy text-right">${{item.price *
-                                item.quantity}}</td>
+                            <td class="px-6 py-4 font-mono text-gray-500">₹{{item.price}}</td>
+                            <td class="px-6 py-4 font-mono font-bold text-navy text-right">₹{{item.price * item.quantity}}</td>
                         </tr>
                     </tbody>
                     <tfoot class="bg-lightgray/50 border-t-2 border-gray-100">
                         <tr>
-                            <td colspan="3" class="px-6 py-4 text-right font-medium text-gray-400 font-mono italic">
+                            <td colspan="3" class="px-6 py-4 text-right font-medium text-gray-400 font-mono">
                                 Grand Total</td>
                             <td class="px-6 py-4 text-right text-xl font-bold text-primary font-mono">
-                                ${{order.totalAmount}}</td>
+                                ₹{{order.total_amount || order.totalAmount}}</td>
                         </tr>
                     </tfoot>
                 </table>

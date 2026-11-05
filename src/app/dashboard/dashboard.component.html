@@ -78,7 +78,7 @@
                     </p>
                 </div>
                 <div class="px-4 py-2 bg-gold/10 text-gold text-xs font-black rounded-xl tracking-tighter">
-                    $ {{dashboardData?.stats?.totalRevenue | number:'1.2-2'}}
+                    ₹{{dashboardData?.stats?.totalRevenue | number:'1.2-2'}}
                 </div>
             </div>
             <div class="relative min-h-[300px]">
@@ -121,7 +121,8 @@
                     </div>
                     <div>
                         <p class="text-sm font-black text-navy uppercase tracking-tighter">Low Stock</p>
-                        <p class="text-[10px] text-red-500 font-bold uppercase tracking-widest mt-0.5">{{dashboardData?.stats?.lowStockProducts}} items remaining</p>
+                        <p class="text-[10px] text-red-500 font-bold uppercase tracking-widest mt-0.5">
+                            {{dashboardData?.stats?.lowStockProducts}} items remaining</p>
                     </div>
                 </div>
 
@@ -137,7 +138,8 @@
                     </div>
                     <div>
                         <p class="text-sm font-black text-navy uppercase tracking-tighter">Late Returns</p>
-                        <p class="text-[10px] text-gold font-bold uppercase tracking-widest mt-0.5">{{dashboardData?.stats?.overdueRentals}} Overdue items</p>
+                        <p class="text-[10px] text-gold font-bold uppercase tracking-widest mt-0.5">
+                            {{dashboardData?.stats?.overdueRentals}} Overdue items</p>
                     </div>
                 </div>
             </div>

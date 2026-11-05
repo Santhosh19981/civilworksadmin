@@ -44,8 +44,11 @@
                                     <h3
                                         class="text-sm font-black text-navy tracking-tight group-hover:text-gold transition-colors">
                                         {{rental.name}}</h3>
-                                    <div class="flex items-center gap-2 mt-1">
-                                        <span class="text-[8px] font-black px-2 py-0.5 bg-navy/5 text-navy rounded-md uppercase tracking-widest">{{rental.category_name || 'Uncategorized'}}</span>
+                                    <div class="flex items-center gap-1.5 mt-1.5 flex-wrap">
+                                        <span *ngIf="rental.main_category_name" class="text-[8px] font-black px-2 py-0.5 bg-gold/10 text-gold rounded-md uppercase tracking-widest">{{rental.main_category_name}}</span>
+                                        <span class="text-[8px] font-black px-2 py-0.5 bg-navy/5 text-navy rounded-md uppercase tracking-widest">{{rental.category_name || rental.legacy_category_name || 'Machinery'}}</span>
+                                        <span *ngIf="rental.subcategory_name" class="text-[8px] font-black px-2 py-0.5 bg-blue-50 text-blue-700 rounded-md uppercase tracking-widest">{{rental.subcategory_name}}</span>
+                                        <span *ngIf="rental.price_per_day" class="text-[9px] font-black px-2 py-0.5 bg-emerald-50 text-emerald-700 rounded-md">₹{{rental.price_per_day}} / {{rental.unit_name || 'Day'}}</span>
                                     </div>
                                     <p class="text-[9px] text-gray-300 font-bold uppercase tracking-wider line-clamp-1 mt-1">
                                         {{rental.description}}</p>

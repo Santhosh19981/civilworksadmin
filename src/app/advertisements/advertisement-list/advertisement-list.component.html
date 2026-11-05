@@ -1,0 +1,726 @@
+<div class="space-y-10 pb-12">
+    <!-- Header -->
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+        <div>
+            <div class="flex items-center gap-3">
+                <span
+                    class="px-3 py-1 bg-gold/10 text-gold text-[10px] font-black rounded-lg uppercase tracking-widest">
+                    Hero Showcase
+                </span>
+                <span class="text-xs text-gray-400 font-bold uppercase tracking-widest">
+                    {{ filteredAds.length }} Active Advertisements
+                </span>
+            </div>
+            <h2 class="text-3xl font-black text-navy tracking-tight mt-1">Hero Advertisements (Adds)</h2>
+            <p class="text-xs text-gray-400 font-bold uppercase tracking-widest mt-1">
+                Manage promotional banners and hero carousel slides strictly isolated by Main Category
+            </p>
+        </div>
+
+        <button (click)="openAddModal()"
+            class="px-8 py-4 bg-navy text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-gold transition-all duration-500 shadow-xl shadow-navy/20 flex items-center justify-center gap-3 active:scale-95">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4" />
+            </svg>
+            Add New Advertisement
+        </button>
+    </div>
+
+    <!-- Filters & Search Bar -->
+    <div
+        class="bg-white p-6 rounded-[2rem] border border-gray-100 shadow-lg flex flex-col md:flex-row items-center justify-between gap-4">
+        <!-- Main Category Filter Dropdown -->
+        <div class="flex items-center gap-3 w-full md:w-auto">
+            <span class="text-[10px] font-black text-navy/40 uppercase tracking-[0.2em] whitespace-nowrap">Filter
+                Sector:</span>
+            <div class="relative w-full md:w-64">
+                <select [(ngModel)]="selectedSectorFilter" (change)="onSectorFilterChange()"
+                    class="w-full pl-5 pr-10 py-3.5 bg-gray-50 border border-gray-200 rounded-xl font-bold text-xs text-navy focus:bg-white focus:border-gold outline-none transition-all appearance-none cursor-pointer">
+                    <option value="">All Main Categories (All Sectors)</option>
+                    <option *ngFor="let cat of mainCategories" [value]="cat.id">
+                        {{ cat.name }}
+                    </option>
+                </select>
+                <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-gray-400">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search Input -->
+        <div class="relative w-full md:w-72">
+            <input type="text" [(ngModel)]="searchQuery" (input)="applySearchFilter()"
+                placeholder="Search title, tag, or sector..."
+                class="w-full pl-10 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl font-medium text-xs text-navy focus:bg-white focus:border-gold outline-none transition-all">
+            <div class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-gray-400">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alert / Error message -->
+    <div *ngIf="errorMessage" class="p-4 bg-red-50 border border-red-200 text-red-600 rounded-2xl text-xs font-bold">
+        {{ errorMessage }}
+    </div>
+
+    <!-- Advertisements Table -->
+    <div class="premium-card rounded-[2rem] overflow-hidden border border-gray-100 shadow-xl bg-white">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-gray-50/50 border-b border-gray-100">
+                        <th class="px-4 py-4 text-[10px] font-black text-navy/40 uppercase tracking-[0.2em]">Hero Slide</th>
+                        <th class="px-4 py-4 text-[10px] font-black text-navy/40 uppercase tracking-[0.2em]">Title & Description</th>
+                        <th class="px-4 py-4 text-[10px] font-black text-navy/40 uppercase tracking-[0.2em]">Main Category</th>
+                        <th class="px-4 py-4 text-[10px] font-black text-navy/40 uppercase tracking-[0.2em]">Action CTA</th>
+                        <th class="px-4 py-4 text-[10px] font-black text-navy/40 uppercase tracking-[0.2em]">Assurance</th>
+                        <th class="px-4 py-4 text-[10px] font-black text-navy/40 uppercase tracking-[0.2em] text-center">Order</th>
+                        <th class="px-4 py-4 text-[10px] font-black text-navy/40 uppercase tracking-[0.2em] text-center">Status</th>
+                        <th class="px-4 py-4 text-[10px] font-black text-navy/40 uppercase tracking-[0.2em] text-center sticky right-0 bg-gray-50/95 backdrop-blur z-20 shadow-[-4px_0_10px_rgba(0,0,0,0.06)] min-w-[210px]">
+                            Actions
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-50">
+                    <tr *ngFor="let ad of filteredAds" class="group hover:bg-gray-50/50 transition-all duration-300">
+                        <!-- Image & Tag Thumbnail -->
+                        <td class="px-4 py-4 whitespace-nowrap">
+                            <div class="relative w-20 h-13 rounded-xl overflow-hidden shadow-sm bg-gray-900 border border-gray-200">
+                                <img [src]="ad.image" [alt]="ad.title"
+                                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                                <span *ngIf="ad.tag"
+                                    class="absolute bottom-1 left-1 px-1.5 py-0.2 bg-gold text-[7px] font-black text-white rounded uppercase tracking-wider">
+                                    {{ ad.tag }}
+                                </span>
+                            </div>
+                        </td>
+
+                        <!-- Title & Description -->
+                        <td class="px-4 py-4 max-w-xs">
+                            <h3 class="text-xs font-black text-navy tracking-tight group-hover:text-gold transition-colors line-clamp-1">
+                                {{ ad.title }}
+                            </h3>
+                            <p class="text-[11px] text-gray-500 line-clamp-1 mt-0.5">
+                                {{ ad.subtitle || 'No subtitle provided' }}
+                            </p>
+                        </td>
+
+                        <!-- Main Category Tag -->
+                        <td class="px-4 py-4 whitespace-nowrap">
+                            <span [class]="getMainCategoryThemeClass(ad.main_category_id)"
+                                class="px-2.5 py-1 rounded-lg text-[9px] font-black tracking-widest uppercase border inline-flex items-center gap-1.5 shadow-sm">
+                                <span class="w-1.5 h-1.5 rounded-full bg-current"></span>
+                                {{ ad.main_category_name || getMainCategoryName(ad.main_category_id) }}
+                            </span>
+                        </td>
+
+                        <!-- Action CTA -->
+                        <td class="px-4 py-4 whitespace-nowrap">
+                            <div class="flex flex-col">
+                                <span class="text-xs font-bold text-navy flex items-center gap-1">
+                                    {{ ad.cta || 'Explore' }}
+                                    <svg class="w-3 h-3 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                                    </svg>
+                                </span>
+                                <span class="text-[9px] font-mono text-gray-400 mt-0.5">
+                                    {{ ad.cta_link || '/tabs/products' }}
+                                </span>
+                            </div>
+                        </td>
+
+                        <!-- Assurance Badge -->
+                        <td class="px-4 py-4 whitespace-nowrap">
+                            <span class="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-100">
+                                <svg class="w-3.5 h-3.5 text-emerald-600" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                </svg>
+                                {{ ad.assurance_badge || '100% Guaranteed' }}
+                            </span>
+                        </td>
+
+                        <!-- Sort Order -->
+                        <td class="px-4 py-4 whitespace-nowrap text-center">
+                            <span class="font-mono text-xs font-black text-gray-500 bg-gray-100 px-2 py-0.5 rounded-md">
+                                #{{ ad.sort_order }}
+                            </span>
+                        </td>
+
+                        <!-- Status -->
+                        <td class="px-4 py-4 whitespace-nowrap text-center">
+                            <button (click)="toggleStatus(ad)"
+                                [class]="ad.status === 'active' ? 'bg-green-50 text-green-600 border-green-200' : 'bg-gray-100 text-gray-400 border-gray-200'"
+                                class="px-2.5 py-1 rounded-lg text-[9px] font-black tracking-widest uppercase border transition-all hover:scale-105 active:scale-95">
+                                {{ ad.status }}
+                            </button>
+                        </td>
+
+                        <!-- Actions (Prominent & Sticky on the Right) -->
+                        <td class="px-4 py-4 text-center whitespace-nowrap sticky right-0 bg-white group-hover:bg-[#fbfcfd] z-10 shadow-[-4px_0_10px_rgba(0,0,0,0.06)] min-w-[210px]">
+                            <div class="flex items-center justify-center gap-2">
+                                <!-- Preview Button -->
+                                <button (click)="openPreviewModal(ad)" title="Live Customer Preview"
+                                    class="p-2 bg-amber-50 text-amber-600 hover:bg-amber-500 hover:text-white rounded-xl transition-all shadow-sm active:scale-95">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                    </svg>
+                                </button>
+
+                                <!-- Edit Button -->
+                                <button (click)="editAdvertisement(ad)" title="Edit Hero Advertisement"
+                                    class="px-3 py-2 bg-blue-50 text-blue-700 hover:bg-blue-600 hover:text-white rounded-xl font-black text-xs flex items-center gap-1.5 transition-all shadow-sm active:scale-95">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                    </svg>
+                                    <span>Edit</span>
+                                </button>
+
+                                <!-- Delete Button -->
+                                <button (click)="deleteAdvertisement(ad)" title="Delete Hero Advertisement"
+                                    class="px-3 py-2 bg-red-50 text-red-600 hover:bg-red-600 hover:text-white rounded-xl font-black text-xs flex items-center gap-1.5 transition-all shadow-sm active:scale-95">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
+                                    <span>Delete</span>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Empty State -->
+        <div *ngIf="filteredAds.length === 0 && !isLoading" class="p-20 text-center">
+            <div class="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6 text-gray-300">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+            </div>
+            <h3 class="text-xl font-black text-navy tracking-tight">No Advertisements Found</h3>
+            <p class="text-gray-400 font-bold text-xs uppercase tracking-widest mt-2">
+                {{ selectedSectorFilter ? 'No ads found for the selected main category sector.' : 'Add your first hero
+                advertisement to start displaying it on the home page.' }}
+            </p>
+            <button (click)="openAddModal()"
+                class="mt-6 px-6 py-3 bg-navy text-white rounded-xl text-xs font-black uppercase tracking-wider hover:bg-gold transition-colors">
+                + Create Hero Ad Now
+            </button>
+        </div>
+    </div>
+
+    <!-- Add / Edit Modal -->
+    <div *ngIf="showModal"
+        class="fixed inset-0 bg-navy/80 backdrop-blur-xl z-[100] flex items-center justify-center p-4 md:p-6 overflow-y-auto">
+        <div
+            class="bg-white rounded-[2.5rem] w-full max-w-3xl my-8 p-8 md:p-10 shadow-3xl relative overflow-hidden max-h-[92vh] flex flex-col">
+            <!-- Background Glow -->
+            <div
+                class="absolute top-0 right-0 w-72 h-72 bg-gold/5 rounded-full blur-3xl -mr-32 -mt-32 pointer-events-none">
+            </div>
+
+            <!-- Modal Header -->
+            <div class="relative z-10 mb-6 flex items-start justify-between">
+                <div>
+                    <span
+                        class="inline-block px-3 py-1 bg-gold/10 text-gold text-[10px] font-black rounded-lg mb-2 tracking-[0.2em] uppercase">
+                        Hero Banner Configuration
+                    </span>
+                    <h3 class="text-2xl md:text-3xl font-black text-navy tracking-tight">
+                        {{ isEdit ? 'Update Hero Advertisement' : 'Add New Hero Advertisement' }}
+                    </h3>
+                    <p class="text-xs text-gray-400 font-bold uppercase tracking-widest mt-1">
+                        Input advertisement assets and link directly to a Main Category
+                    </p>
+                </div>
+                <button (click)="showModal = false"
+                    class="p-2 text-gray-400 hover:text-navy rounded-xl hover:bg-gray-100 transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Modal Body (Scrollable) -->
+            <div class="relative z-10 overflow-y-auto pr-1 space-y-6 flex-1 custom-scrollbar">
+
+                <!-- LIVE PREVIEW CARD (Customer Hero Area Mockup) -->
+                <div
+                    class="rounded-2xl overflow-hidden border border-gray-200 shadow-xl bg-gray-950 relative min-h-[170px] flex flex-col justify-end p-6">
+                    <div *ngIf="currentAd.image" class="absolute inset-0 bg-cover bg-center transition-all duration-300"
+                        [style.backgroundImage]="'url(' + currentAd.image + ')'">
+                    </div>
+                    <div *ngIf="!currentAd.image" class="absolute inset-0 bg-gradient-to-r from-slate-900 via-navy/90 to-slate-900 flex items-center justify-center">
+                        <span class="text-xs text-white/30 font-bold uppercase tracking-widest flex items-center gap-2">
+                            <svg class="w-4 h-4 text-white/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                            </svg>
+                            Live Banner Preview
+                        </span>
+                    </div>
+                    <div class="absolute inset-0 bg-gradient-to-r from-navy/95 via-navy/70 to-transparent"></div>
+                    <div class="relative z-10 max-w-lg text-white">
+                        <span *ngIf="currentAd.tag"
+                            class="inline-block px-2.5 py-0.5 bg-gradient-to-r from-orange-500 to-amber-500 text-[10px] font-black rounded text-white tracking-widest uppercase mb-1.5 shadow">
+                            {{ currentAd.tag }}
+                        </span>
+                        <h4 *ngIf="currentAd.title" class="text-xl md:text-2xl font-black tracking-tight leading-snug drop-shadow-sm">
+                            {{ currentAd.title }}
+                        </h4>
+                        <p *ngIf="currentAd.subtitle" class="text-xs text-gray-200 line-clamp-2 mt-1 drop-shadow-sm">
+                            {{ currentAd.subtitle }}
+                        </p>
+                        <div class="flex items-center gap-4 mt-3" *ngIf="currentAd.cta || currentAd.assurance_badge">
+                            <span *ngIf="currentAd.cta"
+                                class="px-4 py-2 bg-white text-navy font-black text-xs rounded-xl shadow-lg flex items-center gap-1.5">
+                                {{ currentAd.cta }}
+                                <svg class="w-3.5 h-3.5 text-navy" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                        d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                                </svg>
+                            </span>
+                            <span *ngIf="currentAd.assurance_badge" class="text-xs font-bold text-white/90 flex items-center gap-1.5 drop-shadow">
+                                <svg class="w-4 h-4 text-emerald-400" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd"
+                                        d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                        clip-rule="evenodd"></path>
+                                </svg>
+                                {{ currentAd.assurance_badge }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FORM INPUTS -->
+                <form (ngSubmit)="saveAdvertisement()" class="space-y-5">
+                    <!-- Row 1: Belongs to Main Category (Dropdown) & Status -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div class="space-y-2">
+                            <label class="block text-[10px] font-black text-navy/60 uppercase tracking-[0.2em]">
+                                Belongs to Main Category <span class="text-red-500">*</span>
+                            </label>
+                            <select [(ngModel)]="currentAd.main_category_id" name="main_category_id" required
+                                (change)="onMainCategorySelect()"
+                                class="w-full px-5 py-3.5 bg-gray-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-gold outline-none transition-all font-bold text-navy text-xs appearance-none cursor-pointer">
+                                <option [ngValue]="null" disabled>-- Select Main Category --</option>
+                                <option *ngFor="let cat of mainCategories" [value]="cat.id">
+                                    {{ cat.name }} (ID: #{{ cat.id }})
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="block text-[10px] font-black text-navy/60 uppercase tracking-[0.2em]">
+                                Display Status
+                            </label>
+                            <select [(ngModel)]="currentAd.status" name="status"
+                                class="w-full px-5 py-3.5 bg-gray-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-gold outline-none transition-all font-bold text-navy text-xs appearance-none">
+                                <option value="active">Active (Visible in Carousel)</option>
+                                <option value="inactive">Inactive (Hidden)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Row 2: Image URL & Upload -->
+                    <div class="space-y-2">
+                        <label class="block text-[10px] font-black text-navy/60 uppercase tracking-[0.2em]">
+                            Banner Background Image <span class="text-red-500">*</span>
+                        </label>
+                        <div class="flex flex-col sm:flex-row items-center gap-3">
+                            <input type="text" [(ngModel)]="currentAd.image" name="image" required
+                                placeholder="Paste high-res image URL (e.g. Unsplash or CDN)..."
+                                class="w-full px-5 py-3.5 bg-gray-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-gold outline-none transition-all font-medium text-navy text-xs">
+                            <label
+                                class="w-full sm:w-auto px-5 py-3.5 bg-navy/5 hover:bg-navy hover:text-white text-navy text-xs font-black rounded-2xl cursor-pointer transition-all duration-300 flex items-center justify-center gap-2 whitespace-nowrap">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                                </svg>
+                                <span>{{ isUploading ? 'Uploading...' : 'Upload File' }}</span>
+                                <input type="file" (change)="onFileSelected($event)" accept="image/*" class="hidden"
+                                    [disabled]="isUploading">
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Row 3: Tag & Title -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                        <div class="space-y-2">
+                            <label class="block text-[10px] font-black text-navy/60 uppercase tracking-[0.2em]">
+                                Tag / Badge Text
+                            </label>
+                            <input type="text" [(ngModel)]="currentAd.tag" name="tag"
+                                placeholder="e.g. DIRECT WHOLESALE"
+                                class="w-full px-5 py-3.5 bg-gray-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-gold outline-none transition-all font-bold text-navy text-xs">
+                        </div>
+
+                        <div class="space-y-2 md:col-span-2">
+                            <label class="block text-[10px] font-black text-navy/60 uppercase tracking-[0.2em]">
+                                Main Headline / Title <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" [(ngModel)]="currentAd.title" name="title" required
+                                placeholder="e.g. Quality Building Materials"
+                                class="w-full px-5 py-3.5 bg-gray-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-gold outline-none transition-all font-black text-navy text-xs">
+                        </div>
+                    </div>
+
+                    <!-- Row 4: Subtitle / Description -->
+                    <div class="space-y-2">
+                        <label class="block text-[10px] font-black text-navy/60 uppercase tracking-[0.2em]">
+                            Subtitle / Promotional Description
+                        </label>
+                        <textarea [(ngModel)]="currentAd.subtitle" name="subtitle" rows="2"
+                            placeholder="e.g. Direct supply on Cement, TMT Steel, Sand & Site Essentials at bulk rates"
+                            class="w-full px-5 py-3.5 bg-gray-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-gold outline-none transition-all font-medium text-navy text-xs resize-none"></textarea>
+                    </div>
+
+                    <!-- Row 5: CTA Text, CTA Link, Assurance Badge -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                        <div class="space-y-2">
+                            <label class="block text-[10px] font-black text-navy/60 uppercase tracking-[0.2em]">
+                                Button CTA Text
+                            </label>
+                            <input type="text" [(ngModel)]="currentAd.cta" name="cta"
+                                placeholder="e.g. Explore Materials"
+                                class="w-full px-5 py-3.5 bg-gray-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-gold outline-none transition-all font-bold text-navy text-xs">
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="block text-[10px] font-black text-navy/60 uppercase tracking-[0.2em]">
+                                Target Route / URL
+                            </label>
+                            <input type="text" [(ngModel)]="currentAd.cta_link" name="cta_link"
+                                placeholder="e.g. /tabs/products?mainCategoryId=1"
+                                class="w-full px-5 py-3.5 bg-gray-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-gold outline-none transition-all font-mono text-navy text-xs">
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="block text-[10px] font-black text-navy/60 uppercase tracking-[0.2em]">
+                                Assurance / Feature Badge
+                            </label>
+                            <input type="text" [(ngModel)]="currentAd.assurance_badge" name="assurance_badge"
+                                placeholder="e.g. 100% Quality Guaranteed"
+                                class="w-full px-5 py-3.5 bg-gray-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-gold outline-none transition-all font-bold text-navy text-xs">
+                        </div>
+                    </div>
+
+                    <!-- Row 6: Sort Order -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                        <div class="space-y-2">
+                            <label class="block text-[10px] font-black text-navy/60 uppercase tracking-[0.2em]">
+                                Carousel Sort Order (Slide Sequence)
+                            </label>
+                            <input type="number" [(ngModel)]="currentAd.sort_order" name="sort_order" min="1"
+                                class="w-full px-5 py-3.5 bg-gray-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-gold outline-none transition-all font-mono text-navy text-xs">
+                        </div>
+                    </div>
+
+                    <!-- Modal Actions -->
+                    <div class="flex items-center gap-4 pt-6 border-t border-gray-100">
+                        <button type="button" (click)="showModal = false"
+                            class="flex-1 py-4 bg-gray-100 text-gray-500 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-gray-200 transition-all">
+                            Cancel
+                        </button>
+                        <button type="button" (click)="openPreviewModal()"
+                            class="flex-1 py-4 bg-navy/5 hover:bg-navy/10 text-navy border-2 border-navy/20 hover:border-gold rounded-2xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 shadow-sm hover:shadow-md transition-all duration-300">
+                            <svg class="w-4 h-4 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                            </svg>
+                            <span>Preview</span>
+                        </button>
+                        <button type="submit" [disabled]="isUploading"
+                            class="flex-1 py-4 bg-navy text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl shadow-navy/20 hover:bg-gold transition-all duration-300">
+                            {{ isEdit ? 'Update Advertisement' : 'Save & Publish Ad' }}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dedicated Customer Hero Area Preview Modal (Exact Customer Storefront Dimensions) -->
+    <div *ngIf="showPreviewModal"
+        class="fixed inset-0 bg-navy/85 backdrop-blur-2xl z-[120] flex items-center justify-center p-3 md:p-6 overflow-y-auto">
+        <div
+            class="bg-white rounded-[2.5rem] w-full max-w-7xl my-6 p-6 md:p-8 shadow-3xl relative overflow-hidden flex flex-col max-h-[96vh]">
+            <!-- Subtle Background Accents -->
+            <div
+                class="absolute top-0 right-0 w-80 h-80 bg-gold/5 rounded-full blur-3xl -mr-32 -mt-32 pointer-events-none">
+            </div>
+
+            <!-- Preview Modal Header -->
+            <div
+                class="relative z-10 pb-5 mb-5 border-b border-gray-100 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                <div>
+                    <div class="flex items-center gap-2 mb-1.5 flex-wrap">
+                        <span
+                            class="inline-block px-3 py-1 bg-gold/10 text-gold text-[10px] font-black rounded-lg tracking-[0.2em] uppercase">
+                            Customer Hero Area Live Preview
+                        </span>
+                        <span
+                            class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[10px] font-mono font-bold bg-gray-100 text-gray-700">
+                            {{ previewMode === 'desktop' ? '1208px × 340px (Desktop Full)' : previewMode === 'tablet' ?
+                            '736px × 300px (Tablet)' : '358px × 220px (Mobile Device)' }}
+                        </span>
+                    </div>
+                    <h3 class="text-2xl md:text-3xl font-black text-navy tracking-tight">
+                        Storefront Hero Area Preview
+                    </h3>
+                    <p class="text-xs text-gray-400 font-bold uppercase tracking-wider mt-0.5">
+                        Rendered with exact dimensions, layout, gradients, and styling as seen by customers on
+                        http://localhost:4200
+                    </p>
+                </div>
+
+                <!-- Responsive Device Viewport Switcher & Close -->
+                <div class="flex items-center gap-3 self-end lg:self-center flex-wrap">
+                    <div class="flex items-center bg-gray-100 p-1 rounded-2xl border border-gray-200">
+                        <button type="button" (click)="setPreviewMode('desktop')"
+                            [class]="previewMode === 'desktop' ? 'bg-white text-navy shadow font-black' : 'text-gray-500 hover:text-navy font-bold'"
+                            class="px-4 py-2 rounded-xl text-xs flex items-center gap-2 transition-all">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                            </svg>
+                            <span>Desktop</span>
+                        </button>
+                        <button type="button" (click)="setPreviewMode('tablet')"
+                            [class]="previewMode === 'tablet' ? 'bg-white text-navy shadow font-black' : 'text-gray-500 hover:text-navy font-bold'"
+                            class="px-4 py-2 rounded-xl text-xs flex items-center gap-2 transition-all">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 18h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                            </svg>
+                            <span>Tablet</span>
+                        </button>
+                        <button type="button" (click)="setPreviewMode('mobile')"
+                            [class]="previewMode === 'mobile' ? 'bg-white text-navy shadow font-black' : 'text-gray-500 hover:text-navy font-bold'"
+                            class="px-4 py-2 rounded-xl text-xs flex items-center gap-2 transition-all">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                            </svg>
+                            <span>Mobile</span>
+                        </button>
+                    </div>
+
+                    <button type="button" (click)="closePreviewModal()"
+                        class="p-2.5 text-gray-400 hover:text-navy rounded-2xl hover:bg-gray-100 transition-colors"
+                        title="Close Preview">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Preview Modal Body: Simulated Storefront Frame -->
+            <div class="relative z-10 flex-1 overflow-y-auto custom-scrollbar p-1">
+                <!-- Browser Shell Mockup -->
+                <div class="rounded-3xl border border-gray-200 overflow-hidden shadow-2xl bg-white flex flex-col">
+                    <!-- Browser Window Header -->
+                    <div
+                        class="bg-gray-100/90 px-4 py-3 border-b border-gray-200 flex items-center justify-between gap-4">
+                        <div class="flex items-center gap-2">
+                            <div class="w-3 h-3 rounded-full bg-red-400"></div>
+                            <div class="w-3 h-3 rounded-full bg-amber-400"></div>
+                            <div class="w-3 h-3 rounded-full bg-emerald-400"></div>
+                        </div>
+                        <div
+                            class="flex-1 max-w-md bg-white rounded-xl px-4 py-1.5 border border-gray-200 text-center font-mono text-[11px] text-gray-600 flex items-center justify-center gap-2 shadow-inner">
+                            <svg class="w-3.5 h-3.5 text-emerald-500" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd"
+                                    d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                            <span>http://localhost:4200 (CivilWorks Storefront)</span>
+                        </div>
+                        <div class="text-[11px] font-black text-navy/70 uppercase tracking-widest hidden sm:block">
+                            Sector: <span class="text-gold">{{ getMainCategoryName(previewAd?.main_category_id)
+                                }}</span>
+                        </div>
+                    </div>
+
+                    <!-- Simulated Customer Viewport Canvas (#F8FAFC) -->
+                    <div class="bg-[#F8FAFC] py-8 px-4 flex justify-center items-center min-h-[380px] overflow-x-auto">
+                        <div class="preview-home-wrapper"
+                            [style.maxWidth]="previewMode === 'desktop' ? '1240px' : previewMode === 'tablet' ? '768px' : '390px'">
+
+                            <!-- EXACT HERO CAROUSEL COMPONENT -->
+                            <section class="w-full">
+                                <div class="preview-carousel-viewport" [ngClass]="'mode-' + previewMode">
+                                    <!-- Slide Background Image -->
+                                    <div class="preview-slide-bg"
+                                        [style.backgroundImage]="'url(' + (previewAd?.image || '') + ')'">
+                                    </div>
+
+                                    <!-- Gradient Scrim (Exact dark overlay) -->
+                                    <div class="preview-slide-scrim"></div>
+
+                                    <!-- Slide Content -->
+                                    <div class="preview-slide-content">
+                                        <span class="preview-slide-badge" *ngIf="previewAd?.tag">
+                                            {{ previewAd.tag }}
+                                        </span>
+
+                                        <h1 class="preview-slide-title">
+                                            {{ previewAd?.title }}
+                                        </h1>
+
+                                        <p class="preview-slide-subtitle" *ngIf="previewAd?.subtitle">
+                                            {{ previewAd.subtitle }}
+                                        </p>
+
+                                        <div class="preview-slide-cta-row">
+                                            <button class="preview-slide-cta-btn" type="button">
+                                                <span *ngIf="previewAd?.cta">{{ previewAd.cta }}</span>
+                                                <svg class="w-4 h-4 text-[#FF6B00]" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                                                </svg>
+                                            </button>
+
+                                            <span class="preview-slide-assurance" *ngIf="previewAd?.assurance_badge">
+                                                <svg class="w-4 h-4 text-[#10B981]" fill="currentColor"
+                                                    viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd"
+                                                        d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                                        clip-rule="evenodd"></path>
+                                                </svg>
+                                                <span>{{ previewAd.assurance_badge }}</span>
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Navigation Arrows Simulation -->
+                                    <button type="button" class="preview-slider-arrow prev" aria-label="Previous">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                                d="M15 19l-7-7 7-7"></path>
+                                        </svg>
+                                    </button>
+                                    <button type="button" class="preview-slider-arrow next" aria-label="Next">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                                d="M9 5l7 7-7 7"></path>
+                                        </svg>
+                                    </button>
+
+                                    <!-- Indicator Dots Simulation -->
+                                    <div class="preview-carousel-indicators">
+                                        <span class="preview-indicator-dot active"></span>
+                                        <span class="preview-indicator-dot"></span>
+                                        <span class="preview-indicator-dot"></span>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Live Ad Specifications Card -->
+                <div
+                    class="mt-5 grid grid-cols-2 md:grid-cols-4 gap-3 bg-gray-50 border border-gray-200 rounded-2xl p-4">
+                    <div>
+                        <span class="block text-[9px] font-black text-gray-400 uppercase tracking-widest">Main Category
+                            / Sector</span>
+                        <span class="font-bold text-navy text-xs mt-0.5 block truncate">{{
+                            getMainCategoryName(previewAd?.main_category_id) }}</span>
+                    </div>
+                    <div>
+                        <span class="block text-[9px] font-black text-gray-400 uppercase tracking-widest">Target CTA
+                            Route</span>
+                        <span class="font-mono text-navy text-xs mt-0.5 block truncate">{{ previewAd?.cta_link ||
+                            '/tabs/products' }}</span>
+                    </div>
+                    <div>
+                        <span class="block text-[9px] font-black text-gray-400 uppercase tracking-widest">Display
+                            Status</span>
+                        <span class="font-black text-xs uppercase tracking-widest"
+                            [class]="previewAd?.status === 'active' ? 'text-emerald-600' : 'text-gray-400'">
+                            {{ previewAd?.status || 'active' }}
+                        </span>
+                    </div>
+                    <div>
+                        <span class="block text-[9px] font-black text-gray-400 uppercase tracking-widest">Slide Sequence
+                            Order</span>
+                        <span class="font-mono font-black text-navy text-xs mt-0.5 block">#{{ previewAd?.sort_order || 1
+                            }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Preview Modal Footer Actions -->
+            <div class="relative z-10 pt-5 mt-4 border-t border-gray-100 flex items-center justify-between gap-4">
+                <button type="button" (click)="closePreviewModal()"
+                    class="px-6 py-3.5 bg-gray-100 hover:bg-gray-200 text-navy rounded-2xl font-black text-xs uppercase tracking-widest transition-all flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                    </svg>
+                    <span>Back to Edit</span>
+                </button>
+
+                <div class="flex items-center gap-3">
+                    <button type="button" *ngIf="showModal" (click)="saveFromPreview()" [disabled]="isUploading"
+                        class="px-8 py-3.5 bg-navy hover:bg-gold text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl shadow-navy/20 transition-all flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7">
+                            </path>
+                        </svg>
+                        <span>{{ isEdit ? 'Update Advertisement' : 'Save & Publish Ad' }}</span>
+                    </button>
+                    <button type="button" *ngIf="!showModal" (click)="closePreviewModal()"
+                        class="px-8 py-3.5 bg-navy hover:bg-gold text-white rounded-2xl font-black text-xs uppercase tracking-widest transition-all">
+                        Close Preview
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div *ngIf="deleteConfirmAd"
+        class="fixed inset-0 bg-navy/80 backdrop-blur-md z-[150] flex items-center justify-center p-4">
+        <div class="bg-white rounded-[2rem] max-w-md w-full p-8 shadow-2xl border border-gray-100 relative">
+            <div class="w-16 h-16 bg-red-50 text-red-500 rounded-2xl flex items-center justify-center mx-auto mb-5">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+            </div>
+            <h3 class="text-xl font-black text-navy text-center tracking-tight">Delete Hero Advertisement</h3>
+            <p class="text-xs text-gray-500 text-center mt-2 font-medium">
+                Are you sure you want to permanently delete <strong class="text-navy font-bold">"{{ deleteConfirmAd.title }}"</strong>? It will immediately stop appearing on the customer homepage carousel.
+            </p>
+            <div class="flex items-center gap-3 mt-6">
+                <button type="button" (click)="closeDeleteConfirm()"
+                    class="flex-1 py-3.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl font-black text-xs uppercase tracking-wider transition-colors">
+                    Cancel
+                </button>
+                <button type="button" (click)="confirmDelete()" [disabled]="isDeleting"
+                    class="flex-1 py-3.5 bg-red-600 hover:bg-red-700 text-white rounded-xl font-black text-xs uppercase tracking-wider shadow-lg shadow-red-600/30 transition-colors flex items-center justify-center gap-2">
+                    <span *ngIf="isDeleting">Deleting...</span>
+                    <span *ngIf="!isDeleting">Yes, Delete</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

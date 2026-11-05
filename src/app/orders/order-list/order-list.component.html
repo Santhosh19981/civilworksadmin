@@ -67,24 +67,30 @@
                     <tr *ngFor="let order of orders"
                         class="group hover:bg-gray-50/50 transition-all duration-300">
                         <td class="px-8 py-6">
-                            <span
-                                class="px-2.5 py-1.5 bg-navy text-white text-[9px] font-black rounded-lg shadow-md shadow-navy/20">
-                                #{{order.id}}
-                            </span>
+                            <div class="flex items-center gap-2">
+                                <span
+                                    class="px-2.5 py-1.5 bg-navy text-white text-[9px] font-black rounded-lg shadow-md shadow-navy/20">
+                                    {{order.order_no || ('#' + order.id)}}
+                                </span>
+                                <span *ngIf="order.items?.[0]?.main_category_name" 
+                                    class="px-2 py-0.5 bg-orange-50 text-orange-600 text-[8px] font-black rounded border border-orange-200 uppercase tracking-wider">
+                                    {{order.items[0].main_category_name}}
+                                </span>
+                            </div>
                         </td>
                         <td class="px-8 py-6">
                             <div class="flex flex-col">
                                 <span
-                                    class="font-black text-navy text-sm tracking-tight group-hover:text-gold transition-colors">{{order.customer}}</span>
-                                <span class="text-[8px] font-black text-gray-300 uppercase tracking-widest">Customer</span>
+                                    class="font-black text-navy text-sm tracking-tight group-hover:text-gold transition-colors">{{order.user_name || order.customer || 'Customer'}}</span>
+                                <span class="text-[9px] font-black text-gray-400 uppercase tracking-widest">User ID: #{{order.user_id}}</span>
                             </div>
                         </td>
                         <td class="px-8 py-6">
                             <span
-                                class="text-[10px] font-bold text-gray-400 group-hover:text-navy transition-colors">{{order.created_at | date}}</span>
+                                class="text-[10px] font-bold text-gray-400 group-hover:text-navy transition-colors">{{order.created_at | date:'mediumDate'}}</span>
                         </td>
                         <td class="px-8 py-6">
-                            <span class="text-sm font-black text-gold tracking-tighter">${{order.total_amount}}</span>
+                            <span class="text-sm font-black text-gold tracking-tighter">₹{{order.total_amount}}</span>
                         </td>
                         <td class="px-8 py-6">
                             <div class="flex items-center gap-1.5">
@@ -98,28 +104,15 @@
                             </div>
                         </td>
                         <td class="px-8 py-6">
-                            <div class="flex items-center">
-                                <span [ngClass]="{
-                                    'bg-yellow-500 text-white': order.order_status === 'pending',
-                                    'bg-blue-500 text-white': order.order_status === 'processing',
-                                    'bg-green-500 text-white': order.order_status === 'delivered',
-                                    'bg-red-500 text-white': order.order_status === 'cancelled'
-                                  }"
-                                    class="px-2.5 py-1 rounded-lg text-[8px] font-black uppercase tracking-widest shadow-lg">
-                                    {{order.order_status}}
-                                </span>
-                            </div>
-                        </td>
-                        <td class="px-8 py-6 text-right">
-                            <a [routerLink]="[order.id]"
-                                class="inline-flex items-center gap-1 text-[9px] font-black text-navy uppercase tracking-widest hover:text-gold transition-all group/btn">
-                                Details
-                                <svg xmlns="http://www.w3.org/2000/svg"
-                                    class="h-3 w-3 transform group-hover/btn:translate-x-0.5 transition-transform"
-                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
-                                        d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                                </svg>
+                            <span
+                                [class]="order.order_status === 'delivered' ? 'text-green-600 bg-green-50 border-green-200' : (order.order_status === 'shipped' ? 'text-blue-600 bg-blue-50 border-blue-200' : 'text-amber-600 bg-amber-50 border-amber-200')"
+                                class="px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-wider border">
+                                {{order.order_status || 'Pending'}}
+                            </span>
+                        </td>                        <td class="px-8 py-6 text-right">
+                            <a [routerLink]="['/orders', order.id]"
+                                class="text-[10px] font-black text-navy hover:text-gold uppercase tracking-widest transition-colors inline-flex items-center gap-1">
+                                Details <span>→</span>
                             </a>
                         </td>
                     </tr>

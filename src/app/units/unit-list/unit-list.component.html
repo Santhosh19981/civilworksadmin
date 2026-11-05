@@ -1,0 +1,258 @@
+<div class="space-y-8 pb-10">
+    <!-- Header -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+            <h2 class="text-3xl font-black text-navy tracking-tight">Units Master Data</h2>
+            <p class="text-xs text-gray-400 font-bold uppercase tracking-widest mt-1">Configure measurement and rental
+                duration units for all catalog products</p>
+        </div>
+        <button (click)="openAddModal()"
+            class="px-8 py-4 bg-navy text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-gold transition-all duration-500 shadow-xl shadow-navy/20 flex items-center gap-3 self-start md:self-auto">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4" />
+            </svg>
+            Add Unit
+        </button>
+    </div>
+
+    <!-- Category Filter Bar & Search -->
+    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+        <div class="flex flex-wrap items-center gap-2">
+            <button (click)="setCategoryFilter('all')"
+                [class]="selectedCategoryFilter === 'all' ? 'bg-navy text-white shadow-lg shadow-navy/20' : 'bg-white text-navy/70 hover:bg-gray-50 border border-gray-200'"
+                class="px-4 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider transition-all">
+                All Scopes
+            </button>
+            <button (click)="setCategoryFilter('selling_weight')"
+                [class]="selectedCategoryFilter === 'selling_weight' ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-600/20' : 'bg-white text-emerald-700 hover:bg-emerald-50 border border-emerald-200'"
+                class="px-4 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider transition-all">
+                Weight
+            </button>
+            <button (click)="setCategoryFilter('selling_length')"
+                [class]="selectedCategoryFilter === 'selling_length' ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20' : 'bg-white text-blue-700 hover:bg-blue-50 border border-blue-200'"
+                class="px-4 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider transition-all">
+                Length / Area
+            </button>
+            <button (click)="setCategoryFilter('selling_quantity')"
+                [class]="selectedCategoryFilter === 'selling_quantity' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20' : 'bg-white text-indigo-700 hover:bg-indigo-50 border border-indigo-200'"
+                class="px-4 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider transition-all">
+                Quantity / Pieces
+            </button>
+            <button (click)="setCategoryFilter('selling_volume')"
+                [class]="selectedCategoryFilter === 'selling_volume' ? 'bg-teal-600 text-white shadow-lg shadow-teal-600/20' : 'bg-white text-teal-700 hover:bg-teal-50 border border-teal-200'"
+                class="px-4 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider transition-all">
+                Volume / Liquids
+            </button>
+            <button (click)="setCategoryFilter('renting_duration')"
+                [class]="selectedCategoryFilter === 'renting_duration' ? 'bg-amber-600 text-white shadow-lg shadow-amber-600/20' : 'bg-white text-amber-700 hover:bg-amber-50 border border-amber-200'"
+                class="px-4 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider transition-all">
+                Rental Duration
+            </button>
+        </div>
+
+        <div class="relative w-full lg:w-72">
+            <input type="text" [value]="searchQuery" (input)="onSearch($event)" placeholder="Search unit or scope..."
+                class="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-200 rounded-xl text-xs font-bold text-navy placeholder:text-gray-400 focus:outline-none focus:border-gold">
+            <svg xmlns="http://www.w3.org/2000/svg"
+                class="h-4 w-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+        </div>
+    </div>
+
+    <!-- Units Table -->
+    <div class="premium-card rounded-[2rem] overflow-hidden border border-gray-100 shadow-xl bg-white">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-gray-50/50 border-b border-gray-100">
+                        <th class="px-8 py-5 text-[10px] font-black text-navy/40 uppercase tracking-[0.2em]">Unit Name
+                        </th>
+                        <th class="px-8 py-5 text-[10px] font-black text-navy/40 uppercase tracking-[0.2em]">Unit
+                            Category / Scope</th>
+                        <th class="px-8 py-5 text-[10px] font-black text-navy/40 uppercase tracking-[0.2em]">Status</th>
+                        <th class="px-8 py-5 text-[10px] font-black text-navy/40 uppercase tracking-[0.2em] text-right">
+                            Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-50">
+                    <tr *ngFor="let u of filteredUnits" class="group hover:bg-gray-50/50 transition-all duration-300">
+                        <td class="px-8 py-5">
+                            <div>
+                                <h3
+                                    class="text-sm font-black text-navy tracking-tight group-hover:text-gold transition-colors">
+                                    {{u.name}}
+                                </h3>
+                                <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">ID: #{{u.id}}
+                                </p>
+                            </div>
+                        </td>
+                        <td class="px-8 py-5">
+                            <span [class]="getCategoryBadgeClass(u.unit_category)"
+                                class="inline-block px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider border">
+                                {{categoryLabels[u.unit_category] || u.unit_category}}
+                            </span>
+                        </td>
+                        <td class="px-8 py-5">
+                            <button (click)="toggleStatus(u)"
+                                [class]="u.status === 'active' ? 'bg-green-50 text-green-600 border-green-100' : 'bg-gray-50 text-gray-400 border-gray-100'"
+                                class="px-3 py-1 rounded-lg text-[9px] font-black tracking-widest uppercase border transition-all hover:scale-105 active:scale-95">
+                                {{u.status}}
+                            </button>
+                        </td>
+                        <td class="px-8 py-5">
+                            <div class="flex items-center justify-end gap-2">
+                                <button (click)="editUnit(u)" title="Edit Unit"
+                                    class="p-2 bg-navy/5 text-navy rounded-lg hover:bg-navy hover:text-white transition-all">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                    </svg>
+                                </button>
+                                <button (click)="deleteUnit(u.id)" title="Delete Unit"
+                                    class="p-2 bg-red-50 text-red-500 rounded-lg hover:bg-red-500 hover:text-white transition-all">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Empty State -->
+        <div *ngIf="filteredUnits.length === 0" class="p-16 text-center">
+            <h3 class="text-xl font-black text-navy tracking-tight">No Units Found</h3>
+            <p class="text-gray-400 font-bold text-xs uppercase tracking-widest mt-2">No units match your selected
+                filter or search query</p>
+        </div>
+    </div>
+
+    <!-- Add/Edit Unit Modal Form -->
+    <div *ngIf="showModal"
+        class="fixed inset-0 bg-navy/80 backdrop-blur-xl z-[100] flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white rounded-[2.5rem] w-full max-w-2xl p-8 md:p-10 shadow-3xl relative overflow-hidden my-8">
+            <div class="relative z-10">
+                <div class="mb-6 text-center">
+                    <span
+                        class="inline-block px-4 py-1.5 bg-gold/10 text-gold text-[10px] font-black rounded-xl mb-3 tracking-[0.2em] uppercase">Master
+                        Data</span>
+                    <h3 class="text-2xl md:text-3xl font-black text-navy tracking-tight">{{isEdit ? 'Update' : 'Add'}}
+                        Unit</h3>
+                    <p class="text-xs text-gray-400 font-bold uppercase tracking-widest mt-1">Configure measurement or
+                        rental duration unit</p>
+                </div>
+
+                <form (ngSubmit)="saveUnit()" class="space-y-6">
+                    <!-- Quick Presets -->
+                    <div class="space-y-2">
+                        <label class="block text-[10px] font-black text-navy/50 uppercase tracking-[0.2em]">Quick
+                            Presets (Click to autofill):</label>
+                        <div class="flex flex-wrap gap-1.5">
+                            <button *ngFor="let p of quickPresets" type="button" (click)="applyPreset(p)"
+                                class="px-2.5 py-1 rounded-lg text-[10px] font-black border border-gray-200 bg-gray-50 text-navy hover:bg-gold hover:text-white hover:border-gold transition-all">
+                                + {{p.name}}
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Unit Name -->
+                    <div class="space-y-2">
+                        <label class="block text-[10px] font-black text-navy/40 uppercase tracking-[0.2em]">Unit Name
+                            <span class="text-red-500">*</span></label>
+                        <input type="text" [(ngModel)]="currentUnit.name" name="name" required
+                            class="w-full px-5 py-3.5 bg-gray-50 border-2 border-gray-100 rounded-2xl focus:bg-white focus:border-gold outline-none transition-all font-bold text-navy placeholder:text-gray-300 text-sm"
+                            placeholder="e.g. KG, Piece, Box, Liter, Meters, Days">
+                    </div>
+
+                    <!-- Visual Category Selection Cards -->
+                    <div class="space-y-2">
+                        <label class="block text-[10px] font-black text-navy/40 uppercase tracking-[0.2em]">Choose Unit
+                            Category / Scope <span class="text-red-500">*</span></label>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                            <div *ngFor="let opt of categoryOptions" (click)="selectCategory(opt.id)"
+                                [class]="currentUnit.unit_category === opt.id ? opt.bgActive + ' ring-2 ring-gold shadow-md' : 'bg-gray-50 border-gray-200 text-gray-700 hover:bg-gray-100'"
+                                class="p-3.5 rounded-2xl border-2 cursor-pointer transition-all flex flex-col justify-between">
+                                <div class="flex items-center justify-between">
+                                    <span class="font-black text-xs tracking-tight">{{opt.name}}</span>
+                                    <span class="text-[8px] font-black px-2 py-0.5 rounded uppercase tracking-wider"
+                                        [class]="opt.badgeBg">
+                                        {{opt.tag}}
+                                    </span>
+                                </div>
+                                <p class="text-[10px] text-gray-400 font-bold mt-1">{{opt.hint}}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Direct Dropdown Selector with SVG Chevron -->
+                    <div class="space-y-2">
+                        <label class="block text-[10px] font-black text-navy/40 uppercase tracking-[0.2em]">Or Select
+                            from Dropdown <span class="text-red-500">*</span></label>
+                        <div class="relative">
+                            <select [(ngModel)]="currentUnit.unit_category" name="unit_category" required
+                                class="w-full px-5 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-2xl focus:bg-white focus:border-gold outline-none transition-all font-bold text-navy text-sm appearance-none cursor-pointer">
+                                <option value="selling_weight">SELLING / WEIGHT (Grams, KG, Ton, Quintal)</option>
+                                <option value="selling_length">SELLING / LENGTH & AREA (Meters, Sq Feet, Feet, Sq Yard)
+                                </option>
+                                <option value="selling_quantity">SELLING / QUANTITY & PIECES (Pieces, Nos, Box, Pack,
+                                    Bundle, Carton)</option>
+                                <option value="selling_volume">SELLING / VOLUME & LIQUIDS (Liters, Milliliters, Gallons,
+                                    Drums)</option>
+                                <option value="renting_duration">RENTING / DURATION (Hours, Days, Weeks, Months, Shifts)
+                                </option>
+                            </select>
+                            <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-navy/40">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                        d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Status -->
+                    <div class="space-y-2">
+                        <label
+                            class="block text-[10px] font-black text-navy/40 uppercase tracking-[0.2em]">Status</label>
+                        <div class="relative">
+                            <select [(ngModel)]="currentUnit.status" name="status"
+                                class="w-full px-5 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-2xl focus:bg-white focus:border-gold outline-none transition-all font-bold text-navy text-sm appearance-none cursor-pointer">
+                                <option value="active">Active</option>
+                                <option value="inactive">Inactive</option>
+                            </select>
+                            <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-navy/40">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                        d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex items-center gap-4 pt-2">
+                        <button type="button" (click)="showModal = false"
+                            class="flex-1 py-3.5 bg-red-50 border-2 border-red-100 rounded-2xl font-black text-xs text-red-500 uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all">
+                            Cancel
+                        </button>
+                        <button type="submit"
+                            class="flex-1 py-3.5 bg-navy text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-2xl shadow-navy/30 hover:bg-gold transition-all">
+                            {{isEdit ? 'Save Changes' : 'Add Unit'}}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,18 +1,44 @@
 <div class="space-y-10 pb-10">
     <!-- Header -->
-    <div class="flex items-center justify-between">
+    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
         <div>
             <h2 class="text-3xl font-black text-navy tracking-tight">Subcategory Management</h2>
-            <p class="text-xs text-gray-400 font-bold uppercase tracking-widest mt-1">Manage subcategories under main categories</p>
+            <p class="text-xs text-gray-400 font-bold uppercase tracking-widest mt-1">Configure subcategories with
+                Selling/Renting behavior and measurement types</p>
         </div>
-        <button (click)="openAddModal()"
-            class="px-8 py-4 bg-navy text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-gold transition-all duration-500 shadow-xl shadow-navy/20 flex items-center gap-3">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4" />
-            </svg>
-            Add Subcategory
-        </button>
+        <div class="flex items-center gap-4 flex-wrap sm:flex-nowrap">
+            <!-- Search Bar -->
+            <div class="relative group w-full sm:w-72 md:w-80">
+                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                        class="h-4 w-4 text-gray-300 group-hover:text-gold transition-colors" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                </div>
+                <input type="text" [(ngModel)]="searchTerm" (input)="onSearch()" (keyup.enter)="onSearch()"
+                    placeholder="Search subcategories..."
+                    class="w-full pl-11 pr-10 py-4 bg-white border border-gray-100 rounded-2xl focus:border-gold outline-none transition-all shadow-sm font-bold text-xs text-navy placeholder:text-gray-300">
+                <button *ngIf="searchTerm" (click)="clearSearch()"
+                    class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-300 hover:text-navy transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                            d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Add Subcategory Button -->
+            <button (click)="openAddModal()"
+                class="px-8 py-4 bg-navy text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-gold transition-all duration-500 shadow-xl shadow-navy/20 flex items-center gap-3 shrink-0 whitespace-nowrap">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4" />
+                </svg>
+                Add Subcategory
+            </button>
+        </div>
     </div>
 
     <!-- Table -->
@@ -21,27 +47,56 @@
             <table class="w-full text-left border-collapse">
                 <thead>
                     <tr class="bg-gray-50/50 border-b border-gray-100">
-                        <th class="px-8 py-5 text-[10px] font-black text-navy/40 uppercase tracking-[0.2em]">Name</th>
-                        <th class="px-8 py-5 text-[10px] font-black text-navy/40 uppercase tracking-[0.2em]">Main Category</th>
+                        <th class="px-8 py-5 text-[10px] font-black text-navy/40 uppercase tracking-[0.2em]">Subcategory
+                            Name</th>
+                        <th class="px-8 py-5 text-[10px] font-black text-navy/40 uppercase tracking-[0.2em]">Parent
+                            Category</th>
+                        <th class="px-8 py-5 text-[10px] font-black text-navy/40 uppercase tracking-[0.2em]">Type</th>
+                        <th class="px-8 py-5 text-[10px] font-black text-navy/40 uppercase tracking-[0.2em]">Measurement
+                        </th>
+                        <th class="px-8 py-5 text-[10px] font-black text-navy/40 uppercase tracking-[0.2em]">Editable
+                            Order</th>
                         <th class="px-8 py-5 text-[10px] font-black text-navy/40 uppercase tracking-[0.2em]">Status</th>
                         <th class="px-8 py-5 text-[10px] font-black text-navy/40 uppercase tracking-[0.2em] text-right">
                             Actions</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-50">
-                    <tr *ngFor="let sub of subcategories"
-                        class="group hover:bg-gray-50/50 transition-all duration-300">
+                    <tr *ngFor="let sub of subcategories" class="group hover:bg-gray-50/50 transition-all duration-300">
                         <td class="px-8 py-6">
                             <div>
                                 <h3
                                     class="text-sm font-black text-navy tracking-tight group-hover:text-gold transition-colors">
-                                    {{sub.name}}</h3>
-                                <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Active Subcategory</p>
+                                    {{sub.name}}
+                                </h3>
+                                <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">ID: #{{sub.id}}
+                                </p>
                             </div>
                         </td>
                         <td class="px-8 py-6">
-                            <span class="inline-block px-3 py-1 bg-navy/5 text-navy rounded-lg text-[10px] font-black uppercase tracking-wider">
+                            <span
+                                class="inline-block px-3 py-1 bg-navy/5 text-navy rounded-lg text-[10px] font-black uppercase tracking-wider">
                                 {{sub.category_name}}
+                            </span>
+                        </td>
+                        <td class="px-8 py-6">
+                            <span
+                                [class]="sub.type === 'renting' ? 'bg-amber-50 text-amber-600 border-amber-200' : (sub.type === 'services' ? 'bg-purple-50 text-purple-600 border-purple-200' : (sub.type === 'helpers' ? 'bg-emerald-50 text-emerald-600 border-emerald-200' : 'bg-blue-50 text-blue-600 border-blue-200'))"
+                                class="px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border">
+                                {{sub.type || 'selling'}}
+                            </span>
+                        </td>
+                        <td class="px-8 py-6">
+                            <span
+                                class="inline-block px-3 py-1 bg-gray-100 text-gray-700 rounded-lg text-[10px] font-bold uppercase tracking-wider">
+                                {{sub.measurement_type || 'weight'}}
+                            </span>
+                        </td>
+                        <td class="px-8 py-6">
+                            <span
+                                [class]="sub.is_editable_order ? 'bg-emerald-50 text-emerald-600 border-emerald-200' : 'bg-gray-50 text-gray-400 border-gray-200'"
+                                class="inline-block px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border">
+                                {{sub.is_editable_order ? 'ON' : 'OFF'}}
                             </span>
                         </td>
                         <td class="px-8 py-6">
@@ -53,7 +108,7 @@
                         </td>
                         <td class="px-8 py-6">
                             <div class="flex items-center justify-end gap-2">
-                                <button (click)="editSubcategory(sub)"
+                                <button (click)="editSubcategory(sub)" title="Edit Subcategory"
                                     class="p-2 bg-navy/5 text-navy rounded-lg hover:bg-navy hover:text-white transition-all">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
                                         viewBox="0 0 24 24" stroke="currentColor">
@@ -61,7 +116,7 @@
                                             d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                                     </svg>
                                 </button>
-                                <button (click)="deleteSubcategory(sub.id)"
+                                <button (click)="deleteSubcategory(sub.id)" title="Delete Subcategory"
                                     class="p-2 bg-red-50 text-red-500 rounded-lg hover:bg-red-500 hover:text-white transition-all">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
                                         viewBox="0 0 24 24" stroke="currentColor">
@@ -79,50 +134,183 @@
         <!-- Empty State -->
         <div *ngIf="subcategories.length === 0" class="p-20 text-center">
             <h3 class="text-xl font-black text-navy tracking-tight">No Subcategories Found</h3>
+            <p class="text-gray-400 font-bold text-xs uppercase tracking-widest mt-2">
+                {{ searchTerm ? 'No subcategories match your search query "' + searchTerm + '"' : 'Create your first
+                subcategory to get started' }}
+            </p>
+            <button *ngIf="searchTerm" (click)="clearSearch()"
+                class="mt-5 px-6 py-2.5 bg-navy/5 text-navy hover:bg-navy hover:text-white rounded-xl text-xs font-black uppercase tracking-wider transition-all">
+                Clear Search
+            </button>
         </div>
 
         <!-- Pagination -->
-        <app-pagination *ngIf="subcategories.length > 0"
-            [total]="pagination.total" 
-            [page]="pagination.page" 
-            [limit]="pagination.limit" 
-            [totalPages]="pagination.totalPages"
-            (pageChange)="onPageChange($event)">
+        <app-pagination *ngIf="subcategories.length > 0" [total]="pagination.total" [page]="pagination.page"
+            [limit]="pagination.limit" [totalPages]="pagination.totalPages" (pageChange)="onPageChange($event)">
         </app-pagination>
     </div>
 
-    <!-- Modal -->
+    <!-- Modal Form -->
     <div *ngIf="showModal"
         class="fixed inset-0 bg-navy/80 backdrop-blur-xl z-[100] flex items-center justify-center p-6 overflow-hidden">
-        <div class="bg-white rounded-[3rem] w-full max-w-xl p-12 shadow-3xl relative overflow-hidden">
+        <div
+            class="bg-white rounded-[3rem] w-full max-w-xl p-12 shadow-3xl relative overflow-hidden max-h-[90vh] overflow-y-auto">
             <div class="relative z-10">
                 <div class="mb-10 text-center">
-                    <h3 class="text-3xl font-black text-navy tracking-tight">{{isEdit ? 'Update' : 'Add'}} Subcategory</h3>
+                    <span
+                        class="inline-block px-4 py-2 bg-gold/10 text-gold text-[10px] font-black rounded-xl mb-4 tracking-[0.2em] uppercase">Subcategory
+                        Configuration</span>
+                    <h3 class="text-3xl font-black text-navy tracking-tight">{{isEdit ? 'Update' : 'Add'}} Subcategory
+                    </h3>
+                    <p class="text-xs text-gray-400 font-bold uppercase tracking-widest mt-2">Define business type and
+                        units behavior</p>
                 </div>
 
-                <form (ngSubmit)="saveSubcategory()" class="space-y-8">
-                    <div class="space-y-3">
-                        <label class="block text-[10px] font-black text-navy/40 uppercase tracking-[0.2em]">Main Category</label>
+                <form (ngSubmit)="saveSubcategory()" class="space-y-6">
+                    <div class="space-y-2">
+                        <label class="block text-[10px] font-black text-navy/40 uppercase tracking-[0.2em]">Parent
+                            Category <span class="text-red-500">*</span></label>
                         <select [(ngModel)]="currentSub.category_id" name="category_id" required
-                            class="w-full px-8 py-5 bg-gray-50 border-2 border-transparent rounded-[1.5rem] focus:bg-white focus:border-gold outline-none transition-all font-bold text-navy appearance-none">
-                            <option *ngFor="let main of mainCategories" [value]="main.id">{{main.name}}</option>
+                            class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-gold outline-none transition-all font-bold text-navy appearance-none">
+                            <option [ngValue]="null" disabled>Select Parent Category</option>
+                            <option *ngFor="let cat of categories" [value]="cat.id">{{cat.name}}
+                                ({{cat.main_category_name || 'Main Category'}})</option>
                         </select>
                     </div>
 
-                    <div class="space-y-3">
-                        <label class="block text-[10px] font-black text-navy/40 uppercase tracking-[0.2em]">Subcategory Name</label>
+                    <div class="space-y-2">
+                        <label class="block text-[10px] font-black text-navy/40 uppercase tracking-[0.2em]">Subcategory
+                            Name <span class="text-red-500">*</span></label>
                         <input type="text" [(ngModel)]="currentSub.name" name="name" required
-                            class="w-full px-8 py-5 bg-gray-50 border-2 border-transparent rounded-[1.5rem] focus:bg-white focus:border-gold outline-none transition-all font-bold text-navy"
-                            placeholder="e.g. Cement">
+                            class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-gold outline-none transition-all font-bold text-navy"
+                            placeholder="e.g. Cement, Flooring, or Heavy Machinery">
                     </div>
 
-                    <div class="flex items-center gap-6 pt-6">
+
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="space-y-2">
+                            <label class="block text-[10px] font-black text-navy/40 uppercase tracking-[0.2em]">Business
+                                Type <span class="text-red-500">*</span></label>
+                            <select [(ngModel)]="currentSub.type" name="type" (change)="onTypeChange()" required
+                                class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-gold outline-none transition-all font-bold text-navy appearance-none">
+                                <option value="selling">Selling (Materials / Goods)</option>
+                                <option value="renting">Renting (Equipment / Machinery)</option>
+                                <option value="services">Services (Skilled Workforce)</option>
+                                <option value="helpers">Helpers (Workforce / Labor)</option>
+                            </select>
+                        </div>
+
+                        <div class="space-y-2" *ngIf="currentSub.type === 'selling'">
+                            <label
+                                class="block text-[10px] font-black text-navy/40 uppercase tracking-[0.2em]">Measurement
+                                Type <span class="text-red-500">*</span></label>
+                            <div class="relative">
+                                <select [(ngModel)]="currentSub.measurement_type" name="measurement_type" required
+                                    class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-gold outline-none transition-all font-bold text-navy appearance-none cursor-pointer">
+                                    <option value="weight">Weight (Grams, KG, Ton)</option>
+                                    <option value="length">Length & Area (Meters, Sq Feet, Feet, CM)</option>
+                                    <option value="quantity">Quantity / Pieces (Pieces, Nos, Box, Pack, Bundle)</option>
+                                    <option value="volume">Volume / Liquid (Liters, Milliliters, Gallons, Drums)
+                                    </option>
+                                </select>
+                                <div class="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-navy/40">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                            d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-2" *ngIf="currentSub.type === 'renting'">
+                            <label
+                                class="block text-[10px] font-black text-navy/40 uppercase tracking-[0.2em]">Measurement
+                                Type</label>
+                            <input type="text" value="Duration (Hours, Days, Weeks, Till Contract Completion)" disabled
+                                class="w-full px-6 py-4 bg-gray-100 border-2 border-transparent rounded-2xl font-bold text-gray-500 cursor-not-allowed">
+                        </div>
+
+                        <div class="space-y-2" *ngIf="currentSub.type === 'services'">
+                            <label
+                                class="block text-[10px] font-black text-navy/40 uppercase tracking-[0.2em]">Measurement
+                                Type</label>
+                            <input type="text" value="Duration / Contract (Days, Shifts, Till Contract Completion)"
+                                disabled
+                                class="w-full px-6 py-4 bg-purple-50 border-2 border-transparent rounded-2xl font-bold text-purple-700 cursor-not-allowed">
+                        </div>
+
+                        <div class="space-y-2" *ngIf="currentSub.type === 'helpers'">
+                            <label
+                                class="block text-[10px] font-black text-navy/40 uppercase tracking-[0.2em]">Measurement
+                                Type <span class="text-red-500">*</span></label>
+                            <div class="relative">
+                                <select [(ngModel)]="currentSub.measurement_type" name="measurement_type" required
+                                    class="w-full px-6 py-4 bg-emerald-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-gold outline-none transition-all font-bold text-navy appearance-none cursor-pointer">
+                                    <option value="quantity">Workers / Count (Nos, Persons, Count)</option>
+                                    <option value="duration">Duration (Shifts, Days, Hours)</option>
+                                </select>
+                                <div class="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-navy/40">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                            d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="space-y-2">
+                        <label
+                            class="block text-[10px] font-black text-navy/40 uppercase tracking-[0.2em]">Description</label>
+                        <textarea [(ngModel)]="currentSub.description" name="description" rows="2"
+                            class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-gold outline-none transition-all font-bold text-navy text-xs resize-none"
+                            placeholder="Brief description..."></textarea>
+                    </div>
+
+                    <!-- Editable Order Toggle Section -->
+                    <div class="flex items-center justify-between p-5 bg-navy/5 border border-navy/10 rounded-2xl" *ngIf="currentSub.type !== 'helpers'">
+                        <div class="space-y-0.5">
+                            <span class="block text-xs font-black text-navy uppercase tracking-wider">Editable
+                                Order</span>
+                            <span class="block text-[10px] font-bold text-gray-400">Enable project chat & service
+                                add/remove editing</span>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" [(ngModel)]="currentSub.is_editable_order" name="is_editable_order"
+                                class="sr-only peer">
+                            <div
+                                class="w-12 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500">
+                            </div>
+                            <span class="ml-3 text-[10px] font-black uppercase tracking-widest"
+                                [class.text-emerald-600]="currentSub.is_editable_order"
+                                [class.text-gray-400]="!currentSub.is_editable_order">
+                                {{ currentSub.is_editable_order ? 'ON' : 'OFF' }}
+                            </span>
+                        </label>
+                    </div>
+
+                    <!-- Helpers Locked Order Notice -->
+                    <div class="flex items-center justify-between p-5 bg-emerald-50 border border-emerald-200 rounded-2xl" *ngIf="currentSub.type === 'helpers'">
+                        <div class="space-y-0.5">
+                            <span class="block text-xs font-black text-emerald-900 uppercase tracking-wider">Order Execution Mode</span>
+                            <span class="block text-[10px] font-bold text-emerald-700">Helpers act as selling deployment and cannot be edited after order</span>
+                        </div>
+                        <span class="px-3 py-1 bg-emerald-100 text-emerald-800 rounded-lg text-[9px] font-black uppercase tracking-widest">
+                            Non-Editable
+                        </span>
+                    </div>
+
+                    <div class="flex items-center gap-6 pt-4">
                         <button type="button" (click)="showModal = false"
-                            class="flex-1 py-5 bg-red-50 border-2 border-red-100 rounded-[1.5rem] font-black text-xs text-red-500 uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all">
+                            class="flex-1 py-4 bg-red-50 border-2 border-red-100 rounded-2xl font-black text-xs text-red-500 uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all">
                             Cancel
                         </button>
                         <button type="submit"
-                            class="flex-1 py-5 bg-navy text-white rounded-[1.5rem] font-black text-xs uppercase tracking-widest shadow-2xl shadow-navy/30 hover:bg-gold transition-all">
+                            class="flex-1 py-4 bg-navy text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-2xl shadow-navy/30 hover:bg-gold transition-all">
                             {{isEdit ? 'Save Changes' : 'Add Subcategory'}}
                         </button>
                     </div>

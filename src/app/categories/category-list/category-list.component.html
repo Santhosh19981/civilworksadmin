@@ -1,18 +1,43 @@
 <div class="space-y-10 pb-10">
     <!-- Header -->
-    <div class="flex items-center justify-between">
+    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
         <div>
             <h2 class="text-3xl font-black text-navy tracking-tight">Category Management</h2>
-            <p class="text-xs text-gray-400 font-bold uppercase tracking-widest mt-1">Manage your item categories</p>
+            <p class="text-xs text-gray-400 font-bold uppercase tracking-widest mt-1">Manage categories belonging to
+                root main categories</p>
         </div>
-        <button (click)="openAddModal()"
-            class="px-8 py-4 bg-navy text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-gold transition-all duration-500 shadow-xl shadow-navy/20 flex items-center gap-3">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4" />
-            </svg>
-            Add Category
-        </button>
+        <div class="flex items-center gap-4 flex-wrap sm:flex-nowrap">
+            <!-- Search Bar -->
+            <div class="relative group w-full sm:w-72 md:w-80">
+                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                        class="h-4 w-4 text-gray-300 group-hover:text-gold transition-colors" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                </div>
+                <input type="text" [(ngModel)]="searchTerm" (input)="onSearch()" (keyup.enter)="onSearch()"
+                    placeholder="Search categories..."
+                    class="w-full pl-11 pr-10 py-4 bg-white border border-gray-100 rounded-2xl focus:border-gold outline-none transition-all shadow-sm font-bold text-xs text-navy placeholder:text-gray-300">
+                <button *ngIf="searchTerm" (click)="clearSearch()"
+                    class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-300 hover:text-navy transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Add Category Button -->
+            <button (click)="openAddModal()"
+                class="px-8 py-4 bg-navy text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-gold transition-all duration-500 shadow-xl shadow-navy/20 flex items-center gap-3 shrink-0 whitespace-nowrap">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4" />
+                </svg>
+                Add Category
+            </button>
+        </div>
     </div>
 
     <!-- Category Table -->
@@ -22,15 +47,17 @@
                 <thead>
                     <tr class="bg-gray-50/50 border-b border-gray-100">
                         <th class="px-8 py-5 text-[10px] font-black text-navy/40 uppercase tracking-[0.2em]">Icon</th>
-                        <th class="px-8 py-5 text-[10px] font-black text-navy/40 uppercase tracking-[0.2em]">Name</th>
+                        <th class="px-8 py-5 text-[10px] font-black text-navy/40 uppercase tracking-[0.2em]">Category
+                            Name</th>
+                        <th class="px-8 py-5 text-[10px] font-black text-navy/40 uppercase tracking-[0.2em]">Main
+                            Categories (Sectors)</th>
                         <th class="px-8 py-5 text-[10px] font-black text-navy/40 uppercase tracking-[0.2em]">Status</th>
                         <th class="px-8 py-5 text-[10px] font-black text-navy/40 uppercase tracking-[0.2em] text-right">
                             Actions</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-50">
-                    <tr *ngFor="let cat of categories"
-                        class="group hover:bg-gray-50/50 transition-all duration-300">
+                    <tr *ngFor="let cat of categories; let i = index" class="group hover:bg-gray-50/50 transition-all duration-300">
                         <td class="px-8 py-6">
                             <div
                                 class="w-10 h-10 rounded-xl bg-navy/5 flex items-center justify-center text-navy group-hover:bg-gold group-hover:text-white transition-all duration-500">
@@ -46,7 +73,23 @@
                                 <h3
                                     class="text-sm font-black text-navy tracking-tight group-hover:text-gold transition-colors">
                                     {{cat.name}}</h3>
-                                <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Active Category</p>
+                                <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">ID: #{{cat.id}}
+                                </p>
+                            </div>
+                        </td>
+                        <td class="px-8 py-6">
+                            <div class="flex flex-wrap gap-1.5 max-w-xs">
+                                <ng-container *ngIf="cat.main_category_names && cat.main_category_names.length > 0; else fallbackMainCat">
+                                    <span *ngFor="let mName of cat.main_category_names"
+                                        class="inline-flex items-center px-2.5 py-1 bg-navy/5 text-navy border border-navy/10 rounded-lg text-[10px] font-black uppercase tracking-wider">
+                                        {{mName}}
+                                    </span>
+                                </ng-container>
+                                <ng-template #fallbackMainCat>
+                                    <span class="inline-flex items-center px-2.5 py-1 bg-navy/5 text-navy rounded-lg text-[10px] font-black uppercase tracking-wider">
+                                        {{cat.main_category_name || 'Unassigned'}}
+                                    </span>
+                                </ng-template>
                             </div>
                         </td>
                         <td class="px-8 py-6">
@@ -58,7 +101,7 @@
                         </td>
                         <td class="px-8 py-6">
                             <div class="flex items-center justify-end gap-2">
-                                <button (click)="editCategory(cat)"
+                                <button (click)="editCategory(cat)" title="Edit Category"
                                     class="p-2 bg-navy/5 text-navy rounded-lg hover:bg-navy hover:text-white transition-all">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
                                         viewBox="0 0 24 24" stroke="currentColor">
@@ -66,7 +109,7 @@
                                             d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                                     </svg>
                                 </button>
-                                <button (click)="deleteCategory(cat.id)"
+                                <button (click)="deleteCategory(cat.id)" title="Delete Category"
                                     class="p-2 bg-red-50 text-red-500 rounded-lg hover:bg-red-500 hover:text-white transition-all">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
                                         viewBox="0 0 24 24" stroke="currentColor">
@@ -91,16 +134,18 @@
                 </svg>
             </div>
             <h3 class="text-xl font-black text-navy tracking-tight">No Categories Found</h3>
-            <p class="text-gray-400 font-bold text-xs uppercase tracking-widest mt-2">Create your first category to get started</p>
+            <p class="text-gray-400 font-bold text-xs uppercase tracking-widest mt-2">
+                {{ searchTerm ? 'No categories match your search query "' + searchTerm + '"' : 'Create your first category to get started' }}
+            </p>
+            <button *ngIf="searchTerm" (click)="clearSearch()"
+                class="mt-5 px-6 py-2.5 bg-navy/5 text-navy hover:bg-navy hover:text-white rounded-xl text-xs font-black uppercase tracking-wider transition-all">
+                Clear Search
+            </button>
         </div>
 
         <!-- Pagination -->
-        <app-pagination *ngIf="categories.length > 0"
-            [total]="pagination.total" 
-            [page]="pagination.page" 
-            [limit]="pagination.limit" 
-            [totalPages]="pagination.totalPages"
-            (pageChange)="onPageChange($event)">
+        <app-pagination *ngIf="categories.length > 0" [total]="pagination.total" [page]="pagination.page"
+            [limit]="pagination.limit" [totalPages]="pagination.totalPages" (pageChange)="onPageChange($event)">
         </app-pagination>
     </div>
 
@@ -109,33 +154,75 @@
         class="fixed inset-0 bg-navy/80 backdrop-blur-xl z-[100] flex items-center justify-center p-6 overflow-hidden">
         <div class="bg-white rounded-[3rem] w-full max-w-xl p-12 shadow-3xl relative overflow-hidden"
             data-aos="zoom-in">
-            <!-- Modal Accent -->
             <div class="absolute top-0 right-0 w-64 h-64 bg-gold/5 rounded-full blur-3xl -mr-32 -mt-32"></div>
 
             <div class="relative z-10">
-                <div class="mb-10 text-center">
+                <div class="mb-8 text-center">
                     <span
-                        class="inline-block px-4 py-2 bg-gold/10 text-gold text-[10px] font-black rounded-xl mb-4 tracking-[0.2em] uppercase">Admin Area</span>
+                        class="inline-block px-4 py-2 bg-gold/10 text-gold text-[10px] font-black rounded-xl mb-4 tracking-[0.2em] uppercase">Category
+                        Governance</span>
                     <h3 class="text-3xl font-black text-navy tracking-tight">{{isEdit ? 'Update' : 'Add'}}
                         Category</h3>
-                    <p class="text-xs text-gray-400 font-bold uppercase tracking-widest mt-2">Category Details</p>
+                    <p class="text-xs text-gray-400 font-bold uppercase tracking-widest mt-2">Associate category with one or multiple Main Categories (Sectors)</p>
                 </div>
 
-                <form (ngSubmit)="saveCategory()" class="space-y-8">
-                    <div class="space-y-3">
-                        <label class="block text-[10px] font-black text-navy/40 uppercase tracking-[0.2em]">Name</label>
-                        <input type="text" [(ngModel)]="currentCat.name" name="name" required
-                            class="w-full px-8 py-5 bg-gray-50 border-2 border-transparent rounded-[1.5rem] focus:bg-white focus:border-gold outline-none transition-all font-bold text-navy placeholder:text-gray-300"
-                            placeholder="e.g. Heavy Machinery">
+                <form (ngSubmit)="saveCategory()" class="space-y-6">
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between">
+                            <label class="block text-[10px] font-black text-navy/40 uppercase tracking-[0.2em]">
+                                Main Categories (Sectors) <span class="text-red-500">*</span>
+                            </label>
+                            <span class="text-[10px] font-bold text-gold uppercase tracking-wider">
+                                {{currentCat.main_category_ids?.length || 0}} Selected
+                            </span>
+                        </div>
+                        <p class="text-[11px] text-gray-400 font-medium">
+                            Select all sectors where this category and its items should appear:
+                        </p>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-h-48 overflow-y-auto p-1 rounded-2xl bg-gray-50/70 border border-gray-100">
+                            <div *ngFor="let main of mainCategories"
+                                (click)="toggleMainCategory(main.id)"
+                                [ngClass]="isMainCategorySelected(main.id) ? 'border-gold bg-amber-50/50 text-navy' : 'border-transparent bg-white text-gray-700'"
+                                class="flex items-center gap-3 p-3 rounded-xl border-2 cursor-pointer transition-all duration-200 hover:border-gold/50 shadow-sm select-none">
+                                <div [ngClass]="isMainCategorySelected(main.id) ? 'bg-navy border-navy' : 'border-gray-300 bg-transparent'"
+                                     class="w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all">
+                                    <svg *ngIf="isMainCategorySelected(main.id)" class="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                                    </svg>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <span class="text-xs font-black tracking-tight block truncate">{{main.name}}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <p *ngIf="!currentCat.main_category_ids || currentCat.main_category_ids.length === 0" class="text-[10px] font-bold text-red-500 tracking-wider uppercase">
+                            At least one main category must be selected
+                        </p>
                     </div>
 
-                    <div class="flex items-center gap-6 pt-6">
+                    <div class="space-y-2">
+                        <label class="block text-[10px] font-black text-navy/40 uppercase tracking-[0.2em]">Category
+                            Name <span class="text-red-500">*</span></label>
+                        <input type="text" [(ngModel)]="currentCat.name" name="name" required
+                            class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-gold outline-none transition-all font-bold text-navy placeholder:text-gray-300"
+                            placeholder="e.g. Buy Material or Rent Equipment">
+                    </div>
+
+                    <div class="space-y-2">
+                        <label
+                            class="block text-[10px] font-black text-navy/40 uppercase tracking-[0.2em]">Description</label>
+                        <textarea [(ngModel)]="currentCat.description" name="description" rows="3"
+                            class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-gold outline-none transition-all font-bold text-navy text-xs resize-none"
+                            placeholder="Brief description of this category..."></textarea>
+                    </div>
+
+                    <div class="flex items-center gap-6 pt-4">
                         <button type="button" (click)="showModal = false"
-                            class="flex-1 py-5 bg-red-50 border-2 border-red-100 rounded-[1.5rem] font-black text-xs text-red-500 uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all">
+                            class="flex-1 py-4 bg-red-50 border-2 border-red-100 rounded-2xl font-black text-xs text-red-500 uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all">
                             Cancel
                         </button>
                         <button type="submit"
-                            class="flex-1 py-5 bg-navy text-white rounded-[1.5rem] font-black text-xs uppercase tracking-widest shadow-2xl shadow-navy/30 hover:bg-gold transition-all">
+                            class="flex-1 py-4 bg-navy text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-2xl shadow-navy/30 hover:bg-gold transition-all">
                             {{isEdit ? 'Save Changes' : 'Add Category'}}
                         </button>
                     </div>

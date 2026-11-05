@@ -1,0 +1,177 @@
+<div class="space-y-6">
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+            <h1 class="text-2xl font-black text-navy tracking-tight">Skills <span class="text-gold">Directory</span></h1>
+            <p class="text-xs text-gray-400 font-bold uppercase tracking-widest mt-1">Manage Contractor & Trades Skills</p>
+        </div>
+
+        <button (click)="openAddModal()"
+            class="px-6 py-3.5 bg-navy hover:bg-gold text-white rounded-xl font-black text-xs uppercase tracking-wider transition-all duration-300 shadow-lg flex items-center justify-center gap-2 group">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 group-hover:rotate-90 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
+            </svg>
+            Add Skill
+        </button>
+    </div>
+
+    <!-- Filters & Search -->
+    <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 flex flex-col md:flex-row gap-4 items-center justify-between">
+        <div class="relative w-full md:w-96">
+            <input type="text" [(ngModel)]="searchQuery" (keyup.enter)="onSearch()"
+                placeholder="Search skills by name..."
+                class="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-xs font-bold text-navy focus:bg-white focus:border-gold outline-none transition-all">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400 absolute left-4 top-1/2 -translate-y-1/2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+        </div>
+
+        <div class="text-xs font-bold text-gray-400">
+            Total Skills: <span class="text-navy font-black">{{ pagination.total }}</span>
+        </div>
+    </div>
+
+    <!-- Error Message -->
+    <div *ngIf="errorMessage" class="p-4 bg-red-50 text-red-700 rounded-xl text-xs font-bold border border-red-200">
+        {{ errorMessage }}
+    </div>
+
+    <!-- Skills Table Card -->
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="border-b border-gray-100 bg-gray-50/50">
+                        <th class="py-4 px-6 text-[10px] font-black uppercase tracking-wider text-gray-400">Skill</th>
+                        <th class="py-4 px-6 text-[10px] font-black uppercase tracking-wider text-gray-400">Image</th>
+                        <th class="py-4 px-6 text-[10px] font-black uppercase tracking-wider text-gray-400">Status</th>
+                        <th class="py-4 px-6 text-[10px] font-black uppercase tracking-wider text-gray-400 text-right">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100 text-xs">
+                    <tr *ngIf="isLoading">
+                        <td colspan="4" class="py-12 text-center text-gray-400 font-bold">
+                            <div class="inline-block w-8 h-8 border-4 border-gold border-t-transparent rounded-full animate-spin mb-2"></div>
+                            <p>Loading skills...</p>
+                        </td>
+                    </tr>
+
+                    <tr *ngIf="!isLoading && skills.length === 0">
+                        <td colspan="4" class="py-12 text-center text-gray-400 font-bold">
+                            No skills found. Click "Add Skill" to create one.
+                        </td>
+                    </tr>
+
+                    <tr *ngFor="let skill of skills" class="hover:bg-gray-50/70 transition-colors">
+                        <td class="py-4 px-6">
+                            <span class="font-black text-navy text-sm">{{ skill.name }}</span>
+                        </td>
+                        <td class="py-4 px-6">
+                            <img [src]="getImageUrl(skill.image)" alt="{{ skill.name }}"
+                                class="w-12 h-12 rounded-xl object-cover border border-gray-200 shadow-sm">
+                        </td>
+                        <td class="py-4 px-6">
+                            <button (click)="toggleStatus(skill)"
+                                [class.bg-emerald-100]="skill.status === 'active'"
+                                [class.text-emerald-700]="skill.status === 'active'"
+                                [class.bg-gray-100]="skill.status !== 'active'"
+                                [class.text-gray-500]="skill.status !== 'active'"
+                                class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider transition-all">
+                                {{ skill.status }}
+                            </button>
+                        </td>
+                        <td class="py-4 px-6 text-right space-x-2">
+                            <button (click)="editSkill(skill)"
+                                class="p-2 bg-navy/5 hover:bg-gold hover:text-white text-navy rounded-lg transition-all"
+                                title="Edit Skill">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                </svg>
+                            </button>
+                            <button (click)="deleteSkill(skill.id)"
+                                class="p-2 bg-red-50 hover:bg-red-500 hover:text-white text-red-500 rounded-lg transition-all"
+                                title="Delete Skill">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        <div *ngIf="pagination.totalPages > 1" class="p-4 border-t border-gray-100 flex items-center justify-between">
+            <span class="text-xs text-gray-400 font-bold">
+                Page {{ pagination.page }} of {{ pagination.totalPages }}
+            </span>
+            <div class="flex gap-2">
+                <button [disabled]="pagination.page <= 1" (click)="onPageChange(pagination.page - 1)"
+                    class="px-3 py-1.5 border border-gray-200 rounded-lg text-xs font-black disabled:opacity-30">
+                    Prev
+                </button>
+                <button [disabled]="pagination.page >= pagination.totalPages" (click)="onPageChange(pagination.page + 1)"
+                    class="px-3 py-1.5 border border-gray-200 rounded-lg text-xs font-black disabled:opacity-30">
+                    Next
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Skill Modal -->
+    <div *ngIf="showModal" class="fixed inset-0 bg-navy/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl relative">
+            <h3 class="text-xl font-black text-navy mb-1">{{ isEdit ? 'Edit' : 'Add' }} Skill</h3>
+            <p class="text-xs text-gray-400 font-bold uppercase tracking-wider mb-6">Persisted in Real Database</p>
+
+            <form (ngSubmit)="saveSkill()" class="space-y-4">
+                <div>
+                    <label class="block text-[10px] font-black uppercase tracking-wider text-gray-500 mb-1.5">
+                        Skill Name <span class="text-red-500">*</span>
+                    </label>
+                    <input type="text" [(ngModel)]="currentSkill.name" name="skillName" required
+                        placeholder="e.g. Masonry, Electrical, Tile Fitting"
+                        class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-xs font-bold text-navy focus:bg-white focus:border-gold outline-none">
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-black uppercase tracking-wider text-gray-500 mb-1.5">
+                        Skill Image <span class="text-red-500">*</span>
+                    </label>
+                    <div class="flex items-center gap-4">
+                        <img *ngIf="currentSkill.image" [src]="getImageUrl(currentSkill.image)"
+                            class="w-16 h-16 rounded-xl object-cover border border-gray-200 shadow-sm">
+                        <div class="flex-1">
+                            <input type="file" (change)="onFileSelected($event)" accept="image/*"
+                                class="text-xs file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-black file:bg-navy/5 file:text-navy hover:file:bg-gold hover:file:text-white cursor-pointer">
+                            <p *ngIf="isUploading" class="text-[10px] text-gold font-bold mt-1">Uploading image...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-black uppercase tracking-wider text-gray-500 mb-1.5">
+                        Status
+                    </label>
+                    <select [(ngModel)]="currentSkill.status" name="skillStatus"
+                        class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-xs font-bold text-navy focus:bg-white focus:border-gold outline-none">
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
+                </div>
+
+                <div class="flex justify-end gap-3 pt-4 border-t border-gray-100">
+                    <button type="button" (click)="showModal = false"
+                        class="px-5 py-2.5 text-xs font-bold text-gray-400 hover:text-navy transition-colors">
+                        Cancel
+                    </button>
+                    <button type="submit" [disabled]="isUploading"
+                        class="px-6 py-2.5 bg-navy hover:bg-gold text-white text-xs font-black uppercase tracking-wider rounded-xl transition-all shadow-md disabled:opacity-50">
+                        {{ isEdit ? 'Save Changes' : 'Create Skill' }}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

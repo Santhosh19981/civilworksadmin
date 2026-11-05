@@ -20,8 +20,13 @@ export class OrderDetailsComponent implements OnInit {
 
     ngOnInit() {
         const id = this.route.snapshot.params['id'];
-        this.core.getData('orders').subscribe(orders => {
-            this.order = orders.find((o: any) => o.id === id);
+        this.core.getData('orders').subscribe(res => {
+            const list = Array.isArray(res) ? res : (res?.data || []);
+            this.order = list.find((o: any) => o.id == id || o.order_no == id);
+            if (this.order) {
+                this.order.orderStatus = this.order.order_status || this.order.orderStatus || 'Pending';
+                this.order.customer = this.order.user_name || this.order.customer || 'Site Customer';
+            }
         });
     }
 

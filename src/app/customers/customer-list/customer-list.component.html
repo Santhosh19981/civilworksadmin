@@ -58,11 +58,14 @@
                             <div class="flex items-center gap-4">
                                 <div class="w-12 h-12 rounded-xl bg-navy text-white flex items-center justify-center text-sm font-black shadow-lg shadow-navy/20 group-hover:bg-gold transition-colors duration-500 overflow-hidden">
                                     <img *ngIf="c.image" [src]="c.image" class="w-full h-full object-cover">
-                                    <span *ngIf="!c.image">{{c.name?.charAt(0) || 'C'}}</span>
+                                    <span *ngIf="!c.image">{{(c.name || c.mobile || 'C').charAt(0).toUpperCase()}}</span>
                                 </div>
                                 <div class="flex flex-col">
-                                    <span class="font-black text-navy text-sm tracking-tight group-hover:text-gold transition-colors">{{c.name}}</span>
-                                    <span class="text-[8px] font-black text-gray-300 uppercase tracking-widest">Customer</span>
+                                    <div class="flex items-center gap-2">
+                                        <span class="font-black text-navy text-sm tracking-tight group-hover:text-gold transition-colors">{{c.name || (c.mobile ? ('Customer ' + c.mobile) : ('Customer #' + c.id))}}</span>
+                                        <span class="px-2 py-0.5 bg-gold/15 text-gold text-[9px] font-black rounded-md tracking-wider">#{{c.id}}</span>
+                                    </div>
+                                    <span class="text-[8px] font-black text-emerald-600 uppercase tracking-widest">{{c.site_location || 'Verified Customer'}}</span>
                                 </div>
                             </div>
                         </td>
@@ -79,7 +82,7 @@
                             </div>
                         </td>
                         <td class="px-8 py-6">
-                            <span class="text-sm font-black text-navy tracking-tight group-hover:text-gold transition-colors">${{c.totalSpent || 0}}</span>
+                            <span class="text-sm font-black text-navy tracking-tight group-hover:text-gold transition-colors">₹{{c.totalSpent || 0}}</span>
                         </td>
                         <td class="px-8 py-6 text-right">
                             <button (click)="viewHistory(c)"
@@ -128,7 +131,7 @@
                     <div>
                         <span
                             class="inline-block px-4 py-2 bg-gold/10 text-gold text-[10px] font-black rounded-xl mb-4 tracking-[0.2em] uppercase">Customer Summary</span>
-                        <h3 class="text-4xl font-black text-navy tracking-tight">{{selectedCustomer.name}} <span
+                        <h3 class="text-4xl font-black text-navy tracking-tight">{{selectedCustomer.name || ('Customer ' + selectedCustomer.mobile)}} <span
                                 class="text-gold">Orders</span></h3>
                     </div>
                     <button (click)="selectedCustomer = null"
@@ -156,7 +159,7 @@
                             </div>
                         </div>
                         <div class="text-right">
-                            <p class="text-2xl font-black text-gold tracking-tighter">${{order.totalAmount}}</p>
+                            <p class="text-2xl font-black text-gold tracking-tighter">₹{{order.totalAmount}}</p>
                             <span
                                 class="inline-block px-3 py-1.5 bg-green-50 text-green-500 text-[9px] font-black uppercase tracking-widest rounded-lg border border-green-100 mt-2">
                                 {{order.orderStatus}}
