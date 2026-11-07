@@ -13,7 +13,7 @@
 
         <!-- Logo & Branding -->
         <div class="flex items-center gap-3.5 group cursor-pointer min-w-0" routerLink="/dashboard"
-            [title]="collapsed ? 'BuildPro Management - Click to open sidebar' : 'BuildPro Dashboard'"
+            [title]="collapsed ? 'InfraMart Management - Click to open sidebar' : 'InfraMart Dashboard'"
             (click)="collapsed ? onToggle($event) : null">
             <div class="relative w-11 h-11 flex-shrink-0 flex items-center justify-center">
                 <div class="absolute inset-0 border border-gold/30 rounded-full animate-spin-slow"></div>
@@ -22,7 +22,7 @@
                     class="w-9 h-9 rounded-full object-cover border-2 border-gold shadow-lg relative z-10 group-hover:scale-110 transition-transform">
             </div>
             <div class="flex flex-col truncate" *ngIf="!collapsed">
-                <span class="text-base font-black text-white tracking-widest uppercase truncate">BUILDPRO</span>
+                <span class="text-base font-black text-white tracking-widest uppercase truncate">INFRAMART</span>
                 <span class="text-[8.5px] font-black text-gold uppercase tracking-[0.2em] -mt-0.5 truncate">Management</span>
             </div>
         </div>
