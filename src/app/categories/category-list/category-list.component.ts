@@ -162,7 +162,11 @@ export class CategoryListComponent implements OnInit {
         } else {
             this.core.addItem('categories', this.currentCat).subscribe({
                 next: () => {
-                    this.loadCategories(1);
+                    // New categories are listed last, so open the page that will contain it
+                    // (with a search active, start from page 1 of the filtered results).
+                    const limit = Number(this.pagination?.limit) || 10;
+                    const total = (Number(this.pagination?.total) || 0) + 1;
+                    this.loadCategories(this.searchTerm.trim() ? 1 : Math.max(1, Math.ceil(total / limit)));
                     this.showModal = false;
                 },
                 error: (err) => {
