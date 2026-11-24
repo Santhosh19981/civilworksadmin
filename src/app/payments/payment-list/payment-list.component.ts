@@ -14,6 +14,7 @@ export class PaymentListComponent implements OnInit, AfterViewInit {
     onlinePayments = 0;
     codPayments = 0;
     searchTerm = '';
+    typeFilter = '';
 
     pagination: any = {
         total: 0,
@@ -27,9 +28,12 @@ export class PaymentListComponent implements OnInit, AfterViewInit {
     }
 
     loadPayments(page: number = 1) {
-        this.core.getData('payments', page, this.pagination.limit, { search: this.searchTerm }).subscribe(res => {
-            this.payments = res.data;
-            this.pagination = res.pagination;
+        this.core.getData('payments', page, this.pagination?.limit || 10, { search: this.searchTerm.trim(), type: this.typeFilter }).subscribe({
+            next: res => {
+                this.payments = res.data || [];
+                this.pagination = res.pagination || this.pagination;
+            },
+            error: () => { this.payments = []; }
         });
 
         this.core.getPaymentStats().subscribe(stats => {
@@ -75,9 +79,27 @@ export class PaymentListComponent implements OnInit, AfterViewInit {
         });
     }
 
-    issueRefund(payment: any) {
-        if (confirm('Issue full refund for Order #' + payment.orderId + '?')) {
-            this.core.updateItem('payments', payment.transactionId, { status: 'Refunded' });
+    /** "Plus Membership", "Order ORD-9UBP41", "Rental #12", ... */
+    typeLabel(p: any): string {
+        switch (p.reference_type) {
+            case 'membership': return 'Plus Membership';
+            case 'order': return p.order_no ? `Order ${p.order_no}` : `Order #${p.reference_id}`;
+            case 'rental': return `Rental #${p.reference_id}`;
+            case 'helper': return `Helper #${p.reference_id}`;
+            default: return p.reference_type || 'Payment';
         }
+    }
+
+    /** razorpay_upi -> "Razorpay · UPI", cod -> "Cash on delivery". */
+    methodLabel(method: string): string {
+        if (!method) return '';
+        if (method === 'cod') return 'Cash on delivery';
+        if (method.startsWith('razorpay_')) return 'Razorpay · ' + method.slice(9).toUpperCase();
+        return method.replace(/_/g, ' ');
+    }
+
+    /** Real Razorpay payment ids can be opened in the Razorpay dashboard (refunds are issued there). */
+    isRazorpay(p: any): boolean {
+        return /^pay_[A-Za-z0-9]+$/.test(p.transaction_id || '') && String(p.payment_method || '').startsWith('razorpay');
     }
 }

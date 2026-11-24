@@ -8,6 +8,13 @@
         </div>
 
         <div class="flex flex-col md:flex-row items-stretch md:items-center gap-4">
+            <select [(ngModel)]="membershipFilter" (change)="onSearch()"
+                class="px-6 py-5 bg-white border-2 border-gray-50 rounded-[2rem] focus:border-gold outline-none transition-all shadow-2xl shadow-navy/5 font-bold text-navy">
+                <option value="">All customers</option>
+                <option value="active">⭐ Plus active</option>
+                <option value="expired">Plus expired</option>
+                <option value="none">Not a member</option>
+            </select>
             <div class="relative group">
                 <div class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
                     <svg xmlns="http://www.w3.org/2000/svg"
@@ -46,6 +53,7 @@
                     <tr class="bg-gray-50/50 border-b border-gray-100">
                         <th class="px-8 py-5 text-[10px] font-black text-navy/40 uppercase tracking-[0.2em]">Name</th>
                         <th class="px-8 py-5 text-[10px] font-black text-navy/40 uppercase tracking-[0.2em]">Contact Info</th>
+                        <th class="px-8 py-5 text-[10px] font-black text-navy/40 uppercase tracking-[0.2em]">Plus Membership</th>
                         <th class="px-8 py-5 text-[10px] font-black text-navy/40 uppercase tracking-[0.2em]">Total Orders</th>
                         <th class="px-8 py-5 text-[10px] font-black text-navy/40 uppercase tracking-[0.2em]">Total Spent</th>
                         <th class="px-8 py-5 text-right"></th>
@@ -73,6 +81,20 @@
                                 <span class="text-[10px] font-bold text-navy/80 tracking-wide">{{c.email || 'N/A'}}</span>
                                 <span class="text-[9px] font-black text-gray-300 tracking-widest font-mono mt-0.5">{{c.mobile || 'N/A'}}</span>
                             </div>
+                        </td>
+                        <td class="px-8 py-6">
+                            <ng-container [ngSwitch]="membershipState(c)">
+                                <div *ngSwitchCase="'active'" class="flex flex-col gap-1">
+                                    <span class="inline-flex w-fit items-center gap-1 px-2.5 py-1 bg-gold text-white text-[9px] font-black rounded-lg uppercase tracking-widest shadow-md shadow-gold/30">⭐ Plus Active</span>
+                                    <span class="text-[10px] font-bold text-navy/60">Until {{c.plus_membership_expiry | date:'dd MMM yyyy'}}</span>
+                                    <span *ngIf="+c.membershipPaid > 0" class="text-[9px] font-bold text-gray-400">Paid ₹{{c.membershipPaid | number:'1.0-2'}}</span>
+                                </div>
+                                <div *ngSwitchCase="'expired'" class="flex flex-col gap-1">
+                                    <span class="inline-flex w-fit px-2.5 py-1 bg-red-50 text-red-500 text-[9px] font-black rounded-lg uppercase tracking-widest border border-red-100">Expired</span>
+                                    <span class="text-[10px] font-bold text-navy/50">On {{c.plus_membership_expiry | date:'dd MMM yyyy'}}</span>
+                                </div>
+                                <span *ngSwitchDefault class="text-[10px] font-black text-gray-300 uppercase tracking-widest">Not a member</span>
+                            </ng-container>
                         </td>
                         <td class="px-8 py-6">
                             <div class="inline-flex items-center gap-2 px-3 py-1 bg-navy/5 rounded-lg border border-navy/5">
@@ -131,7 +153,7 @@
                         <span
                             class="inline-block px-4 py-2 bg-gold/10 text-gold text-[10px] font-black rounded-xl mb-4 tracking-[0.2em] uppercase">Customer Summary</span>
                         <h3 class="text-4xl font-black text-navy tracking-tight">{{selectedCustomer.name || ('Customer ' + selectedCustomer.mobile)}} <span
-                                class="text-gold">Orders</span></h3>
+                                class="text-gold">History</span></h3>
                     </div>
                     <button (click)="selectedCustomer = null"
                         class="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center text-navy/20 hover:text-red-500 hover:bg-red-50 transition-all duration-500">
@@ -144,29 +166,63 @@
                 </div>
 
                 <div class="space-y-6 max-h-[500px] overflow-y-auto pr-6 custom-scrollbar">
+                    <div *ngIf="historyLoading" class="flex justify-center py-10">
+                        <div class="w-10 h-10 border-4 border-gold border-t-transparent rounded-full animate-spin"></div>
+                    </div>
+
+                    <!-- Plus Membership -->
+                    <div *ngIf="!historyLoading" class="p-6 rounded-[2rem] border-2"
+                        [ngClass]="membershipState(selectedCustomer) === 'active' ? 'border-gold/30 bg-gold/5' : 'border-gray-100 bg-gray-50/50'">
+                        <div class="flex items-center justify-between gap-4 flex-wrap">
+                            <div>
+                                <p class="text-[10px] font-black text-navy/40 uppercase tracking-[0.2em]">Plus Membership</p>
+                                <p class="text-lg font-black text-navy mt-1" [ngSwitch]="membershipState(selectedCustomer)">
+                                    <span *ngSwitchCase="'active'">⭐ Active until {{selectedCustomer.plus_membership_expiry | date:'dd MMM yyyy'}}</span>
+                                    <span *ngSwitchCase="'expired'" class="text-red-500">Expired on {{selectedCustomer.plus_membership_expiry | date:'dd MMM yyyy'}}</span>
+                                    <span *ngSwitchDefault class="text-gray-400">Not a member</span>
+                                </p>
+                            </div>
+                            <div class="text-right" *ngIf="customerMembershipPayments.length">
+                                <p class="text-[10px] font-black text-navy/40 uppercase tracking-[0.2em]">Total paid</p>
+                                <p class="text-2xl font-black text-gold">₹{{selectedCustomer.membershipPaid | number:'1.0-2'}}</p>
+                            </div>
+                        </div>
+                        <div *ngFor="let p of customerMembershipPayments" class="mt-4 pt-4 border-t border-navy/5 flex items-center justify-between gap-4">
+                            <div>
+                                <p class="text-sm font-black text-navy">₹{{p.amount | number:'1.2-2'}} <span class="text-[10px] font-bold text-gray-400 uppercase">· {{ (p.payment_method || '').replace('razorpay_', 'Razorpay ').toUpperCase() }}</span></p>
+                                <p class="text-[10px] font-mono font-bold text-gray-400">{{p.transaction_id}}</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-[11px] font-bold text-navy/60">{{p.created_at | date:'dd MMM yyyy, h:mm a'}}</p>
+                                <span class="inline-block px-2 py-0.5 bg-green-50 text-green-600 text-[9px] font-black uppercase tracking-widest rounded-md">{{p.status}}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p *ngIf="!historyLoading" class="text-[10px] font-black text-navy/40 uppercase tracking-[0.2em] pt-2">Orders ({{customerOrders.length}})</p>
                     <div *ngFor="let order of customerOrders"
                         class="p-8 bg-gray-50/50 rounded-[2.5rem] flex items-center justify-between group hover:bg-white border-2 border-transparent hover:border-gold/20 transition-all duration-500 shadow-sm hover:shadow-2xl hover:scale-[1.02]">
                         <div class="flex items-center gap-6">
                             <div
-                                class="w-14 h-14 rounded-2xl bg-navy/5 flex items-center justify-center text-navy font-black shadow-inner">
-                                #{{order.id.slice(-3)}}
+                                class="w-14 h-14 rounded-2xl bg-navy/5 flex items-center justify-center text-navy font-black shadow-inner text-xs">
+                                #{{order.id}}
                             </div>
                             <div>
-                                <p class="text-lg font-black text-navy tracking-tight">Order #{{order.id}}</p>
+                                <p class="text-lg font-black text-navy tracking-tight">{{order.order_no || ('Order #' + order.id)}}</p>
                                 <p class="text-[10px] font-black text-gray-300 uppercase tracking-widest mt-1">
-                                    {{order.date}}</p>
+                                    {{order.created_at | date:'dd MMM yyyy, h:mm a'}} · {{order.payment_status}}</p>
                             </div>
                         </div>
                         <div class="text-right">
-                            <p class="text-2xl font-black text-gold tracking-tighter">₹{{order.totalAmount}}</p>
+                            <p class="text-2xl font-black text-gold tracking-tighter">₹{{order.total_amount | number:'1.0-2'}}</p>
                             <span
                                 class="inline-block px-3 py-1.5 bg-green-50 text-green-500 text-[9px] font-black uppercase tracking-widest rounded-lg border border-green-100 mt-2">
-                                {{order.orderStatus}}
+                                {{order.order_status}}
                             </span>
                         </div>
                     </div>
 
-                    <div *ngIf="customerOrders.length === 0" class="py-20 text-center opacity-30">
+                    <div *ngIf="!historyLoading && customerOrders.length === 0" class="py-10 text-center opacity-30">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto mb-4" fill="none"
                             viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"

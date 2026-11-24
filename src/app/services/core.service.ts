@@ -27,6 +27,7 @@ export class CoreService {
     getData(key: string, page: number = 1, limit: number = 10, filters: any = {}): Observable<any> {
         let endpoint = key;
         if (key === 'customers') endpoint = 'users?role=customer';
+        if (key === 'payments') endpoint = 'admin/payments';
 
         let url = `${environment.apiUrl}/${endpoint}`;
         const separator = url.includes('?') ? '&' : '?';
