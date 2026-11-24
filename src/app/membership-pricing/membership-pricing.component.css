@@ -1,0 +1,34 @@
+/* Editor */
+.mp-card { background: #fff; border: 1px solid #f1f5f9; border-radius: 2rem; padding: 2rem; box-shadow: 0 20px 40px -24px rgba(11, 44, 77, .18); }
+.mp-title { font-size: 1.1rem; font-weight: 900; color: #0B2C4D; letter-spacing: -.01em; margin-bottom: .25rem; }
+.mp-hint { font-size: .75rem; color: #94a3b8; font-weight: 700; margin-bottom: 1.25rem; }
+.mp-title + .grid, .mp-title + div { margin-top: 1.25rem; }
+.mp-field { display: flex; flex-direction: column; gap: .45rem; }
+.mp-field > span { font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: .15em; color: rgba(11, 44, 77, .5); }
+.mp-input { width: 100%; padding: .8rem 1rem; border: 2px solid #f1f5f9; border-radius: 1rem; background: #fff; font-weight: 700; color: #0B2C4D; outline: none; transition: border-color .2s; resize: vertical; font-size: .9rem; }
+.mp-input:focus { border-color: #f59e0b; }
+.mp-invalid { border-color: #f87171 !important; }
+.mp-icon-btn { width: 2.25rem; height: 2.25rem; border-radius: .75rem; border: 1px solid #e2e8f0; background: #fff; font-weight: 900; color: #0B2C4D; cursor: pointer; transition: all .2s; }
+.mp-icon-btn:hover:not(:disabled) { border-color: #f59e0b; color: #f59e0b; }
+.mp-icon-btn:disabled { opacity: .35; cursor: not-allowed; }
+.mp-danger:hover:not(:disabled) { border-color: #ef4444 !important; color: #ef4444 !important; }
+
+/* Preview: mirrors the customer app styles */
+.pv-hero { border-radius: 1.5rem; padding: 1.75rem; color: #fff; background: radial-gradient(circle at 85% 20%, rgba(234, 88, 12, .35), transparent 55%), linear-gradient(135deg, #0b1d33, #12345a); }
+.pv-badge { display: inline-block; background: #ea580c; color: #fff; font-size: 10px; font-weight: 900; letter-spacing: .08em; padding: .3rem .6rem; border-radius: .4rem; margin-bottom: .75rem; }
+.pv-hero-title { font-size: 1.5rem; font-weight: 900; line-height: 1.15; margin-bottom: .5rem; }
+.pv-hero-sub { font-size: .85rem; color: rgba(255, 255, 255, .8); margin-bottom: 1rem; line-height: 1.45; }
+.pv-cta { background: #ea580c; padding: .55rem 1rem; border-radius: .7rem; font-weight: 800; font-size: .8rem; }
+.pv-assure { font-size: .75rem; font-weight: 700; color: rgba(255, 255, 255, .85); }
+
+.pv-plan { border-radius: 1.5rem; padding: 1.5rem; background: linear-gradient(145deg, #0f172a, #1e293b); color: #fff; }
+.pv-plan-name { font-size: 1.3rem; font-weight: 900; }
+.pv-plan-tag { font-size: .7rem; font-weight: 900; color: #f59e0b; letter-spacing: .04em; }
+.pv-price { font-size: 1.9rem; font-weight: 900; line-height: 1; }
+.pv-period { font-size: .7rem; color: rgba(255, 255, 255, .6); margin-top: .2rem; }
+.pv-check { flex-shrink: 0; width: 1.1rem; height: 1.1rem; border-radius: 999px; background: #10b981; color: #fff; font-size: .65rem; display: flex; align-items: center; justify-content: center; margin-top: .1rem; }
+
+.pv-summary { background: #fff; border: 1px solid #f1f5f9; border-radius: 1.5rem; padding: 1.5rem; }
+.pv-row { display: flex; justify-content: space-between; gap: 1rem; font-size: .85rem; color: #475569; padding: .4rem 0; }
+.pv-total { border-top: 1px dashed #e2e8f0; margin-top: .4rem; padding-top: .8rem; font-weight: 900; color: #0B2C4D; font-size: 1rem; }
+.pv-pay { margin-top: 1rem; text-align: center; background: linear-gradient(135deg, #1d4ed8, #0369a1); color: #fff; font-weight: 800; padding: .85rem; border-radius: .9rem; font-size: .9rem; }

@@ -1,0 +1,215 @@
+<div class="space-y-10 pb-12">
+    <!-- Header -->
+    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+        <div>
+            <h2 class="text-4xl font-black text-navy tracking-tight">Membership <span class="text-gold">Pricing</span></h2>
+            <p class="text-xs text-gray-400 font-bold uppercase tracking-[0.3em] mt-2">Plus plan shown on the customer home hero &amp; checkout</p>
+        </div>
+        <div class="flex items-center gap-3" *ngIf="plan">
+            <button type="button" (click)="reset()" [disabled]="!hasChanges || saving"
+                class="px-8 py-4 bg-white border-2 border-gray-100 text-navy rounded-[2rem] font-black text-xs uppercase tracking-widest hover:border-gold hover:text-gold transition-all disabled:opacity-40 disabled:cursor-not-allowed">
+                Discard
+            </button>
+            <button type="button" (click)="save()" [disabled]="!hasChanges || saving || !priceValid"
+                class="px-10 py-4 bg-navy text-white rounded-[2rem] font-black text-xs uppercase tracking-widest hover:bg-gold transition-all shadow-xl shadow-navy/20 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-3">
+                <span *ngIf="saving" class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                {{ saving ? 'Saving…' : 'Save Changes' }}
+            </button>
+        </div>
+    </div>
+
+    <div *ngIf="successMessage" class="px-6 py-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-700 font-bold text-sm">{{ successMessage }}</div>
+    <div *ngIf="errorMessage" class="px-6 py-4 rounded-2xl bg-red-50 border border-red-200 text-red-600 font-bold text-sm">{{ errorMessage }}</div>
+
+    <div *ngIf="loading" class="flex justify-center py-24">
+        <div class="w-12 h-12 border-4 border-gold border-t-transparent rounded-full animate-spin"></div>
+    </div>
+
+    <div *ngIf="plan && !loading" class="grid grid-cols-1 xl:grid-cols-5 gap-8 items-start">
+        <!-- ===================== EDITOR ===================== -->
+        <div class="xl:col-span-3 space-y-8">
+
+            <!-- Pricing -->
+            <section class="mp-card">
+                <h3 class="mp-title">Price &amp; Billing</h3>
+                <p class="mp-hint">Razorpay charges this amount for new Plus payments as soon as you save.</p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                    <label class="mp-field">
+                        <span>Price (₹, GST inclusive) *</span>
+                        <input type="number" min="1" max="1000000" step="1" [(ngModel)]="plan.price" class="mp-input" [class.mp-invalid]="!priceValid">
+                    </label>
+                    <label class="mp-field">
+                        <span>Membership duration (months) *</span>
+                        <input type="number" min="1" max="60" step="1" [(ngModel)]="plan.duration_months" class="mp-input">
+                    </label>
+                    <label class="mp-field">
+                        <span>GST % (included in price)</span>
+                        <input type="number" min="0" max="28" step="0.01" [(ngModel)]="plan.summary.gst_percent" class="mp-input">
+                    </label>
+                </div>
+            </section>
+
+            <!-- Home hero -->
+            <section class="mp-card">
+                <h3 class="mp-title">Home Hero Banner</h3>
+                <p class="mp-hint">First slide on the customer home page, shown to customers who are not Plus members yet.</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <label class="mp-field">
+                        <span>Badge (after the sector name)</span>
+                        <input type="text" maxlength="60" [(ngModel)]="plan.hero.badge" class="mp-input">
+                    </label>
+                    <label class="mp-field">
+                        <span>Button label</span>
+                        <input type="text" maxlength="40" [(ngModel)]="plan.hero.cta_label" class="mp-input">
+                    </label>
+                    <label class="mp-field md:col-span-2">
+                        <span>Title</span>
+                        <input type="text" maxlength="120" [(ngModel)]="plan.hero.title" class="mp-input">
+                    </label>
+                    <label class="mp-field md:col-span-2">
+                        <span>Subtitle</span>
+                        <textarea rows="2" maxlength="400" [(ngModel)]="plan.hero.subtitle" class="mp-input"></textarea>
+                    </label>
+                    <label class="mp-field">
+                        <span>Trust label (next to the button)</span>
+                        <input type="text" maxlength="60" [(ngModel)]="plan.hero.assurance_label" class="mp-input">
+                    </label>
+                </div>
+            </section>
+
+            <!-- Checkout header -->
+            <section class="mp-card">
+                <h3 class="mp-title">Checkout Page Header</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                    <label class="mp-field">
+                        <span>Title</span>
+                        <input type="text" maxlength="60" [(ngModel)]="plan.header.title" class="mp-input">
+                    </label>
+                    <label class="mp-field">
+                        <span>Badge</span>
+                        <input type="text" maxlength="30" [(ngModel)]="plan.header.badge" class="mp-input">
+                    </label>
+                    <label class="mp-field md:col-span-3">
+                        <span>Subtitle</span>
+                        <input type="text" maxlength="160" [(ngModel)]="plan.header.subtitle" class="mp-input">
+                    </label>
+                </div>
+            </section>
+
+            <!-- Plan card -->
+            <section class="mp-card">
+                <h3 class="mp-title">Plan Card</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                    <label class="mp-field">
+                        <span>Plan name</span>
+                        <input type="text" maxlength="80" [(ngModel)]="plan.card.name" class="mp-input">
+                    </label>
+                    <label class="mp-field">
+                        <span>Tagline</span>
+                        <input type="text" maxlength="120" [(ngModel)]="plan.card.tagline" class="mp-input">
+                    </label>
+                    <label class="mp-field">
+                        <span>Price period label</span>
+                        <input type="text" maxlength="40" [(ngModel)]="plan.card.period_label" class="mp-input" placeholder="per year">
+                    </label>
+                </div>
+
+                <div class="flex items-center justify-between mt-8 mb-4">
+                    <h4 class="text-[11px] font-black text-navy/50 uppercase tracking-[0.2em]">Benefits ({{ plan.card.features.length }}/{{ maxFeatures }})</h4>
+                    <button type="button" (click)="addFeature()" [disabled]="plan.card.features.length >= maxFeatures"
+                        class="px-5 py-2.5 rounded-xl bg-gold/10 text-gold font-black text-[11px] uppercase tracking-widest hover:bg-gold hover:text-white transition-all disabled:opacity-40">
+                        + Add Benefit
+                    </button>
+                </div>
+
+                <div class="space-y-4">
+                    <div *ngFor="let f of plan.card.features; let i = index; trackBy: trackByIndex"
+                        class="p-4 rounded-2xl border border-gray-100 bg-gray-50/60 flex gap-3">
+                        <div class="flex-1 space-y-3">
+                            <input type="text" maxlength="120" [(ngModel)]="f.title" class="mp-input" placeholder="Benefit title (bold)">
+                            <textarea rows="2" maxlength="300" [(ngModel)]="f.description" class="mp-input" placeholder="Description"></textarea>
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <button type="button" (click)="moveFeature(i, -1)" [disabled]="i === 0" class="mp-icon-btn" title="Move up">↑</button>
+                            <button type="button" (click)="moveFeature(i, 1)" [disabled]="i === plan.card.features.length - 1" class="mp-icon-btn" title="Move down">↓</button>
+                            <button type="button" (click)="removeFeature(i)" class="mp-icon-btn mp-danger" title="Remove">✕</button>
+                        </div>
+                    </div>
+                    <p *ngIf="!plan.card.features.length" class="text-sm text-gray-400 font-bold">No benefits yet. Add at least one so customers know what they get.</p>
+                </div>
+            </section>
+
+            <!-- Payment summary -->
+            <section class="mp-card">
+                <h3 class="mp-title">Payment Summary</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <label class="mp-field md:col-span-2">
+                        <span>Plan line label</span>
+                        <input type="text" maxlength="120" [(ngModel)]="plan.summary.line_label" class="mp-input">
+                    </label>
+                    <label class="mp-field">
+                        <span>Extra row label (leave empty to hide)</span>
+                        <input type="text" maxlength="80" [(ngModel)]="plan.summary.setup_fee_label" class="mp-input">
+                    </label>
+                    <label class="mp-field">
+                        <span>Extra row value</span>
+                        <input type="text" maxlength="40" [(ngModel)]="plan.summary.setup_fee_value" class="mp-input">
+                    </label>
+                    <label class="mp-field md:col-span-2">
+                        <span>Pay button text (after "Pay ₹{{ plan.price || 0 }}")</span>
+                        <input type="text" maxlength="60" [(ngModel)]="plan.summary.pay_button_suffix" class="mp-input">
+                    </label>
+                </div>
+            </section>
+        </div>
+
+        <!-- ===================== LIVE PREVIEW ===================== -->
+        <div class="xl:col-span-2 space-y-6 xl:sticky xl:top-6">
+            <h4 class="text-[11px] font-black text-navy/50 uppercase tracking-[0.2em]">Live preview</h4>
+
+            <!-- Hero preview -->
+            <div class="pv-hero">
+                <span class="pv-badge">INTERIORS<ng-container *ngIf="plan.hero.badge"> • {{ plan.hero.badge }}</ng-container></span>
+                <h3 class="pv-hero-title">{{ plan.hero.title }}</h3>
+                <p class="pv-hero-sub">{{ plan.hero.subtitle }}</p>
+                <div class="flex items-center gap-4 flex-wrap">
+                    <span class="pv-cta">✦ {{ plan.hero.cta_label }} →</span>
+                    <span *ngIf="plan.hero.assurance_label" class="pv-assure">🛡 {{ plan.hero.assurance_label }}</span>
+                </div>
+            </div>
+
+            <!-- Plan card preview -->
+            <div class="pv-plan">
+                <div class="flex justify-between gap-4">
+                    <div>
+                        <h3 class="pv-plan-name">{{ plan.card.name }}</h3>
+                        <span class="pv-plan-tag">{{ plan.card.tagline }}</span>
+                    </div>
+                    <div class="text-right shrink-0">
+                        <div class="pv-price">₹{{ (plan.price || 0) | number:'1.0-2' }}</div>
+                        <div class="pv-period">{{ plan.card.period_label }}</div>
+                    </div>
+                </div>
+                <ul class="mt-5 space-y-3">
+                    <li *ngFor="let f of plan.card.features" class="flex gap-3 text-[13px] leading-snug text-white/80">
+                        <span class="pv-check">✓</span>
+                        <span><strong class="text-white" *ngIf="f.title">{{ f.title }}{{ f.description ? ':' : '' }}</strong> {{ f.description }}</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Summary preview -->
+            <div class="pv-summary">
+                <h4 class="font-black text-navy mb-4">Payment Summary</h4>
+                <div class="pv-row"><span>{{ plan.summary.line_label }}</span><span>₹{{ (plan.price || 0) | number:'1.2-2' }}</span></div>
+                <div class="pv-row" *ngIf="plan.summary.gst_percent > 0"><span>GST ({{ plan.summary.gst_percent }}% Included)</span><span>₹{{ gstAmount | number:'1.2-2' }}</span></div>
+                <div class="pv-row" *ngIf="plan.summary.setup_fee_label"><span>{{ plan.summary.setup_fee_label }}</span><span class="text-emerald-500 font-bold">{{ plan.summary.setup_fee_value }}</span></div>
+                <div class="pv-row pv-total"><span>Total Payable</span><span class="text-gold">₹{{ (plan.price || 0) | number:'1.2-2' }}</span></div>
+                <div class="pv-pay">Pay ₹{{ (plan.price || 0) | number:'1.0-2' }} {{ plan.summary.pay_button_suffix }}</div>
+                <p class="text-[11px] text-gray-400 font-bold mt-3 text-center">Membership lasts {{ plan.duration_months }} month{{ plan.duration_months == 1 ? '' : 's' }} after payment</p>
+            </div>
+
+            <p *ngIf="plan.updated_at" class="text-[11px] text-gray-400 font-bold">Last saved: {{ plan.updated_at | date:'medium' }}</p>
+        </div>
+    </div>
+</div>

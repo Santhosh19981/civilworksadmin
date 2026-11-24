@@ -56,9 +56,8 @@
                         class="group hover:bg-gray-50/50 transition-all duration-300">
                         <td class="px-8 py-6">
                             <div class="flex items-center gap-4">
-                                <div class="w-12 h-12 rounded-xl bg-navy text-white flex items-center justify-center text-sm font-black shadow-lg shadow-navy/20 group-hover:bg-gold transition-colors duration-500 overflow-hidden">
-                                    <img *ngIf="c.image" [src]="c.image" class="w-full h-full object-cover">
-                                    <span *ngIf="!c.image">{{(c.name || c.mobile || 'C').charAt(0).toUpperCase()}}</span>
+                                <div *ngIf="c.image" class="w-12 h-12 rounded-xl shadow-lg shadow-navy/20 overflow-hidden">
+                                    <img [src]="c.image" class="w-full h-full object-cover">
                                 </div>
                                 <div class="flex flex-col">
                                     <div class="flex items-center gap-2">

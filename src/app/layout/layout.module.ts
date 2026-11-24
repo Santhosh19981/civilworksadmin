@@ -29,6 +29,7 @@ const routes: Routes = [
             { path: 'members', loadChildren: () => import('../members/members.module').then(m => m.MembersModule), data: { permission: 'members' } },
             { path: 'reports', loadChildren: () => import('../reports/reports.module').then(m => m.ReportsModule), data: { permission: 'reports' } },
             { path: 'employees', loadChildren: () => import('../employees/employees.module').then(m => m.EmployeesModule), data: { permission: 'employees' } },
+            { path: 'membership-pricing', loadChildren: () => import('../membership-pricing/membership-pricing.module').then(m => m.MembershipPricingModule), data: { permission: 'settings' } },
             { path: 'settings', loadChildren: () => import('../settings/settings.module').then(m => m.SettingsModule), data: { permission: 'settings' } },
             { path: 'profile', loadChildren: () => import('../profile/profile.module').then(m => m.ProfileModule) }
         ]

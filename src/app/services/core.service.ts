@@ -61,6 +61,15 @@ export class CoreService {
         return this.http.put(`${environment.apiUrl}/admin/settings`, data);
     }
 
+    // Plus Membership plan (price, duration, hero + checkout texts)
+    getMembershipPlan(): Observable<any> {
+        return this.http.get(`${environment.apiUrl}/membership/plan`).pipe(map((res: any) => res.data));
+    }
+
+    updateMembershipPlan(plan: any): Observable<any> {
+        return this.http.put(`${environment.apiUrl}/admin/membership/plan`, plan).pipe(map((res: any) => res.data));
+    }
+
     uploadImage(file: File | Blob): Observable<any> {
         const formData = new FormData();
         formData.append('image', file);
